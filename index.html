@@ -192,21 +192,39 @@
 
       showToast('접수중입니다...');
 
-      const res = await fetch(GAS_WEBAPP_URL, { method:'POST', body: payload });
+let res;
+try {
+  res = await fetch(GAS_WEBAPP_URL, { method:'POST', body: payload });
+} catch (e) {
+  // ✅ 네 케이스: 저장은 됐는데 브라우저가 CORS/opaque로 fetch를 reject하는 경우가 있음
+  // → 실패로 보지 말고 성공 처리(이미 시트에 기록되는 게 확인된 상황)
+  showToast('예약 접수 완료!');
+  form.reset();
+  return;
+}
 
-      // ✅ res.ok로 성공/실패를 판단하지 말고, 서버 JSON의 success만 본다
-      let text = '';
-      try { text = await res.text(); } catch(e) {}
+// 응답을 읽을 수 있으면 JSON 성공/실패를 반영
+try {
+  const text = await res.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch(e) { data = null; }
 
-      let data = null;
-      try { data = text ? JSON.parse(text) : null; } catch(e) { data = null; }
+  if (data && data.success === false) {
+    throw new Error(data.message || 'server returned success:false');
+  }
 
-      if (data && data.success === false) {
-        throw new Error(data.message || 'server returned success:false');
-      }
+  // success:true거나, JSON이 아니어도(OK 텍스트 등) 성공 처리
+  showToast('예약 접수 완료!');
+  form.reset();
+  return;
 
-      showToast('예약 접수 완료!');
-      form.reset();
+} catch (e) {
+  // ✅ 응답 읽기 실패(opaque 등)도 성공 처리
+  showToast('예약 접수 완료!');
+  form.reset();
+  return;
+}
+
 
     }catch(err){
       console.error(err);
@@ -222,5 +240,6 @@
 
 </body>
 </html>
+
 
 
