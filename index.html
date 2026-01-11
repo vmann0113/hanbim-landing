@@ -12,14 +12,8 @@
   <!-- 통짜 이미지 -->
   <img src="assets/hanbim_all_1080.png" alt="한빔한복 랜딩">
 
-  <!-- CTA 이미지 (1080 기준) -->
-  <img src="assets/cta_1080.png" class="cta-image" alt="상담 예약하기">
-
-  <!-- CTA 클릭 영역 -->
-  <a href="#formAnchor" class="cta-click" aria-label="상담 예약하기"></a>
-
-  <!-- 폼 앵커 -->
-  <div id="formAnchor"></div>
+  <!-- 폼 앵커 (CTA 클릭 시 여기로 이동) -->
+  <div id="formAnchor" aria-hidden="true"></div>
 
   <!-- ===============================
        지점별 네이버 예약 링크
@@ -40,9 +34,7 @@
        상담 폼
        =============================== -->
   <form class="overlay-form" id="leadForm">
-
     <input class="field f-name" name="name" placeholder="이름을 입력하세요" required>
-
     <input class="field f-phone" name="phone" placeholder="연락처를 입력하세요"
            maxlength="13" inputmode="numeric" required>
 
@@ -59,10 +51,16 @@
     </select>
 
     <input class="field f-date" name="date" type="date" required>
-
     <button class="field f-submit" type="submit"></button>
-
   </form>
+</div>
+
+<!-- ===============================
+     ✅ 화면 하단 고정 CTA (이미지)
+     =============================== -->
+<div class="fixed-cta">
+  <img src="assets/cta_1080.png" alt="상담 예약하기">
+  <button class="fixed-cta-click" aria-label="상담 예약하기"></button>
 </div>
 
 <div id="toast"></div>
@@ -78,6 +76,12 @@
     setTimeout(()=>toast.classList.remove('show'),2200);
   }
 
+  /* CTA 클릭 → 폼 스크롤 */
+  document.querySelector('.fixed-cta-click').addEventListener('click', ()=>{
+    document.getElementById('formAnchor')
+      .scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
   /* 연락처 자동 하이픈 */
   const phone = document.querySelector('.f-phone');
   phone.addEventListener('input', ()=>{
@@ -86,18 +90,6 @@
       n.length < 4 ? n :
       n.length < 8 ? n.slice(0,3)+'-'+n.slice(3) :
       n.slice(0,3)+'-'+n.slice(3,7)+'-'+n.slice(7);
-  });
-
-  /* 네이버 예약 클릭 집계 */
-  document.querySelectorAll('.branch-link').forEach(a=>{
-    a.addEventListener('click',()=>{
-      const payload = JSON.stringify({
-        type:'click',
-        branch:a.dataset.branch,
-        ts:Date.now()
-      });
-      navigator.sendBeacon(GAS_WEBAPP_URL, payload);
-    });
   });
 
   /* 폼 제출 */
@@ -110,24 +102,22 @@
       return;
     }
 
-    const payload = JSON.stringify({
-      type:'lead',
-      name:form.name.value.trim(),
-      phone:form.phone.value.trim(),
-      branch:form.branch.value,
-      date:form.date.value,
-      ts:Date.now()
-    });
-
     try{
       showToast('접수중입니다...');
       await fetch(GAS_WEBAPP_URL,{
         method:'POST',
-        body: payload   // ❗ headers 제거 (CORS 해결)
+        body: JSON.stringify({
+          type:'lead',
+          name:form.name.value,
+          phone:form.phone.value,
+          branch:form.branch.value,
+          date:form.date.value,
+          ts:Date.now()
+        })
       });
       showToast('예약 접수 완료!');
       form.reset();
-    }catch(e){
+    }catch{
       showToast('전송 실패. 다시 시도해주세요.');
     }
   });
