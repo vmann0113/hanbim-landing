@@ -1,156 +1,161 @@
-html, body { margin:0; padding:0; overflow-x:hidden; }
-.landing { max-width:1080px; margin:0 auto; }
-.block img { width:100%; display:block; }
-
-/* 오버레이 섹션 공통 */
-.block-overlay { position: relative; }
-.overlay-layer { position:absolute; inset:0; }
-
-/* 오버레이 요소 공통 */
-.ov{
-  position:absolute;
-  background:transparent;
-  border:none;
-  outline:none;
-  box-sizing:border-box;
+/* ===============================
+   RESET
+=============================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* 폼 공통 스타일 */
-.ov-name,.ov-phone,.ov-branch,.ov-date{
+/* ===============================
+   LANDING COMMON
+=============================== */
+.landing {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.block img {
+  width: 100%;
+  display: block;
+}
+
+/* ===============================
+   CTA FIXED (공통)
+=============================== */
+.fixed-cta {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  width: calc(100vw - 20px);
+  max-width: 1080px;
+  z-index: 9999;
+}
+
+.fixed-cta img {
+  width: 100%;
+  display: block;
+}
+
+/* 클릭 영역 */
+.fixed-cta-click {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===============================
+   🚨 CTA 초기 상태: 전부 숨김
+=============================== */
+.cta-pc,
+.cta-mobile {
+  display: none !important;
+}
+
+/* ===============================
+   PC 전용 CTA
+=============================== */
+@media screen and (min-width: 601px) {
+  .cta-pc {
+    display: block !important;
+  }
+}
+
+/* ===============================
+   모바일 전용 CTA
+=============================== */
+@media screen and (max-width: 600px) {
+  .cta-mobile {
+    display: block !important;
+    border-radius: 14px;
+  }
+}
+
+/* ===============================
+   OVERLAY COMMON
+=============================== */
+.block-overlay {
+  position: relative;
+}
+
+.overlay-layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* 공통 오버레이 요소 */
+.ov {
+  position: absolute;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* 폼 */
+.ov-name,
+.ov-phone,
+.ov-branch,
+.ov-date {
   padding: 0 12px;
   font-size: 16px;
 }
-.ov::placeholder{ color:#b5b5b5; }
 
-.ov-branch{
-  appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
-  background:transparent;
-  cursor:pointer;
-  color:#b5b5b5;
-}
-.ov-branch:valid{ color:#222; }
-
-.ov-date{ cursor:pointer; }
-.ov-date::-webkit-calendar-picker-indicator{ opacity:0; width:0; height:0; }
-.ov-date:invalid{ color:#b5b5b5; }
-.ov-date:valid{ color:#222; }
-
-.ov-submit{ cursor:pointer; }
-
-/* -------------------------------
-   02_form (높이 538 기준) 좌표(%)
-   left/width는 1080 기준, top/height는 538 기준
--------------------------------- */
-.ov-name{
-  left:20.0278%;
-  top:45.7249%;
-  width:26.3889%;
-  height:10.4089%;
-}
-.ov-phone{
-  left:59.1667%;
-  top:45.7249%;
-  width:26.3889%;
-  height:10.4089%;
-}
-.ov-branch{
-  left:20.0278%;
-  top:61.3383%;
-  width:26.3889%;
-  height:10.4089%;
-}
-.ov-date{
-  left:59.1667%;
-  top:61.3383%;
-  width:26.3889%;
-  height:10.4089%;
-}
-.ov-submit{
-  left:36.8519%;
-  top:76.2082%;
-  width:26.3889%;
-  height:11.1524%;
+.ov::placeholder {
+  color: #b5b5b5;
 }
 
-/* -------------------------------
-   05_store_intro (높이 1640 기준) CTA 역할 버튼 좌표(%)
--------------------------------- */
-.ov-store-cta{
-  left:6.6667%;
-  top:31.6463%;
-  width:36.5741%;
-  height:4.2073%;
-  cursor:pointer;
+.ov-branch {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: #b5b5b5;
 }
 
-/* -------------------------------
-   07_naver_links (높이 758 기준) 네이버 링크 좌표(%)
--------------------------------- */
-.ov-naver-busan{
-  left:6.3889%; top:29.6834%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-incheon{
-  left:36.4815%; top:29.6834%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-ansan{
-  left:66.5741%; top:29.6834%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-ulsan{
-  left:6.3889%; top:52.1108%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-masan{
-  left:36.4815%; top:52.1108%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-jinju{
-  left:66.5741%; top:52.1108%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-changwon{
-  left:6.3889%; top:74.5383%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-gimhae{
-  left:36.4815%; top:74.5383%; width:27.0370%; height:19.2612%;
-}
-.ov-naver-yangsan{
-  left:66.5741%; top:74.5383%; width:27.0370%; height:19.2612%;
+.ov-branch:valid {
+  color: #222;
 }
 
-/* 하단 고정 CTA */
-.fixed-cta{
-  position:fixed;
-  left:50%;
-  bottom:10px;
-  transform:translateX(-50%);
-  width:calc(100vw - 20px);
-  max-width:1080px;
-  z-index:9999;
-}
-.fixed-cta img{ width:100%; display:block; }
-.fixed-cta-click{ position:absolute; inset:0; background:transparent; border:none; cursor:pointer; }
-
-/* CTA 스왑 */
-.cta-pc{ display:block; }
-.cta-mobile{ display:none; }
-@media (max-width: 600px){
-  .cta-pc{ display:none; }
-  .cta-mobile{ display:block; }
+.ov-date::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-/* 토스트 */
-#toast{
-  position:fixed;
-  left:50%;
-  bottom:120px;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.82);
-  color:#fff;
-  padding:12px 16px;
-  border-radius:12px;
-  font-size:14px;
-  opacity:0;
-  transition:.2s;
-  z-index:10000;
-  pointer-events:none;
+.ov-date:invalid {
+  color: #b5b5b5;
 }
-#toast.show{ opacity:1; }
+
+.ov-date:valid {
+  color: #222;
+}
+
+.ov-submit {
+  cursor: pointer;
+}
+
+/* ===============================
+   TOAST
+=============================== */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.82);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  opacity: 0;
+  transition: .2s;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+#toast.show {
+  opacity: 1;
+}
