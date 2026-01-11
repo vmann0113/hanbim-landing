@@ -1,149 +1,61 @@
+/* ===============================
+   기본 리셋
+=============================== */
 html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-.wrap {
+/* ===============================
+   하단 고정 CTA (공통)
+=============================== */
+.fixed-cta {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  width: calc(100vw - 20px);
   max-width: 1080px;
-  margin: 0 auto;
+  z-index: 9999;
 }
 
-/* ✅ 이미지 스테이지: 모바일에서 100% 폭 */
-.stage {
-  position: relative;
+/* CTA 이미지 공통 */
+.fixed-cta img {
   width: 100%;
-}
-
-.landing-img {
-  width: 100%;
-  height: auto;
   display: block;
 }
 
-/* ✅ 오버레이는 1080 기준 좌표로 “원본 크기”를 유지하고,
-   JS가 scale()로 줄여서 이미지에 정확히 맞춤 */
-.overlay {
+/* 클릭 영역 */
+.fixed-cta-click {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 1080px;
-  height: 99999px; /* 충분히 크게(이미지 전체를 덮기만 하면 됨) */
-  transform-origin: top left;
-  pointer-events: none; /* 기본은 막고 */
+  inset: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
-/* 오버레이 안의 실제 클릭 요소는 다시 허용 */
-.overlay a, .overlay form, .overlay input, .overlay select, .overlay button {
-  pointer-events: auto;
+/* ===============================
+   ✅ 기본 상태 = PC
+=============================== */
+.cta-pc {
+  display: block !important;
 }
 
-/* 앵커 */
-.anchor {
-  position: absolute;
-  left: 0;
-  top: 1540px; /* 폼 y(1606)보다 살짝 위 */
-  width: 1px;
-  height: 1px;
+.cta-mobile {
+  display: none !important;
 }
 
-/* 공통 필드 */
-.field{
-  position:absolute;
-  background:transparent;
-  border:none;
-  outline:none;
-  padding:0 12px;
-  font-size:18px;
-  box-sizing:border-box;
+/* ===============================
+   ✅ 모바일에서만 전환
+=============================== */
+@media (max-width: 600px) {
+  .cta-pc {
+    display: none !important;
+  }
+
+  .cta-mobile {
+    display: block !important;
+    border-radius: 14px;
+  }
 }
-.field::placeholder { color:#b5b5b5; }
-
-/* 입력폼 좌표 */
-.f-name   { left:216.5064px; top:1606.6619px; width:285px; height:56px; }
-.f-phone  { left:639.0371px; top:1606.6619px; width:285px; height:56px; }
-.f-branch { left:216.5064px; top:1691.1836px; width:285px; height:56px; }
-.f-date   { left:639.0371px; top:1691.1836px; width:285px; height:56px; }
-.f-submit { left:397.7762px; top:1771.1788px; width:285px; height:60px; cursor:pointer; }
-
-/* select UI 숨김 */
-.f-branch{
-  appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
-  background:transparent;
-  cursor:pointer;
-  color:#b5b5b5;
-}
-.f-branch:valid { color:#222; }
-
-/* date 아이콘 숨김 */
-.f-date{ cursor:pointer; line-height:56px; }
-.f-date::-webkit-calendar-picker-indicator{
-  opacity:0;
-  width:0;
-  height:0;
-}
-.f-date:invalid{ color:#b5b5b5; }
-.f-date:valid{ color:#222; }
-
-/* 네이버 예약 링크 좌표 */
-.branch-link{ position:absolute; display:block; background:transparent; }
-.br-busan   { left: 69.298px;   top: 8866.4348px; width: 292.4px; height: 146.2px; }
-.br-incheon { left: 394.0097px; top: 8866.4348px; width: 292.4px; height: 146.2px; }
-.br-ansan   { left: 718.7215px; top: 8866.4348px; width: 292.4px; height: 146.2px; }
-
-.br-ulsan   { left: 69.298px;   top: 9036.0103px; width: 292.4px; height: 146.2px; }
-.br-masan   { left: 394.0097px; top: 9036.0103px; width: 292.4px; height: 146.2px; }
-.br-jinju   { left: 718.7215px; top: 9036.0103px; width: 292.4px; height: 146.2px; }
-
-.br-changwon{ left: 69.298px;   top: 9192px;      width: 292.4px; height: 146.2px; }
-.br-gimhae  { left: 394.0097px; top: 9192px;      width: 292.4px; height: 146.2px; }
-.br-yangsan { left: 718.7215px; top: 9192px;      width: 292.4px; height: 146.2px; }
-
-/* ✅ 하단 고정 CTA */
-.fixed-cta{
-  position:fixed;
-  left:50%;
-  bottom:10px;
-  transform:translateX(-50%);
-  width:calc(100vw - 20px);
-  max-width:1080px;
-  z-index:9999;
-}
-.fixed-cta img{ width:100%; display:block; }
-.fixed-cta-click{
-  position:absolute;
-  inset:0;
-  background:transparent;
-  border:none;
-  cursor:pointer;
-}
-
-/* PC/모바일 CTA 스왑 */
-.cta-pc{ display:block; }
-.cta-mobile{ display:none; }
-
-/* 모바일에서는 모바일 이미지 사용 */
-@media (max-width: 600px){
-  .cta-pc{ display:none; }
-  .cta-mobile{ display:block; border-radius:14px; }
-}
-
-/* 토스트 */
-#toast{
-  position:fixed;
-  left:50%;
-  bottom:120px;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.82);
-  color:#fff;
-  padding:12px 16px;
-  border-radius:12px;
-  font-size:14px;
-  opacity:0;
-  transition:.2s;
-  z-index:10000;
-  pointer-events:none;
-}
-#toast.show{ opacity:1; }
