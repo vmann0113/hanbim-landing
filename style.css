@@ -16,7 +16,13 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 
 /* 오버레이 섹션 공통 */
 .block-overlay { position:relative; }
-.overlay-layer { position:absolute; inset:0; }
+
+/* ✅ (중요) overlay-layer가 클릭을 먹는 문제 방지
+   - overlay-layer 자체는 클릭 비활성
+   - 그 안의 ov 버튼/링크만 클릭 활성 */
+.overlay-layer { position:absolute; inset:0; pointer-events:none; }
+.overlay-layer .ov,
+.overlay-layer a{ pointer-events:auto; }
 
 /* 오버레이 요소 공통 */
 .ov{
@@ -62,7 +68,14 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
    04_differentiation (차별성) - 투명버튼
    (X:71.5, Y:519.2, W:395, H:69) / 기준가로 1080 → %
 =============================== */
-.ov-store-cta { left:6.62%; top:48.07%; width:36.57%; height:6.39%; cursor:pointer; }
+.ov-store-cta {
+  left:6.62%;
+  top:48.07%;
+  width:36.57%;
+  height:6.39%;
+  cursor:pointer;
+  z-index:5; /* ✅ 레이어 최상단 보장 */
+}
 
 /* ===============================
    08_naver_links (1080 x 758) - 네이버 링크 버튼들
