@@ -185,14 +185,15 @@ function validateForm(){
   return {ok:true};
 }
 
-function sendLead(payload){
-  // ✅ 1) 가능하면 sendBeacon (응답 기다릴 필요 없음 / 모바일에서도 안정)
-  if (navigator.sendBeacon) {
-    const blob = new Blob([payload], { type: 'application/json' });
-    const ok = navigator.sendBeacon(GAS_WEBAPP_URL, blob);
-    return ok;
-  }
-  return false;
+// ✅ fetch는 "보내기만" 보장하고, 응답은 기다리지 않게 설계
+function fireAndForgetPost(url, payload){
+  // keepalive는 모바일/페이지 이동 상황에서도 전송 안정성 도움
+  // mode는 기본값으로 두되, CORS 때문에 reject 나는 경우를 대비해 catch로 흡수
+  return fetch(url, {
+    method: 'POST',
+    body: payload,
+    keepalive: true
+  });
 }
 
 form?.addEventListener('submit', (e)=>{
@@ -227,23 +228,35 @@ form?.addEventListener('submit', (e)=>{
 
   showToast('접수중입니다...');
 
-  // ✅ 응답을 기다리지 않고 “즉시 성공 처리”
-  const beaconOk = sendLead(payload);
+  // ✅ 1) 먼저 "전송 시도"를 확실히 한다 (저장 목적)
+  const p = fireAndForgetPost(GAS_WEBAPP_URL, payload);
 
-  // sendBeacon이 실패했을 때만 fetch fallback (그래도 응답은 안 기다림)
-  if (!beaconOk) {
-    fetch(GAS_WEBAPP_URL, { method:'POST', body: payload, keepalive:true }).catch(()=>{});
-  }
+  // ✅ 2) 응답을 기다리면 너 케이스에서 멈추는 일이 있으니,
+  //    UX는 타이머로 "완료" 처리 (전송만 되면 시트에 들어옴)
+  const doneTimer = setTimeout(()=>{
+    showToast('접수 완료되었습니다!');
+    form.reset();
 
-  // ✅ 여기서 바로 완료 토스트/리셋
-  showToast('접수 완료되었습니다!');
-  form.reset();
+    submitting = false;
+    if (submitBtn){
+      submitBtn.disabled = false;
+      submitBtn.style.pointerEvents = 'auto';
+    }
+  }, 700);
 
-  submitting = false;
-  if (submitBtn){
-    submitBtn.disabled = false;
-    submitBtn.style.pointerEvents = 'auto';
-  }
+  // ✅ 3) 다만 "POST 자체가 실패"한 경우만 실패 처리
+  //    (네트워크가 끊겼거나 URL이 틀린 경우)
+  p.catch((err)=>{
+    clearTimeout(doneTimer);
+    console.error(err);
+    showToast('전송 실패. 네트워크를 확인하고 다시 시도해주세요.');
+
+    submitting = false;
+    if (submitBtn){
+      submitBtn.disabled = false;
+      submitBtn.style.pointerEvents = 'auto';
+    }
+  });
 });
 
 
@@ -251,6 +264,7 @@ form?.addEventListener('submit', (e)=>{
 
 </body>
 </html>
+
 
 
 
