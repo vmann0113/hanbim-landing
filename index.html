@@ -232,6 +232,7 @@ form?.addEventListener('submit', async (e)=>{
     await postLead(payload);
 
     showToast('접수 완료되었습니다!');
+    alert('접수 완료되었습니다!')
     form.reset();
 
   }catch(err){
@@ -251,5 +252,6 @@ form?.addEventListener('submit', async (e)=>{
 
 </body>
 </html>
+
 
 
