@@ -456,8 +456,59 @@
 
   // start
   buildOverlays();
+  /* ==================================================
+   SAFE HOTFIX : 갤럭시 키보드 버벅임 완화
+   - 기존 로직은 유지
+   - 무거운 스크롤만 가볍게 덮어씀
+   - 삭제/수정 없음 (추가만)
+================================================== */
+
+(function(){
+  // 모바일에서만 적용
+  if (!matchMedia('(max-width: 900px)').matches) return;
+
+  let lock = false;
+
+  function lightEnsureVisible(el){
+    if(lock || !el) return;
+
+    const tag = (el.tagName || '').toLowerCase();
+    if(!['input','textarea','select'].includes(tag)) return;
+
+    const form = document.getElementById('formSection');
+    if(!form || !form.contains(el)) return;
+
+    const vv = window.visualViewport;
+    const vh = vv ? vv.height : window.innerHeight;
+
+    const r = el.getBoundingClientRect();
+    const cta = document.querySelector('.fixed-cta');
+    const ctaH = cta ? cta.getBoundingClientRect().height : 0;
+
+    const bottomSafe = vh - ctaH - 16;
+    let dy = 0;
+
+    if (r.bottom > bottomSafe) {
+      dy = r.bottom - bottomSafe + 12;
+    }
+
+    if(!dy) return;
+
+    lock = true;
+    window.scrollBy({ top: dy, behavior: 'auto' });
+
+    setTimeout(()=>{ lock = false; }, 120);
+  }
+
+  // 기존 focus 로직 위에 "가벼운 보정"만 추가
+  document.addEventListener('focusin', (e)=>{
+    requestAnimationFrame(()=> lightEnsureVisible(e.target));
+  }, { passive:true });
+
+})();
 </script>
 
 </body>
 </html>
+
 
