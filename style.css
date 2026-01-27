@@ -68,11 +68,12 @@ input, textarea, select { scroll-margin-bottom: 240px; }
 /* ===============================
    02_form (1080 x 703) - 좌표 %
 =============================== */
-.ov-name   { left:20.03%; top:51.07%; width:26.39%; height:7.97%; }
-.ov-phone  { left:59.17%; top:51.07%; width:26.39%; height:7.97%; }
-.ov-branch { left:20.03%; top:63.02%; width:26.39%; height:7.97%; }
-.ov-date   { left:59.17%; top:63.02%; width:26.39%; height:7.97%; }
-.ov-submit { left:36.85%; top:78.81%; width:26.39%; height:8.53%; }
+.ov-name   { left:14.35%; top:51.64%; width:33.61%; height:10.10%; }
+.ov-phone  { left:64.26%; top:51.64%; width:33.61%; height:10.10%; }
+.ov-branch { left:14.35%; top:67.00%; width:33.61%; height:10.10%; }
+.ov-date   { left:64.26%; top:66.86%; width:33.61%; height:10.10%; }
+.ov-submit { left:33.15%; top:83.21%; width:33.61%; height:10.81%; }
+
 
 
 /* ===============================
@@ -146,4 +147,5 @@ input, textarea, select { scroll-margin-bottom: 240px; }
   .block.short{ height:auto; }
   .block.short img{ height:auto; object-fit:contain; }
 }
+
 
