@@ -5,6 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>한빔한복 랜딩</title>
   <link rel="stylesheet" href="style.css?v=20260112-200" />
+
+  <!-- ✅ iPhone date-picker / overlay 클릭 이슈 핫픽스 (style.css 위에 "덮어쓰기"용) -->
+  <style>
+    /* ✅ iOS에서 date input 터치 씹힘 방지: overlay 내부 폼요소는 확실히 터치 허용 */
+    .overlay-layer input,
+    .overlay-layer select,
+    .overlay-layer textarea,
+    .overlay-layer button,
+    .overlay-layer a{
+      pointer-events:auto !important;
+    }
+
+    /* ✅ ov 공통 z-index 올려서 덮임 방지 */
+    .ov{ z-index: 20; }
+
+    /* ✅ iOS Safari: date는 네이티브 UI라 더 강하게 올림 */
+    .ov-date{
+      position:absolute;
+      z-index: 999 !important;
+      pointer-events:auto !important;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* ✅ iOS: indicator 영역을 0으로 만들면 캘린더가 안 열릴 수 있음 */
+    .ov-date::-webkit-calendar-picker-indicator{
+      opacity:0; /* 아이콘만 숨김, 영역은 유지 */
+    }
+
+    /* ✅ fixed CTA / toast safe-area 반영 */
+    .fixed-cta{
+      bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+    #toast{
+      bottom: calc(120px + env(safe-area-inset-bottom));
+    }
+
+    /* (선택) 텍스트 자동 확대 방지 안정화 */
+    html{ -webkit-text-size-adjust: 100%; }
+  </style>
 </head>
 <body>
 
@@ -35,7 +75,9 @@
         <option>인천점</option><option>안산점</option><option>대구점(오픈예정)</option><option>포항점(오픈예정)</option>
       </select>
 
+      <!-- ✅ iOS 안정: date는 네이티브 UI에 맡기는 게 제일 안정적 -->
       <input class="ov ov-date" name="date" type="date" required>
+
       <button class="ov ov-submit" type="submit" aria-label="제출하기"></button>
     </form>
   </section>
@@ -107,6 +149,12 @@
     document.documentElement.style.setProperty('--ctaH', h + 'px');
   }
   window.addEventListener('resize', setCtaHeightVar);
+  window.addEventListener('orientationchange', ()=> setTimeout(setCtaHeightVar, 250));
+  window.addEventListener('load', ()=> setTimeout(setCtaHeightVar, 50));
+
+  // CTA 이미지 로드 후에도 한번 더 (모바일에서 높이 변화 대응)
+  const ctaImg = document.querySelector('.cta-picture img');
+  if (ctaImg && !ctaImg.complete) ctaImg.addEventListener('load', setCtaHeightVar, { once:true });
   setCtaHeightVar();
 
   // ✅ KB FIX: 포커스 요소가 키보드/CTA에 가리면 자동으로 올려주는 유틸
@@ -120,17 +168,13 @@
     }
 
     function getBottomOverlay(){
-      // fixed CTA가 화면을 덮고 있으므로, 이 높이만큼 안전 여유로 빼준다
       const cta = document.querySelector('.fixed-cta');
       const ctaH = cta ? cta.getBoundingClientRect().height : 0;
-      // 토스트는 pointer-events none이라 실제 가림 영향은 적지만, 약간의 여유는 둠
       return Math.max(16, Math.round(ctaH) + 16);
     }
 
     function ensureVisible(el){
       if(!isEditable(el)) return;
-
-      // 폼 섹션 안에서만 동작(성공본 보호)
       if(!el.closest(FORM_SECTION_SEL)) return;
 
       const vv = window.visualViewport;
@@ -138,15 +182,13 @@
 
       const r = el.getBoundingClientRect();
       const bottomSafe = vh - getBottomOverlay();
-      const topSafe = 12; // 위쪽은 조금만 여유
+      const topSafe = 12;
 
-      // 아래로 가리면 위로 올림
       if (r.bottom > bottomSafe) {
         const dy = (r.bottom - bottomSafe) + 12;
         window.scrollBy({ top: dy, left: 0, behavior: 'smooth' });
         return;
       }
-      // 위로 너무 붙으면 살짝 내림
       if (r.top < topSafe) {
         const dy = (topSafe - r.top) + 12;
         window.scrollBy({ top: -dy, left: 0, behavior: 'smooth' });
@@ -155,7 +197,6 @@
     }
 
     function ensureVisibleTwice(el){
-      // 키보드 애니메이션 타이밍 때문에 여러 번 체크하는 게 핵심
       requestAnimationFrame(()=>ensureVisible(el));
       setTimeout(()=>ensureVisible(el), 80);
       setTimeout(()=>ensureVisible(el), 250);
@@ -165,7 +206,6 @@
       ensureVisibleTwice(e.target);
     });
 
-    // 키보드 올라오며 viewport가 줄어드는 타이밍 대응
     if (window.visualViewport) {
       let t = null;
       window.visualViewport.addEventListener('resize', () => {
@@ -174,7 +214,6 @@
       });
     }
 
-    // 외부에서 호출할 수 있게 노출(CTA 이동 후 focus 직후 보정용)
     window.__ensureFormFieldVisible = ensureVisibleTwice;
   })();
 
@@ -183,12 +222,9 @@
     const sec = document.getElementById('formSection');
     sec.scrollIntoView({behavior:'smooth', block:'start'});
 
-    // 기존 성공본 흐름 유지 + 포커스 후 보정만 추가
     setTimeout(()=>{
       const first = document.querySelector('.ov-name');
       first?.focus();
-
-      // ✅ KB FIX: 포커스 직후(키보드 뜨는 타이밍) 한번 더 보정
       if (first && window.__ensureFormFieldVisible) window.__ensureFormFieldVisible(first);
     }, 450);
   }
@@ -209,21 +245,9 @@
       n.slice(0,3)+'-'+n.slice(3,7)+'-'+n.slice(7);
   });
 
-  // 달력 강제 오픈(showPicker)
-  const dateInput = document.querySelector('.ov-date');
-  function openDatePicker(){
-    try{
-      if (dateInput && typeof dateInput.showPicker === 'function') dateInput.showPicker();
-      else if (dateInput) { dateInput.focus(); dateInput.click(); }
-    }catch(e){
-      try { dateInput?.focus(); } catch(_) {}
-    }
-  }
-  dateInput?.addEventListener('click', openDatePicker);
-  dateInput?.addEventListener('touchstart', (e)=>{
-    e.preventDefault();
-    openDatePicker();
-  }, {passive:false});
+  // ✅ (중요) iOS 날짜 선택: 강제 open 로직 제거
+  // - iOS Safari는 네이티브 date UI를 기본 탭으로 여는 게 가장 안정적
+  // - touchstart preventDefault는 달력 오픈을 막는 케이스가 있어 제거
 
   // ✅ 통합 클릭 집계: 전국지점/네이버링크 어디든 a[data-branch]면 집계
   function sendClick(branchName){
@@ -456,61 +480,55 @@
 
   // start
   buildOverlays();
+
   /* ==================================================
    SAFE HOTFIX : 갤럭시 키보드 버벅임 완화
    - 기존 로직은 유지
    - 무거운 스크롤만 가볍게 덮어씀
    - 삭제/수정 없음 (추가만)
-================================================== */
+  ================================================== */
+  (function(){
+    if (!matchMedia('(max-width: 900px)').matches) return;
 
-(function(){
-  // 모바일에서만 적용
-  if (!matchMedia('(max-width: 900px)').matches) return;
+    let lock = false;
 
-  let lock = false;
+    function lightEnsureVisible(el){
+      if(lock || !el) return;
 
-  function lightEnsureVisible(el){
-    if(lock || !el) return;
+      const tag = (el.tagName || '').toLowerCase();
+      if(!['input','textarea','select'].includes(tag)) return;
 
-    const tag = (el.tagName || '').toLowerCase();
-    if(!['input','textarea','select'].includes(tag)) return;
+      const form = document.getElementById('formSection');
+      if(!form || !form.contains(el)) return;
 
-    const form = document.getElementById('formSection');
-    if(!form || !form.contains(el)) return;
+      const vv = window.visualViewport;
+      const vh = vv ? vv.height : window.innerHeight;
 
-    const vv = window.visualViewport;
-    const vh = vv ? vv.height : window.innerHeight;
+      const r = el.getBoundingClientRect();
+      const cta = document.querySelector('.fixed-cta');
+      const ctaH = cta ? cta.getBoundingClientRect().height : 0;
 
-    const r = el.getBoundingClientRect();
-    const cta = document.querySelector('.fixed-cta');
-    const ctaH = cta ? cta.getBoundingClientRect().height : 0;
+      const bottomSafe = vh - ctaH - 16;
+      let dy = 0;
 
-    const bottomSafe = vh - ctaH - 16;
-    let dy = 0;
+      if (r.bottom > bottomSafe) {
+        dy = r.bottom - bottomSafe + 12;
+      }
 
-    if (r.bottom > bottomSafe) {
-      dy = r.bottom - bottomSafe + 12;
+      if(!dy) return;
+
+      lock = true;
+      window.scrollBy({ top: dy, behavior: 'auto' });
+
+      setTimeout(()=>{ lock = false; }, 120);
     }
 
-    if(!dy) return;
+    document.addEventListener('focusin', (e)=>{
+      requestAnimationFrame(()=> lightEnsureVisible(e.target));
+    }, { passive:true });
 
-    lock = true;
-    window.scrollBy({ top: dy, behavior: 'auto' });
-
-    setTimeout(()=>{ lock = false; }, 120);
-  }
-
-  // 기존 focus 로직 위에 "가벼운 보정"만 추가
-  document.addEventListener('focusin', (e)=>{
-    requestAnimationFrame(()=> lightEnsureVisible(e.target));
-  }, { passive:true });
-
-})();
+  })();
 </script>
 
 </body>
 </html>
-
-
-
-
