@@ -84,6 +84,54 @@
 
 </main>
 
+  <!-- =========================
+     ✅ FIXED CTA : 지점선택 + 액션버튼 (추가)
+     ========================= -->
+<div class="hb-fixed-cta" id="hbFixedCta" aria-label="하단 고정 CTA">
+  <!-- 지점 선택 버튼(와인색) -->
+  <button class="hb-branchBtn" id="hbOpenBranch" type="button" aria-label="지점 선택">
+    <span class="hb-branchTxt" id="hbBranchText">전국 지점 선택하기</span>
+    <svg class="hb-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9L12 15L18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <!-- 액션 버튼 -->
+  <div class="hb-actionPanel" aria-label="바로가기 버튼">
+    <a class="hb-action" id="hbBtnCall" href="#" aria-label="전화문의">
+      <span class="hb-ico" style="background-image:url('assets/btn-call.png');"></span>
+      <span class="hb-lbl">전화문의</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnKakao" href="#" aria-label="카톡문의">
+      <span class="hb-ico" style="background-image:url('assets/btn-kakao.png');"></span>
+      <span class="hb-lbl">카톡문의</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnReserve" href="#" aria-label="네이버예약">
+      <span class="hb-ico" style="background-image:url('assets/btn-reserve.png');"></span>
+      <span class="hb-lbl">네이버예약</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9" aria-label="더 알아보기">
+      <span class="hb-ico" style="background-image:url('assets/btn-more.png');"></span>
+      <span class="hb-lbl">더 알아보기</span>
+    </a>
+  </div>
+</div>
+
+<!-- =========================
+     ✅ 지점 선택 모달 (추가)
+     ========================= -->
+<div class="hb-branchBackdrop" id="hbBranchBackdrop" aria-hidden="true">
+  <div class="hb-modal" role="dialog" aria-modal="true" aria-label="지점 선택">
+    <div class="hb-modalHead">
+      <div>지점 선택</div>
+      <button id="hbCloseBranch" type="button">닫기</button>
+    </div>
+    <div class="hb-modalBody" id="hbBranchList"></div>
+  </div>
+</div>
 
 <script>
   const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec".trim();
@@ -484,10 +532,164 @@
     }, { passive:true });
 
   })();
+
+/* ==================================================
+   ✅ Hanbeam Fixed CTA Logic (ADD ONLY)
+   - 기존 기능 수정 X, 추가만
+   ================================================== */
+(function(){
+  // CTA에서 사용할 지점 데이터(우리가 만든 최신형)
+  const HB_CTA_BRANCHES = [
+    { name:"부산점",     phone:"051.634.2325", reserve:"https://m.booking.naver.com/booking/6/bizes/661812",  kakao:"https://open.kakao.com/o/soq7Ns4d" },
+    { name:"부산센텀점", phone:"010-3052-2325", reserve:"https://booking.naver.com/booking/13/bizes/868629", kakao:null },
+    { name:"김해점",     phone:"010.8065.2325", reserve:"https://booking.naver.com/booking/6/bizes/1402679", kakao:"https://open.kakao.com/o/sHM2wwsh" },
+    { name:"창원점",     phone:"055.263.2325", reserve:"https://booking.naver.com/booking/6/bizes/843111",  kakao:"https://open.kakao.com/o/sdcvbh5e" },
+    { name:"양산점",     phone:"055.912.0425", reserve:"https://booking.naver.com/booking/13/bizes/868629", kakao:"https://open.kakao.com/o/sp44Hxaf" },
+    { name:"진주점",     phone:"010.5654.2407", reserve:"https://m.booking.naver.com/booking/6/bizes/1485854", kakao:"https://open.kakao.com/o/sbxBToNh" },
+    { name:"인천점",     phone:"032.283.2325", reserve:"https://m.booking.naver.com/booking/13/bizes/1039475", kakao:"https://open.kakao.com/o/sIrXajUf" },
+    { name:"안산점",     phone:"010.6591.2322", reserve:"https://m.booking.naver.com/booking/6/bizes/1500008", kakao:"https://open.kakao.com/o/sqRSjaRh" },
+    { name:"마산점",     phone:"010.8832.2325", reserve:"https://booking.naver.com/booking/6/bizes/1526541", kakao:"https://open.kakao.com/o/ssWvuvYh" },
+    { name:"울산점",     phone:"010.9807.2325", reserve:"https://booking.naver.com/booking/6/bizes/1534767", kakao:"https://open.kakao.com/o/sKjCbA0h" },
+    { name:"대구점",     phone:"010-8492-2328", reserve:"https://m.place.naver.com/place/2043617700/ticket?entry=pll&bk_query=%ED%95%9C%EB%B9%94%ED%95%9C%EB%B3%B5", kakao:null }
+  ];
+
+  // 기존 코드에 showToast가 이미 있음(없으면 안전 처리)
+  const toastFallback = (msg)=> alert(msg);
+  const safeToast = (typeof window.showToast === "function") ? window.showToast : toastFallback;
+
+  // 로그 집계 함수가 기존 코드에 있음(sendClick) -> 없으면 무시
+  const sendClickSafe = (name)=>{
+    try{
+      if (typeof window.sendClick === "function") window.sendClick(name);
+    }catch(e){}
+  };
+
+  const state = { branch: null };
+
+  function toTelHref(phone){
+    const digits = String(phone || "").replace(/[^\d]/g,"");
+    return digits ? ("tel:" + digits) : "";
+  }
+
+  // DOM
+  const openBtn = document.getElementById("hbOpenBranch");
+  const branchText = document.getElementById("hbBranchText");
+
+  const bd = document.getElementById("hbBranchBackdrop");
+  const closeBtn = document.getElementById("hbCloseBranch");
+  const list = document.getElementById("hbBranchList");
+
+  const btnCall = document.getElementById("hbBtnCall");
+  const btnKakao = document.getElementById("hbBtnKakao");
+  const btnReserve = document.getElementById("hbBtnReserve");
+  const btnMore = document.getElementById("hbBtnMore");
+
+  if(!openBtn || !bd || !list || !btnCall || !btnKakao || !btnReserve || !btnMore) return;
+
+  function openModal(){
+    bd.classList.add("open");
+    bd.setAttribute("aria-hidden", "false");
+  }
+  function closeModal(){
+    bd.classList.remove("open");
+    bd.setAttribute("aria-hidden", "true");
+  }
+
+  function selectBranch(b){
+    state.branch = b;
+    branchText.textContent = `${b.name} 선택됨 (변경하려면 클릭)`;
+    sendClickSafe(b.name); // 지점 선택도 집계하고 싶으면 유지 (원치 않으면 제거 가능)
+    closeModal();
+  }
+
+  function renderList(){
+    list.innerHTML = "";
+    HB_CTA_BRANCHES.forEach(b=>{
+      const row = document.createElement("div");
+      row.className = "hb-item";
+      row.innerHTML = `<div>${b.name}</div><div class="hb-badge">선택</div>`;
+      row.addEventListener("click", ()=> selectBranch(b));
+      list.appendChild(row);
+    });
+  }
+
+  function requireBranchOrOpen(e){
+    if(!state.branch){
+      e.preventDefault();
+      openModal();
+      return true;
+    }
+    return false;
+  }
+
+  // events
+  renderList();
+  openBtn.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  bd.addEventListener("click", (e)=>{ if(e.target === bd) closeModal(); });
+
+  // 액션: 전화
+  btnCall.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(requireBranchOrOpen(e)) return;
+
+    const telHref = toTelHref(state.branch.phone);
+    if(!telHref) return;
+
+    // (기존 집계 방식과 맞추려면 data-branch로 보내도 됨)
+    sendClickSafe(state.branch.name + " 전화");
+    window.location.href = telHref;
+  });
+
+  // 액션: 카카오
+  btnKakao.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(requireBranchOrOpen(e)) return;
+
+    const href = state.branch.kakao;
+    if(!href){
+      safeToast("준비중입니다.");
+      sendClickSafe(state.branch.name + " 카톡(준비중)");
+      return;
+    }
+    sendClickSafe(state.branch.name + " 카톡");
+    window.open(href, "_blank", "noopener,noreferrer");
+  });
+
+  // 액션: 네이버예약
+  btnReserve.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(requireBranchOrOpen(e)) return;
+
+    const href = state.branch.reserve || "";
+    if(!href) return;
+    sendClickSafe(state.branch.name + " 예약");
+    window.open(href, "_blank", "noopener,noreferrer");
+  });
+
+  // 액션: 더 알아보기
+  btnMore.addEventListener("click", ()=>{
+    sendClickSafe("더 알아보기");
+  });
+
+  // ✅ 기존 로직이 --ctaH를 쓰고 있어서, 우리 CTA 높이도 반영
+  function setCtaHeightVar(){
+    const cta = document.getElementById("hbFixedCta");
+    const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--ctaH', h + 'px');
+  }
+  window.addEventListener('resize', setCtaHeightVar);
+  window.addEventListener('orientationchange', ()=> setTimeout(setCtaHeightVar, 250));
+  window.addEventListener('load', ()=> setTimeout(setCtaHeightVar, 50));
+  setCtaHeightVar();
+
+})();
+
 </script>
 
 </body>
 </html>
+
 
 
 
