@@ -73,7 +73,7 @@
     .sectionTitle{
       margin-top:12px;
       font-size:13px;
-      font-weight:800;
+      font-weight:900;
       letter-spacing:-0.2px;
       color:var(--wine);
     }
@@ -90,7 +90,7 @@
       border-radius:14px;
       padding:12px 12px;
       font-size:14px;
-      font-weight:700;
+      font-weight:800;
       outline:none;
       background:#fff;
       color:var(--text);
@@ -109,7 +109,7 @@
       color:var(--wine);
       border-radius:14px;
       padding:10px 0;
-      font-weight:800;
+      font-weight:900;
       font-size:14px;
       cursor:pointer;
     }
@@ -162,9 +162,9 @@
       color:var(--muted);
     }
 
-    /* ✅ 무한 높이 이슈 방지: 차트 영역 높이를 고정 */
+    /* ✅ 무한 높이 이슈 방지: 차트 영역 고정 */
     .chartWrap{
-      height:220px;         /* 여기서 차트 높이 제어 */
+      height:220px;
       position:relative;
     }
     canvas#lineChart{
@@ -202,7 +202,7 @@
     }
     .lbl{
       font-size:13px;
-      font-weight:800;
+      font-weight:900;
       color:var(--muted);
       letter-spacing:-0.2px;
     }
@@ -255,6 +255,10 @@
           <canvas id="lineChart"></canvas>
         </div>
 
+        <div class="hint">
+          • 네이버예약(reserve)은 <b>오버레이 + CTA</b> 클릭이 합산됩니다.<br>
+          • “더 알아보기”는 지점을 선택하지 않은 경우 <b>전체</b>로 집계될 수 있습니다.
+        </div>
         <div class="error" id="errBox"></div>
       </div>
 
@@ -281,10 +285,10 @@
   </div>
 
 <script>
-  /** ✅ 네 GAS WebApp URL로 바꿔 */
+  /** ✅ 너 WebApp /exec URL */
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
 
-  /** 지점 목록(필요하면 실제 표기와 동일하게 맞춰) */
+  /** 지점 목록(실제 표기와 동일하게) */
   const BRANCHES = [
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
@@ -318,7 +322,7 @@
       from.setDate(from.getDate() - 6);
     } else if(preset === "1m"){
       from.setMonth(from.getMonth() - 1);
-      from.setDate(from.getDate() + 1); // 대충 1개월 범위(오늘 포함) 감각 맞춤
+      from.setDate(from.getDate() + 1);
     } else if(preset === "3m"){
       from.setMonth(from.getMonth() - 3);
       from.setDate(from.getDate() + 1);
@@ -330,9 +334,44 @@
     setPresetActive(preset);
   }
 
-  // 사용자가 직접 날짜 바꾸면 프리셋 active 해제(심플하게)
   function clearPresetActive(){
     document.querySelectorAll(".presetRow button").forEach(b=> b.classList.remove("active"));
+  }
+
+  /** ===== JSONP Loader (CORS-free) ===== */
+  function loadJsonp(url){
+    return new Promise((resolve, reject)=>{
+      const cbName = "__hb_cb_" + Math.random().toString(16).slice(2);
+      const s = document.createElement("script");
+      const sep = url.includes("?") ? "&" : "?";
+      s.src = url + sep + "callback=" + cbName;
+
+      window[cbName] = (data)=>{
+        try{ resolve(data); }
+        finally{
+          delete window[cbName];
+          s.remove();
+        }
+      };
+
+      s.onerror = ()=>{
+        delete window[cbName];
+        s.remove();
+        reject(new Error("JSONP_LOAD_FAILED"));
+      };
+
+      document.head.appendChild(s);
+    });
+  }
+
+  async function fetchReport({branch="전체", from, to}){
+    const url =
+      `${GAS_URL}?page=report` +
+      `&branch=${encodeURIComponent(branch)}` +
+      `&group=day` +
+      `&from=${encodeURIComponent(from)}` +
+      `&to=${encodeURIComponent(to)}`;
+    return await loadJsonp(url);
   }
 
   // Chart
@@ -357,12 +396,10 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false, // ✅ chartWrap이 높이를 고정하니 이건 OK
+        maintainAspectRatio: false,
         plugins: {
           legend: { display:false },
-          tooltip: {
-            callbacks: { label: (c)=> ` ${fmt(c.raw)}` }
-          }
+          tooltip: { callbacks: { label: (c)=> ` ${fmt(c.raw)}` } }
         },
         scales: {
           x: {
@@ -392,27 +429,11 @@
   function getRangeSafe(){
     const from = $("fromDate").value;
     const to = $("toDate").value;
-
-    // 최소한의 방어: 값이 없으면 최근 7일로
     if(!from || !to){
       applyPreset("7d");
       return { from: $("fromDate").value, to: $("toDate").value };
     }
     return { from, to };
-  }
-
-  async function fetchReport({branch="전체", from, to}){
-    // ✅ group은 day 고정 (그래프는 기간 범위 내 일자 흐름)
-    const url =
-      `${GAS_URL}?page=report` +
-      `&branch=${encodeURIComponent(branch)}` +
-      `&group=day` +
-      `&from=${encodeURIComponent(from)}` +
-      `&to=${encodeURIComponent(to)}`;
-
-    const res = await fetch(url, { method:"GET" });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
   }
 
   async function refresh(){
@@ -425,7 +446,9 @@
       const data = await fetchReport({ branch, from, to });
 
       $("metaTitle").textContent = (data.branch || branch);
-      $("metaRange").textContent = (data.range?.from && data.range?.to) ? `${data.range.from} ~ ${data.range.to}` : `${from} ~ ${to}`;
+      $("metaRange").textContent = (data.range?.from && data.range?.to)
+        ? `${data.range.from} ~ ${data.range.to}`
+        : `${from} ~ ${to}`;
       $("metaTotal").textContent = fmt(data.cards?.total || 0);
 
       $("cardReserve").textContent = fmt(data.cards?.reserve || 0);
@@ -463,14 +486,13 @@
 
     document.querySelectorAll(".presetRow button").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        const preset = btn.dataset.preset;
-        applyPreset(preset);
+        applyPreset(btn.dataset.preset);
         refresh();
       });
     });
 
-    $("fromDate").addEventListener("change", ()=>{ clearPresetActive(); });
-    $("toDate").addEventListener("change", ()=>{ clearPresetActive(); });
+    $("fromDate").addEventListener("change", clearPresetActive);
+    $("toDate").addEventListener("change", clearPresetActive);
 
     $("applyBtn").addEventListener("click", refresh);
 
