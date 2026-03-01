@@ -15,7 +15,6 @@
   <style>
     :root{
       --wine:#7A1E2C;
-      --wine-soft:#8E2A3A;
       --bg:#ffffff;
       --text:#1b1b1b;
       --muted:#8c8c8c;
@@ -31,29 +30,29 @@
       font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
     }
     .wrap{
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 0 16px 28px;
+      max-width:520px;
+      margin:0 auto;
+      padding:0 16px 28px;
     }
 
     /* ===== Title ===== */
     .title{
-      background: var(--wine);
+      background:var(--wine);
       color:#fff;
-      padding: 18px 16px;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-      margin: 0 -16px 16px;
+      padding:18px 16px;
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-0.4px;
+      border-bottom-left-radius:20px;
+      border-bottom-right-radius:20px;
+      margin:0 -16px 16px;
     }
 
     .card{
       background:#fff;
-      border: var(--border);
-      border-radius: var(--radius);
-      padding: var(--pad);
+      border:var(--border);
+      border-radius:var(--radius);
+      padding:var(--pad);
     }
 
     /* ===== Dropdown ===== */
@@ -62,105 +61,156 @@
       appearance:none;
       background:#fff;
       color:var(--text);
-      border: var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      font-size: 15px;
-      font-weight: 600;
+      border:var(--border);
+      border-radius:14px;
+      padding:14px;
+      font-size:15px;
+      font-weight:600;
       outline:none;
     }
 
-    /* ===== Segmented (day/month/year) ===== */
-    .seg{
+    /* ===== Period UI ===== */
+    .sectionTitle{
+      margin-top:12px;
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:-0.2px;
+      color:var(--wine);
+    }
+
+    .periodRow{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
+    }
+    .periodRow input[type="date"]{
+      flex:1;
+      width:100%;
+      border:var(--border);
+      border-radius:14px;
+      padding:12px 12px;
+      font-size:14px;
+      font-weight:700;
+      outline:none;
+      background:#fff;
+      color:var(--text);
+      min-width:0;
+    }
+
+    .presetRow{
       display:flex;
       gap:8px;
-      margin-top: 12px;
+      margin-top:10px;
     }
-    .seg button{
+    .presetRow button{
       flex:1;
-      border: var(--border);
+      border:var(--border);
       background:#fff;
       color:var(--wine);
-      border-radius: 14px;
-      padding: 10px 0;
-      font-weight: 700;
-      font-size: 14px;
+      border-radius:14px;
+      padding:10px 0;
+      font-weight:800;
+      font-size:14px;
       cursor:pointer;
     }
-    .seg button.active{
-      background: var(--wine);
+    .presetRow button.active{
+      background:var(--wine);
       color:#fff;
     }
 
-    /* ===== Chart card ===== */
+    .applyBtn{
+      width:100%;
+      margin-top:10px;
+      border:var(--border);
+      background:var(--wine);
+      color:#fff;
+      border-radius:14px;
+      padding:12px 0;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    /* ===== Chart Card ===== */
     .chartCard{
-      margin-top: 14px;
+      margin-top:14px;
     }
     .meta{
       display:flex;
       justify-content:space-between;
       align-items:flex-end;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap:10px;
+      margin-bottom:10px;
     }
     .meta .left{
       display:flex;
       flex-direction:column;
-      gap: 2px;
-      min-width: 0;
+      gap:2px;
+      min-width:0;
     }
     .meta .big{
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.4px;
-      color: var(--wine);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size:16px;
+      font-weight:900;
+      letter-spacing:-0.4px;
+      color:var(--wine);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .meta .small{
-      font-size: 12px;
-      color: var(--muted);
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* ✅ 무한 높이 이슈 방지: 차트 영역 높이를 고정 */
+    .chartWrap{
+      height:220px;         /* 여기서 차트 높이 제어 */
+      position:relative;
+    }
+    canvas#lineChart{
+      width:100% !important;
+      height:100% !important;
+      display:block;
     }
 
     .hint{
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 10px;
-      line-height: 1.45;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:10px;
+      line-height:1.45;
     }
     .error{
       color:#c0392b;
-      font-size: 13px;
-      margin-top: 10px;
-      white-space: pre-wrap;
+      font-size:13px;
+      margin-top:10px;
+      white-space:pre-wrap;
       display:none;
     }
 
     /* ===== 2x2 Square Cards ===== */
     .grid{
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 14px;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-top:14px;
     }
     .sq{
-      aspect-ratio: 1 / 1;
+      aspect-ratio:1/1;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
     }
     .lbl{
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: -0.2px;
+      font-size:13px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:-0.2px;
     }
     .val{
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.8px;
-      color: var(--wine);
+      font-size:30px;
+      font-weight:900;
+      letter-spacing:-0.8px;
+      color:var(--wine);
     }
   </style>
 </head>
@@ -175,23 +225,35 @@
         <option value="전체">전체</option>
       </select>
 
-      <!-- 3) Day / Month / Year + Line Chart -->
-      <div class="seg" role="tablist" aria-label="기간 필터">
-        <button type="button" class="active" data-group="day">일</button>
-        <button type="button" data-group="month">월</button>
-        <button type="button" data-group="year">년</button>
+      <!-- 3) 기간 선택 + 프리셋 -->
+      <div class="sectionTitle">기간 선택</div>
+
+      <div class="periodRow">
+        <input id="fromDate" type="date" aria-label="시작일">
+        <input id="toDate" type="date" aria-label="종료일">
       </div>
 
+      <div class="presetRow" role="tablist" aria-label="빠른 기간 선택">
+        <button type="button" data-preset="7d" class="active">1주일</button>
+        <button type="button" data-preset="1m">1개월</button>
+        <button type="button" data-preset="3m">3개월</button>
+      </div>
+
+      <button class="applyBtn" id="applyBtn" type="button">기간 적용</button>
+
+      <!-- Chart -->
       <div class="card chartCard">
         <div class="meta">
           <div class="left">
-            <div class="big" id="metaTitle">전체 · 일</div>
+            <div class="big" id="metaTitle">전체</div>
             <div class="small" id="metaRange">-</div>
           </div>
           <div class="big" id="metaTotal">0</div>
         </div>
 
-        <canvas id="lineChart" height="190"></canvas>
+        <div class="chartWrap">
+          <canvas id="lineChart"></canvas>
+        </div>
 
         <div class="hint">
           • 네이버예약(reserve)은 <b>오버레이 + CTA</b> 클릭이 합산됩니다.<br>
@@ -226,7 +288,7 @@
   /** ✅ 네 GAS WebApp URL로 바꿔 */
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
 
-  /** 지점 목록(필요하면 이름을 실제 운영 표기와 100% 동일하게 맞춰) */
+  /** 지점 목록(필요하면 실제 표기와 동일하게 맞춰) */
   const BRANCHES = [
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
@@ -237,29 +299,44 @@
     try{ return Number(n||0).toLocaleString("ko-KR"); }catch(e){ return String(n||0); }
   }
 
-  // 기본 표시 기간
-  // - day: 최근 14일
-  // - month: 최근 12개월
-  // - year: 최근 5년
   function dateISO(d){
     const y = d.getFullYear();
     const m = String(d.getMonth()+1).padStart(2,"0");
     const da = String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
   }
-  function rangeFor(group){
+
+  function setPresetActive(preset){
+    document.querySelectorAll(".presetRow button").forEach(b=>{
+      b.classList.toggle("active", b.dataset.preset === preset);
+    });
+  }
+
+  // ✅ 기본값: 최근 7일
+  function applyPreset(preset){
     const now = new Date();
-    const to = dateISO(now);
+    const to = new Date(now);
 
-    const fromD = new Date(now);
-    if(group === "day")   fromD.setDate(fromD.getDate() - 13);
-    if(group === "month") fromD.setMonth(fromD.getMonth() - 11);
-    if(group === "year")  fromD.setFullYear(fromD.getFullYear() - 4);
+    const from = new Date(now);
+    if(preset === "7d"){
+      from.setDate(from.getDate() - 6);
+    } else if(preset === "1m"){
+      from.setMonth(from.getMonth() - 1);
+      from.setDate(from.getDate() + 1); // 대충 1개월 범위(오늘 포함) 감각 맞춤
+    } else if(preset === "3m"){
+      from.setMonth(from.getMonth() - 3);
+      from.setDate(from.getDate() + 1);
+    }
 
-    if(group === "month"){ fromD.setDate(1); }
-    if(group === "year"){  fromD.setMonth(0); fromD.setDate(1); }
+    $("fromDate").value = dateISO(from);
+    $("toDate").value = dateISO(to);
 
-    return { from: dateISO(fromD), to };
+    setPresetActive(preset);
+  }
+
+  // 사용자가 직접 날짜 바꾸면 프리셋 active 해제(심플하게)
+  function clearPresetActive(){
+    document.querySelectorAll(".presetRow button").forEach(b=> b.classList.remove("active"));
   }
 
   // Chart
@@ -284,13 +361,11 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false, // ✅ chartWrap이 높이를 고정하니 이건 OK
         plugins: {
           legend: { display:false },
           tooltip: {
-            callbacks: {
-              label: (c)=> ` ${fmt(c.raw)}`
-            }
+            callbacks: { label: (c)=> ` ${fmt(c.raw)}` }
           }
         },
         scales: {
@@ -307,12 +382,6 @@
     });
   }
 
-  function setActiveGroup(group){
-    document.querySelectorAll(".seg button").forEach(b=>{
-      b.classList.toggle("active", b.dataset.group === group);
-    });
-  }
-
   function showError(msg){
     const box = $("errBox");
     box.style.display = "block";
@@ -324,12 +393,24 @@
     box.textContent = "";
   }
 
-  async function fetchReport({branch="전체", group="day"}){
-    const { from, to } = rangeFor(group);
+  function getRangeSafe(){
+    const from = $("fromDate").value;
+    const to = $("toDate").value;
+
+    // 최소한의 방어: 값이 없으면 최근 7일로
+    if(!from || !to){
+      applyPreset("7d");
+      return { from: $("fromDate").value, to: $("toDate").value };
+    }
+    return { from, to };
+  }
+
+  async function fetchReport({branch="전체", from, to}){
+    // ✅ group은 day 고정 (그래프는 기간 범위 내 일자 흐름)
     const url =
       `${GAS_URL}?page=report` +
       `&branch=${encodeURIComponent(branch)}` +
-      `&group=${encodeURIComponent(group)}` +
+      `&group=day` +
       `&from=${encodeURIComponent(from)}` +
       `&to=${encodeURIComponent(to)}`;
 
@@ -342,16 +423,13 @@
     hideError();
 
     const branch = $("branchSelect").value || "전체";
-    const groupBtn = document.querySelector(".seg button.active");
-    const group = groupBtn ? groupBtn.dataset.group : "day";
-
-    const mapGroupLabel = { day:"일", month:"월", year:"년" };
+    const { from, to } = getRangeSafe();
 
     try{
-      const data = await fetchReport({branch, group});
+      const data = await fetchReport({ branch, from, to });
 
-      $("metaTitle").textContent = `${(data.branch || branch)} · ${(mapGroupLabel[data.group] || mapGroupLabel[group] || "일")}`;
-      $("metaRange").textContent = (data.range?.from && data.range?.to) ? `${data.range.from} ~ ${data.range.to}` : "-";
+      $("metaTitle").textContent = (data.branch || branch);
+      $("metaRange").textContent = (data.range?.from && data.range?.to) ? `${data.range.from} ~ ${data.range.to}` : `${from} ~ ${to}`;
       $("metaTotal").textContent = fmt(data.cards?.total || 0);
 
       $("cardReserve").textContent = fmt(data.cards?.reserve || 0);
@@ -372,6 +450,7 @@
   }
 
   function init(){
+    // dropdown 채우기
     const sel = $("branchSelect");
     BRANCHES.forEach(b=>{
       const opt = document.createElement("option");
@@ -380,14 +459,24 @@
       sel.appendChild(opt);
     });
 
+    // 기본 7일
+    applyPreset("7d");
+
+    // 이벤트
     sel.addEventListener("change", refresh);
 
-    document.querySelectorAll(".seg button").forEach(btn=>{
+    document.querySelectorAll(".presetRow button").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        setActiveGroup(btn.dataset.group);
+        const preset = btn.dataset.preset;
+        applyPreset(preset);
         refresh();
       });
     });
+
+    $("fromDate").addEventListener("change", ()=>{ clearPresetActive(); });
+    $("toDate").addEventListener("change", ()=>{ clearPresetActive(); });
+
+    $("applyBtn").addEventListener("click", refresh);
 
     refresh();
   }
