@@ -228,8 +228,6 @@
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
-  // ✅ 색(요청: 3개 액션 각각 다른 색)
-  // 너무 튀지 않게 와인 톤에 어울리게 잡음
   const COLORS = {
     reserve: { border: "#7A1E2C", fill: "rgba(122,30,44,0.25)" },
     call:    { border: "#B04A57", fill: "rgba(176,74,87,0.25)" },
@@ -249,14 +247,8 @@
   function shortBranchName(name){
     let s = String(name||"").trim();
     if(!s) return s;
-
-    // ✅ 부산센텀점 / 부산센텀 -> 센텀
     if (s.includes("센텀")) return "센텀";
-
-    // ✅ ~점 제거
     if (s.endsWith("점")) s = s.slice(0, -1);
-
-    // 부산점 -> 부산 같은 형태
     return s;
   }
 
@@ -332,10 +324,6 @@
     $("cardMore").textContent = fmt(c.more||0);
   }
 
-  /** ✅ 값 라벨(겹치면 생략) 커스텀 플러그인
-   * - 스택 막대: 각 조각 높이가 충분할 때만 안에 출력
-   * - 라인: 포인트 라벨은 안 그림(과밀)
-   */
   const ValueLabelPlugin = {
     id: "hb_value_labels",
     afterDatasetsDraw(chart, args, pluginOptions){
@@ -344,7 +332,7 @@
       if(type !== "bar") return;
 
       const opts = pluginOptions || {};
-      const minH = opts.minBarHeightPx ?? 16; // 이보다 작으면 라벨 생략
+      const minH = opts.minBarHeightPx ?? 16;
       const fontSize = opts.fontSize ?? 11;
 
       ctx.save();
@@ -360,19 +348,15 @@
           const v = Number(ds.data?.[i] || 0);
           if(!v) return;
 
-          // stacked segment bbox
           const props = elem.getProps(["x","y","base"], true);
           const x = props.x;
           const y = props.y;
           const base = props.base;
 
           const h = Math.abs(base - y);
-          if(h < minH) return; // 겹침 방지
+          if(h < minH) return;
 
-          // 텍스트 위치: segment 중앙
           const cy = (y + base) / 2;
-
-          // 색: 조각 안이면 흰색이 제일 잘 보임
           ctx.fillStyle = "#ffffff";
           ctx.fillText(String(v), x, cy);
         });
@@ -418,7 +402,6 @@
     };
   }
 
-  // ✅ 전체: 스택 막대(예약/전화/카톡)
   function renderStackedBar(rawLabels, series){
     const labels = (rawLabels || []).map(shortBranchName);
     const ctx=$("lineChart").getContext("2d");
@@ -436,33 +419,9 @@
       data:{
         labels,
         datasets:[
-          {
-            label:"네이버예약",
-            data: series?.reserve || [],
-            borderColor: COLORS.reserve.border,
-            backgroundColor: COLORS.reserve.fill,
-            borderWidth: 1.2,
-            borderRadius: 8,
-            stack: "total"
-          },
-          {
-            label:"전화문의",
-            data: series?.call || [],
-            borderColor: COLORS.call.border,
-            backgroundColor: COLORS.call.fill,
-            borderWidth: 1.2,
-            borderRadius: 8,
-            stack: "total"
-          },
-          {
-            label:"카톡문의",
-            data: series?.kakao || [],
-            borderColor: COLORS.kakao.border,
-            backgroundColor: COLORS.kakao.fill,
-            borderWidth: 1.2,
-            borderRadius: 8,
-            stack: "total"
-          }
+          { label:"네이버예약", data: series?.reserve || [], borderColor: COLORS.reserve.border, backgroundColor: COLORS.reserve.fill, borderWidth: 1.2, borderRadius: 8, stack: "total" },
+          { label:"전화문의",   data: series?.call || [],    borderColor: COLORS.call.border,    backgroundColor: COLORS.call.fill,    borderWidth: 1.2, borderRadius: 8, stack: "total" },
+          { label:"카톡문의",   data: series?.kakao || [],   borderColor: COLORS.kakao.border,   backgroundColor: COLORS.kakao.fill,   borderWidth: 1.2, borderRadius: 8, stack: "total" }
         ]
       },
       options: opt,
@@ -470,57 +429,30 @@
     });
   }
 
-  // ✅ 지점: 3개 선형(예약/전화/카톡)
   function renderMultiLine(labels, series){
     const ctx=$("lineChart").getContext("2d");
     destroyChart();
 
     const opt = baseOptions();
-    // 라인은 legend 필요하지만 value label plugin은 bar만 처리해서 영향 없음
 
     chart = new Chart(ctx, {
       type:"line",
       data:{
         labels: labels || [],
         datasets:[
-          {
-            label:"네이버예약",
-            data: series?.reserve || [],
-            borderColor: COLORS.reserve.border,
-            backgroundColor: COLORS.reserve.fill,
-            tension: 0.35,
-            pointRadius: (state.group==="month") ? 0 : 2,
-            pointHoverRadius: (state.group==="month") ? 0 : 4
-          },
-          {
-            label:"전화문의",
-            data: series?.call || [],
-            borderColor: COLORS.call.border,
-            backgroundColor: COLORS.call.fill,
-            tension: 0.35,
-            pointRadius: (state.group==="month") ? 0 : 2,
-            pointHoverRadius: (state.group==="month") ? 0 : 4
-          },
-          {
-            label:"카톡문의",
-            data: series?.kakao || [],
-            borderColor: COLORS.kakao.border,
-            backgroundColor: COLORS.kakao.fill,
-            tension: 0.35,
-            pointRadius: (state.group==="month") ? 0 : 2,
-            pointHoverRadius: (state.group==="month") ? 0 : 4
-          }
+          { label:"네이버예약", data: series?.reserve || [], borderColor: COLORS.reserve.border, backgroundColor: COLORS.reserve.fill, tension: 0.35, pointRadius: (state.group==="month") ? 0 : 2, pointHoverRadius: (state.group==="month") ? 0 : 4 },
+          { label:"전화문의",   data: series?.call || [],    borderColor: COLORS.call.border,    backgroundColor: COLORS.call.fill,    tension: 0.35, pointRadius: (state.group==="month") ? 0 : 2, pointHoverRadius: (state.group==="month") ? 0 : 4 },
+          { label:"카톡문의",   data: series?.kakao || [],   borderColor: COLORS.kakao.border,   backgroundColor: COLORS.kakao.fill,   tension: 0.35, pointRadius: (state.group==="month") ? 0 : 2, pointHoverRadius: (state.group==="month") ? 0 : 4 }
         ]
       },
       options: opt
     });
   }
 
-  // Export chart (문서 저장용): 동일하게 스택/멀티라인 반영
   let exportChart=null;
   function destroyExportChart(){ if(exportChart){ exportChart.destroy(); exportChart=null; } }
 
-  function renderExport(type, labels, series, isAll){
+  function renderExport(labels, series, isAll){
     const ctx=$("exportChart").getContext("2d");
     destroyExportChart();
 
@@ -608,13 +540,7 @@
     $("exportKakao").textContent=fmt(cards.kakao||0);
     $("exportMore").textContent=fmt(cards.more||0);
 
-    renderExport(
-      isAll ? "bar" : "line",
-      state.lastData.labels||[],
-      state.lastData.series||{},
-      isAll
-    );
-
+    renderExport(state.lastData.labels||[], state.lastData.series||{}, isAll);
     await new Promise(r=>setTimeout(r,140));
 
     const canvas = await html2canvas($("exportDoc"), { backgroundColor:"#fff", scale:2, useCORS:true });
