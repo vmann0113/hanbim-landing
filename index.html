@@ -461,7 +461,7 @@
       { name:"안산점",     phone:"010.6591.2322", reserve:"https://m.booking.naver.com/booking/6/bizes/1500008", kakao:"https://open.kakao.com/o/sqRSjaRh" },
       { name:"마산점",     phone:"010.8832.2325", reserve:"https://booking.naver.com/booking/6/bizes/1526541", kakao:"https://open.kakao.com/o/ssWvuvYh" },
       { name:"울산점",     phone:"010.9807.2325", reserve:"https://booking.naver.com/booking/6/bizes/1534767", kakao:"https://open.kakao.com/o/sKjCbA0h" },
-      { name:"대구점",     phone:"010-8492-2328", reserve:"https://m.place.naver.com/place/2043617700/ticket?entry=pll&bk_query=%ED%95%9C%EB%B9%94%ED%95%9C%EB%B3%B5", kakao:"https://open.kakao.com/o/sqPdeNfi" }
+      { name:"대구점",     phone:"010-8492-2328", reserve:"https://m.place.naver.com/place/2043617700/ticket?entry=pll&bk_query=%ED%95%9C%EB%B9%94%ED%95%9C%EB%B3%B5", kakao:null }
     ];
 
     const toastFallback = (msg)=> alert(msg);
@@ -542,7 +542,6 @@
 
       sendClickEvent({ action:"call", branch:state.branch.name, source:"cta" });
       window.location.href = telHref;
-      }, 150);
     });
 
     // ✅ CTA: 카톡
@@ -558,7 +557,6 @@
       }
       sendClickEvent({ action:"kakao", branch:state.branch.name, source:"cta" });
       window.open(href, "_blank", "noopener,noreferrer");
-      }, 150);
     });
 
     // ✅ CTA: 네이버예약 (오버레이 예약과 "동일 action=reserve"로 기록 → 리포트 합산)
