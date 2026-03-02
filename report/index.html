@@ -23,11 +23,10 @@
       --softBorder:1px solid rgba(122,30,44,0.25);
       --shadow:0 8px 20px rgba(20,10,10,0.06);
 
-      /* ✅ 버튼/카드 높이 줄이기용 */
-      --btnPadY:6px;     /* 기존 대비 약 60% */
-      --btnPadY2:7px;    /* 조회/저장 */
-      --inputPadY:10px;  /* date/select */
-      --cardPad:12px;    /* 카드 패딩 감소 */
+      --btnPadY:6px;
+      --btnPadY2:7px;
+      --inputPadY:10px;
+      --cardPad:12px;
     }
     *{ box-sizing:border-box; }
     body{
@@ -38,9 +37,7 @@
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
     }
-
     .wrap{ max-width:520px; margin:0 auto; padding:0 16px 28px; }
-
     .title{
       background:var(--wine);
       color:#fff;
@@ -52,14 +49,12 @@
       border-bottom-right-radius:20px;
       margin:0 -16px 16px;
     }
-
     .card{
       background:#fff;
       border:var(--border);
       border-radius:var(--radius);
       padding:var(--pad);
     }
-
     select{
       width:100%;
       appearance:none;
@@ -81,7 +76,7 @@
       background:#fff;
       color:var(--wine);
       border-radius:14px;
-      padding:var(--btnPadY) 0;   /* ✅ 높이 축소 */
+      padding:var(--btnPadY) 0;
       font-weight:900;
       font-size:13px;
       cursor:pointer;
@@ -104,7 +99,7 @@
       width:100%;
       border:var(--border);
       border-radius:14px;
-      padding:var(--inputPadY) 12px; /* ✅ 높이 축소 */
+      padding:var(--inputPadY) 12px;
       font-size:13px;
       font-weight:900;
       outline:none;
@@ -121,7 +116,7 @@
       background:#fff;
       color:var(--wine);
       border-radius:14px;
-      padding:var(--btnPadY) 0;   /* ✅ 높이 축소 */
+      padding:var(--btnPadY) 0;
       font-weight:900;
       font-size:13px;
       cursor:pointer;
@@ -137,7 +132,7 @@
       background:var(--wine);
       color:#fff;
       border-radius:14px;
-      padding:var(--btnPadY2) 0;  /* ✅ 높이 축소 */
+      padding:var(--btnPadY2) 0;
       font-weight:900;
       font-size:13px;
       cursor:pointer;
@@ -151,7 +146,7 @@
       background:#fff;
       color:var(--wine);
       border-radius:14px;
-      padding:var(--btnPadY2) 0;  /* ✅ 높이 축소 */
+      padding:var(--btnPadY2) 0;
       font-weight:900;
       font-size:13px;
       cursor:pointer;
@@ -184,16 +179,24 @@
     }
     canvas#lineChart{ width:100% !important; height:100% !important; display:block; }
 
-    .error{ color:#c0392b; font-size:13px; margin-top:10px; white-space:pre-wrap; display:none; }
+    .error{
+      color:#c0392b;
+      font-size:12px;
+      margin-top:10px;
+      white-space:pre-wrap;
+      display:none;
+      border:1px dashed rgba(192,57,43,0.35);
+      border-radius:12px;
+      padding:10px 12px;
+    }
 
-    /* ✅ 카드 4개: 불필요 높이 제거 (정사각 비율 제거 + 패딩 축소) */
     .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px; }
     .sq{
       display:flex;
       flex-direction:column;
       justify-content:space-between;
-      padding:var(--cardPad); /* ✅ 내부 패딩 감소 */
-      min-height:120px;       /* ✅ 과도한 높이 제거 */
+      padding:var(--cardPad);
+      min-height:120px;
     }
     .lbl{ font-size:13px; font-weight:900; color:var(--muted); letter-spacing:-0.2px; }
     .val{ font-size:28px; font-weight:900; letter-spacing:-0.8px; color:var(--wine); }
@@ -333,12 +336,10 @@
 <script>
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
 
-  // ✅ 지점 이름은 고정(0이어도 반드시 포함)
   const BRANCHES = [
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
-  // ✅ 컬러 구분: 파랑/빨강/초록 (막대 + 선그래프 공통)
   const COLORS = {
     reserve: { border: "#1F5EFF", fill: "rgba(31,94,255,0.22)" },   // Blue
     call:    { border: "#E03131", fill: "rgba(224,49,49,0.22)" },   // Red
@@ -346,7 +347,7 @@
   };
 
   const $ = (id)=>document.getElementById(id);
-  const state = { group:"day", lastData:null };
+  const state = { group:"day", lastData:null, lastUrl:"" };
 
   function fmt(n){ try{return Number(n||0).toLocaleString("ko-KR");}catch(e){return String(n||0);} }
 
@@ -361,14 +362,12 @@
     const [y,m,d]=s.split("-").map(Number);
     return new Date(y, m-1, d, 0,0,0,0);
   }
-
   function toYmd(d){
     const y=d.getFullYear();
     const m=String(d.getMonth()+1).padStart(2,"0");
     const da=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
   }
-
   function toYm(d){
     const y=d.getFullYear();
     const m=String(d.getMonth()+1).padStart(2,"0");
@@ -417,34 +416,37 @@
     return { from, to };
   }
 
-  // JSONP
-  function loadJsonp(url){
-    return new Promise((resolve,reject)=>{
-      const cb="__hb_cb_"+Math.random().toString(16).slice(2);
-      const s=document.createElement("script");
-      const sep=url.includes("?") ? "&" : "?";
-      s.src = url + sep + "callback=" + cb;
-
-      window[cb]=(data)=>{
-        try{ resolve(data); }
-        finally{ delete window[cb]; s.remove(); }
-      };
-      s.onerror=()=>{ delete window[cb]; s.remove(); reject(new Error("JSONP_LOAD_FAILED")); };
-      document.head.appendChild(s);
-    });
+  function showError(msg){
+    const b=$("errBox");
+    b.style.display="block";
+    b.textContent=msg;
+  }
+  function hideError(){
+    const b=$("errBox");
+    b.style.display="none";
+    b.textContent="";
   }
 
-  async function fetchReport({branch="전체", from, to, group="day"}){
-    const url = `${GAS_URL}?page=report`
-      + `&branch=${encodeURIComponent(branch)}`
-      + `&group=${encodeURIComponent(group)}`
-      + `&from=${encodeURIComponent(from)}`
-      + `&to=${encodeURIComponent(to)}`;
-    return await loadJsonp(url);
-  }
+  // ✅ 전역 에러도 errBox에 노출 (디버깅용)
+  window.addEventListener("error", (e)=>{
+    const msg = [
+      "프론트 에러 감지",
+      String(e?.message || e?.error?.message || "UNKNOWN_ERROR"),
+      e?.filename ? ("file: " + e.filename) : "",
+      (Number.isFinite(e?.lineno) ? ("line: " + e.lineno) : "")
+    ].filter(Boolean).join("\n");
+    showError(msg);
+  });
 
-  function showError(msg){ const b=$("errBox"); b.style.display="block"; b.textContent=msg; }
-  function hideError(){ const b=$("errBox"); b.style.display="none"; b.textContent=""; }
+  window.addEventListener("unhandledrejection", (e)=>{
+    const reason = e?.reason;
+    const msg = [
+      "Promise 에러 감지",
+      String(reason?.message || reason || "UNKNOWN_REJECTION"),
+      state.lastUrl ? ("lastUrl: " + state.lastUrl) : ""
+    ].filter(Boolean).join("\n");
+    showError(msg);
+  });
 
   function setCards(cards){
     const c=cards||{};
@@ -455,11 +457,10 @@
     $("cardMore").textContent = fmt(c.more||0);
   }
 
-  /* ✅ (2) 전체 비교: 지점 0이어도 항상 보이게 고정 라벨/시리즈 만들기 */
   function fillAllCompareToFixedBranches(data){
     const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
     const s = data?.series || {};
-    const map = {}; // branch -> {reserve, call, kakao}
+    const map = {};
     labelsIn.forEach((b, i)=>{
       map[b] = {
         reserve: Number(s.reserve?.[i] || 0),
@@ -480,11 +481,10 @@
     return { labels: fixedLabels, series: outSeries };
   }
 
-  /* ✅ (6) 지점 추이: 조회기간 전체 날짜/월을 생성하고 0 채우기 */
   function fillTrendToFullRange(data, fromYmd, toYmd, group){
     const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
     const s = data?.series || {};
-    const map = {}; // key(yyyy-mm-dd or yyyy-mm) -> {reserve,call,kakao}
+    const map = {};
     labelsIn.forEach((k, i)=>{
       map[k] = {
         reserve: Number(s.reserve?.[i] || 0),
@@ -495,10 +495,11 @@
 
     const fromD = parseISODateLocal(fromYmd);
     const toD   = parseISODateLocal(toYmd);
-    if(!fromD || !toD) return { labels: labelsIn, series: {reserve:s.reserve||[], call:s.call||[], kakao:s.kakao||[]} };
+    if(!fromD || !toD){
+      return { labels: labelsIn, series: {reserve:s.reserve||[], call:s.call||[], kakao:s.kakao||[]} };
+    }
 
     const grp = (String(group||"day").toLowerCase()==="month") ? "month" : "day";
-
     const labelsOut = [];
     const outSeries = { reserve:[], call:[], kakao:[] };
 
@@ -513,7 +514,6 @@
         cur.setDate(cur.getDate()+1);
       }
     }else{
-      // month
       const cur = new Date(fromD.getFullYear(), fromD.getMonth(), 1, 0,0,0,0);
       const end = new Date(toD.getFullYear(), toD.getMonth(), 1, 0,0,0,0);
       while(cur.getTime() <= end.getTime()){
@@ -527,6 +527,60 @@
     }
 
     return { labels: labelsOut, series: outSeries };
+  }
+
+  // ✅ JSONP 강화: 타임아웃/캐시버스터/정확한 실패 메시지
+  function loadJsonp(url){
+    return new Promise((resolve,reject)=>{
+      const cb="__hb_cb_"+Math.random().toString(16).slice(2);
+      const s=document.createElement("script");
+      const sep=url.includes("?") ? "&" : "?";
+
+      const fullUrl = url + sep + "callback=" + cb + "&_=" + Date.now();
+      state.lastUrl = fullUrl;
+
+      let done=false;
+      const timer=setTimeout(()=>{
+        if(done) return;
+        done=true;
+        try{ delete window[cb]; }catch(_){}
+        try{ s.remove(); }catch(_){}
+        reject(new Error("JSONP_TIMEOUT (8s)\n" + fullUrl));
+      }, 8000);
+
+      window[cb]=(data)=>{
+        if(done) return;
+        done=true;
+        clearTimeout(timer);
+        try{ resolve(data); }
+        finally{
+          try{ delete window[cb]; }catch(_){}
+          try{ s.remove(); }catch(_){}
+        }
+      };
+
+      s.src = fullUrl;
+      s.async = true;
+      s.onerror=()=>{
+        if(done) return;
+        done=true;
+        clearTimeout(timer);
+        try{ delete window[cb]; }catch(_){}
+        try{ s.remove(); }catch(_){}
+        reject(new Error("JSONP_LOAD_FAILED\n" + fullUrl));
+      };
+
+      document.head.appendChild(s);
+    });
+  }
+
+  async function fetchReport({branch="전체", from, to, group="day"}){
+    const url = `${GAS_URL}?page=report`
+      + `&branch=${encodeURIComponent(branch)}`
+      + `&group=${encodeURIComponent(group)}`
+      + `&from=${encodeURIComponent(from)}`
+      + `&to=${encodeURIComponent(to)}`;
+    return await loadJsonp(url);
   }
 
   const ValueLabelPlugin = {
@@ -765,8 +819,12 @@
     try{
       const dataRaw = await fetchReport({ branch, from, to, group: state.group });
 
-      // ✅ 여기서 “0 채우기”와 “지점 고정”을 프론트에서 보정
-      let data = JSON.parse(JSON.stringify(dataRaw || {}));
+      if(!dataRaw || typeof dataRaw !== "object"){
+        throw new Error("INVALID_REPORT_RESPONSE\n" + String(dataRaw));
+      }
+
+      // 보정 로직
+      const data = dataRaw;
 
       if(data.mode === "all_compare"){
         const fixed = fillAllCompareToFixedBranches(data);
@@ -795,7 +853,12 @@
 
     }catch(err){
       state.lastData=null;
-      showError("리포트 로드 실패\n" + (err?.message || String(err)));
+      const msg = [
+        "리포트 로드 실패",
+        (err?.message || String(err)),
+        state.lastUrl ? ("\nlastUrl:\n" + state.lastUrl) : ""
+      ].join("\n");
+      showError(msg);
       setCards({total:0,reserve:0,call:0,kakao:0,more:0});
       destroyChart();
     }
