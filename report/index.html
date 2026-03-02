@@ -205,7 +205,7 @@
 
     /* ✅ 무한 높이 이슈 방지: 차트 영역 고정 */
     .chartWrap{
-      height:220px;
+      height:240px;
       position:relative;
     }
     canvas#lineChart{
@@ -259,7 +259,7 @@
       position:fixed;
       left:-99999px;
       top:0;
-      width:860px; /* 문서 느낌 */
+      width:860px;
       background:#fff;
       padding:28px;
       font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
@@ -397,9 +397,10 @@
           <canvas id="lineChart"></canvas>
         </div>
 
-        <div class="hint">
-          • 네이버예약(reserve)은 <b>오버레이 + CTA</b> 클릭이 합산됩니다.<br>
-          • “더 알아보기”는 지점을 선택하지 않은 경우 <b>전체</b>로 집계될 수 있습니다.
+        <div class="hint" id="hintBox">
+          • 전체 보기에서는 <b>지점별 비교 막대그래프</b>가 표시됩니다.<br>
+          • 지점 선택 시 <b>추이(선형)</b>로 표시됩니다.<br>
+          • 네이버예약(reserve)은 <b>오버레이 + CTA</b> 클릭이 합산됩니다.
         </div>
         <div class="error" id="errBox"></div>
       </div>
@@ -470,9 +471,9 @@
         </div>
       </div>
 
-      <div class="docFooter">
+      <div class="docFooter" id="exportFoot">
         • 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.<br>
-        • 생성일시/기간/지점/기준(일별/월별)이 포함되어 지점별 월별 보고에 바로 사용 가능합니다.
+        • 생성일시/기간/지점/기준(일별/월별)이 포함되어 지점별 보고에 바로 사용 가능합니다.
       </div>
     </div>
   </div>
@@ -489,8 +490,9 @@
   const $ = (id)=>document.getElementById(id);
 
   const state = {
-    group: "day",   // day|month
-    lastData: null
+    group: "day",      // day|month
+    lastData: null,    // 마지막 조회 데이터(지점일 때)
+    lastAll: null      // 마지막 전체 비교 데이터(전체일 때)
   };
 
   function fmt(n){
@@ -517,7 +519,6 @@
     });
   }
 
-  // ✅ 기본값: 최근 7일
   function applyPreset(preset){
     const now = new Date();
     const to = new Date(now);
@@ -541,6 +542,16 @@
 
   function clearPresetActive(){
     document.querySelectorAll(".presetRow button").forEach(b=> b.classList.remove("active"));
+  }
+
+  function getRangeSafe(){
+    const from = $("fromDate").value;
+    const to = $("toDate").value;
+    if(!from || !to){
+      applyPreset("7d");
+      return { from: $("fromDate").value, to: $("toDate").value };
+    }
+    return { from, to };
   }
 
   /** ===== JSONP Loader (CORS-free) ===== */
@@ -579,80 +590,164 @@
     return await loadJsonp(url);
   }
 
-  // Chart (screen)
-  let chart = null;
-  function renderChart(labels, values){
-    const ctx = $("lineChart").getContext("2d");
-    if(chart) chart.destroy();
+  async function fetchAllBranchesForCompare({from, to, group}){
+    // ✅ 전체 비교용: 지점별 totals + action 합계까지 계산
+    const jobs = BRANCHES.map(async (b)=> {
+      const d = await fetchReport({ branch:b, from, to, group });
+      return {
+        branch: b,
+        total: Number(d?.cards?.total || 0),
+        reserve: Number(d?.cards?.reserve || 0),
+        call: Number(d?.cards?.call || 0),
+        kakao: Number(d?.cards?.kakao || 0),
+        more: Number(d?.cards?.more || 0)
+      };
+    });
 
+    const rows = await Promise.all(jobs);
+
+    const sum = rows.reduce((acc, r)=>{
+      acc.total += r.total;
+      acc.reserve += r.reserve;
+      acc.call += r.call;
+      acc.kakao += r.kakao;
+      acc.more += r.more;
+      return acc;
+    }, { total:0, reserve:0, call:0, kakao:0, more:0 });
+
+    return { rows, sum };
+  }
+
+  /** ===== Chart Render ===== */
+  let chart = null;
+
+  function destroyChart(){
+    if(chart){ chart.destroy(); chart = null; }
+  }
+
+  function baseChartOptions_(){
+    // ✅ Y축이 중앙으로 오는 이상현상 방지: position 강제
+    return {
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label:(c)=>` ${fmt(c.raw)}` } }
+      },
+      scales:{
+        x:{
+          type:"category",
+          position:"bottom",
+          ticks:{ color:"#8c8c8c", maxRotation:0, autoSkip:true },
+          grid:{ color:"rgba(122,30,44,0.10)" }
+        },
+        y:{
+          position:"left",
+          beginAtZero:true,
+          ticks:{ color:"#7A1E2C" },
+          grid:{ color:"rgba(122,30,44,0.10)" }
+        }
+      }
+    };
+  }
+
+  function renderLine(labels, values){
+    const ctx = $("lineChart").getContext("2d");
+    destroyChart();
     chart = new Chart(ctx, {
-      type: "line",
-      data: {
+      type:"line",
+      data:{
         labels,
-        datasets: [{
-          label: "클릭",
-          data: values,
-          borderColor: "#7A1E2C",
-          backgroundColor: "rgba(122,30,44,0.15)",
-          tension: 0.35,
-          pointRadius: (state.group === "month") ? 0 : 2,
-          pointHoverRadius: (state.group === "month") ? 0 : 4
+        datasets:[{
+          label:"클릭",
+          data:values,
+          borderColor:"#7A1E2C",
+          backgroundColor:"rgba(122,30,44,0.15)",
+          tension:0.35,
+          pointRadius:(state.group === "month") ? 0 : 2,
+          pointHoverRadius:(state.group === "month") ? 0 : 4
+        }]
+      },
+      options: baseChartOptions_()
+    });
+  }
+
+  function renderBar(labels, values){
+    const ctx = $("lineChart").getContext("2d");
+    destroyChart();
+    chart = new Chart(ctx, {
+      type:"bar",
+      data:{
+        labels,
+        datasets:[{
+          label:"클릭",
+          data:values,
+          borderColor:"#7A1E2C",
+          backgroundColor:"rgba(122,30,44,0.18)",
+          borderWidth:1.5,
+          borderRadius:8
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display:false },
-          tooltip: { callbacks: { label: (c)=> ` ${fmt(c.raw)}` } }
-        },
-        scales: {
-          x: {
-            ticks: { color: "#8c8c8c", maxRotation: 0, autoSkip: true },
-            grid: { color: "rgba(122,30,44,0.10)" }
+        ...baseChartOptions_(),
+        scales:{
+          x:{
+            type:"category",
+            position:"bottom",
+            ticks:{ color:"#8c8c8c", maxRotation:0, autoSkip:false },
+            grid:{ color:"rgba(122,30,44,0.08)" }
           },
-          y: {
-            ticks: { color: "#7A1E2C" },
-            grid: { color: "rgba(122,30,44,0.10)" }
+          y:{
+            position:"left",
+            beginAtZero:true,
+            ticks:{ color:"#7A1E2C" },
+            grid:{ color:"rgba(122,30,44,0.10)" }
           }
         }
       }
     });
   }
 
-  // Chart (export doc)
+  /** ===== Export Chart (doc) ===== */
   let exportChart = null;
-  function renderExportChart(labels, values){
+
+  function destroyExportChart(){
+    if(exportChart){ exportChart.destroy(); exportChart = null; }
+  }
+
+  function renderExportChart({type, labels, values}){
     const ctx = $("exportChart").getContext("2d");
-    if(exportChart) exportChart.destroy();
+    destroyExportChart();
 
     exportChart = new Chart(ctx, {
-      type: "line",
-      data: {
+      type,
+      data:{
         labels,
-        datasets: [{
-          label: "클릭",
-          data: values,
-          borderColor: "#7A1E2C",
-          backgroundColor: "rgba(122,30,44,0.12)",
-          tension: 0.35,
-          pointRadius: 0,
-          pointHoverRadius: 0
+        datasets:[{
+          label:"클릭",
+          data:values,
+          borderColor:"#7A1E2C",
+          backgroundColor: type === "bar" ? "rgba(122,30,44,0.18)" : "rgba(122,30,44,0.12)",
+          tension:0.35,
+          pointRadius:0,
+          pointHoverRadius:0,
+          borderRadius: type === "bar" ? 10 : 0
         }]
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        plugins: { legend: { display:false } },
-        scales: {
-          x: { ticks: { maxRotation: 0, autoSkip: true }, grid: { color:"rgba(122,30,44,0.08)" } },
-          y: { ticks: { autoSkip: true }, grid: { color:"rgba(122,30,44,0.08)" } }
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        animation:false,
+        plugins:{ legend:{ display:false } },
+        scales:{
+          x:{ position:"bottom", grid:{ color:"rgba(122,30,44,0.08)" }, ticks:{ maxRotation:0, autoSkip:true } },
+          y:{ position:"left", beginAtZero:true, grid:{ color:"rgba(122,30,44,0.08)" } }
         }
       }
     });
   }
 
+  /** ===== UI helpers ===== */
   function showError(msg){
     const box = $("errBox");
     box.style.display = "block";
@@ -664,51 +759,70 @@
     box.textContent = "";
   }
 
-  function getRangeSafe(){
-    const from = $("fromDate").value;
-    const to = $("toDate").value;
-    if(!from || !to){
-      applyPreset("7d");
-      return { from: $("fromDate").value, to: $("toDate").value };
-    }
-    return { from, to };
+  function setCards({reserve=0, call=0, kakao=0, more=0, total=0}){
+    $("metaTotal").textContent = fmt(total);
+    $("cardReserve").textContent = fmt(reserve);
+    $("cardCall").textContent    = fmt(call);
+    $("cardKakao").textContent   = fmt(kakao);
+    $("cardMore").textContent    = fmt(more);
   }
 
+  /** ===== Refresh ===== */
   async function refresh(){
     hideError();
 
     const branch = $("branchSelect").value || "전체";
     const { from, to } = getRangeSafe();
+    const gLabel = (state.group === "month") ? "월별" : "일별";
 
     try{
-      const data = await fetchReport({ branch, from, to, group: state.group });
-      state.lastData = data;
+      if(branch === "전체"){
+        // ✅ 전체: 지점별 비교 막대 그래프
+        const all = await fetchAllBranchesForCompare({ from, to, group: state.group });
+        state.lastAll = all;
+        state.lastData = null;
 
-      const gLabel = (state.group === "month") ? "월별" : "일별";
-      $("metaTitle").textContent = `${data.branch || branch} · ${gLabel}`;
-      $("metaRange").textContent = (data.range?.from && data.range?.to)
-        ? `${data.range.from} ~ ${data.range.to}`
-        : `${from} ~ ${to}`;
-      $("metaTotal").textContent = fmt(data.cards?.total || 0);
+        $("metaTitle").textContent = `전체 · 지점별 비교 · ${gLabel}`;
+        $("metaRange").textContent = `${from} ~ ${to}`;
 
-      $("cardReserve").textContent = fmt(data.cards?.reserve || 0);
-      $("cardCall").textContent    = fmt(data.cards?.call || 0);
-      $("cardKakao").textContent   = fmt(data.cards?.kakao || 0);
-      $("cardMore").textContent    = fmt(data.cards?.more || 0);
+        // bar: branch totals
+        const labels = all.rows.map(r=>r.branch);
+        const values = all.rows.map(r=>r.total);
 
-      renderChart(data.labels || [], data.values || []);
+        renderBar(labels, values);
+        setCards(all.sum);
+
+      } else {
+        // ✅ 지점: 추이 선형 그래프
+        const data = await fetchReport({ branch, from, to, group: state.group });
+        state.lastData = data;
+        state.lastAll = null;
+
+        $("metaTitle").textContent = `${data.branch || branch} · ${gLabel}`;
+        $("metaRange").textContent = (data.range?.from && data.range?.to)
+          ? `${data.range.from} ~ ${data.range.to}`
+          : `${from} ~ ${to}`;
+
+        setCards({
+          reserve: Number(data.cards?.reserve || 0),
+          call: Number(data.cards?.call || 0),
+          kakao: Number(data.cards?.kakao || 0),
+          more: Number(data.cards?.more || 0),
+          total: Number(data.cards?.total || 0),
+        });
+
+        renderLine(data.labels || [], data.values || []);
+      }
     }catch(err){
       state.lastData = null;
+      state.lastAll = null;
       showError("리포트 로드 실패\n" + (err?.message || String(err)));
-      $("metaTotal").textContent = "0";
-      $("cardReserve").textContent = "0";
-      $("cardCall").textContent = "0";
-      $("cardKakao").textContent = "0";
-      $("cardMore").textContent = "0";
-      renderChart([], []);
+      setCards({reserve:0, call:0, kakao:0, more:0, total:0});
+      renderLine([], []);
     }
   }
 
+  /** ===== Export ===== */
   function safeFileName(branch, from, to, group){
     const b = String(branch || "전체").replace(/\s+/g,"");
     const g = (group === "month") ? "month" : "day";
@@ -716,10 +830,10 @@
   }
 
   async function exportAsImage(){
-    // 데이터가 없으면 먼저 조회
-    if(!state.lastData){
+    // ✅ 없으면 먼저 조회
+    if(!state.lastData && !state.lastAll){
       await refresh();
-      if(!state.lastData){
+      if(!state.lastData && !state.lastAll){
         alert("리포트를 먼저 조회해 주세요.");
         return;
       }
@@ -728,31 +842,65 @@
     const branch = $("branchSelect").value || "전체";
     const { from, to } = getRangeSafe();
     const group = state.group;
+    const gLabel = (group === "month") ? "월별" : "일별";
 
     const now = new Date();
-    const generatedAt = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const generatedAt =
+      `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ` +
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-    const gLabel = (group === "month") ? "월별" : "일별";
-    $("exportSub").textContent = `지점별 클릭 요약 (${gLabel} 공유용)`;
-    $("exportChartLabel").textContent = `기간 내 추이 (${gLabel})`;
+    $("exportSub").textContent = (branch === "전체")
+      ? `지점별 비교 요약 (${gLabel} 공유용)`
+      : `지점별 클릭 요약 (${gLabel} 공유용)`;
+
+    $("exportChartLabel").textContent = (branch === "전체")
+      ? `지점별 비교 (${gLabel})`
+      : `기간 내 추이 (${gLabel})`;
 
     $("exportMeta").textContent =
       `지점: ${branch}\n기준: ${gLabel}\n기간: ${from} ~ ${to}\n생성: ${generatedAt}`;
 
-    // 수치 반영
-    $("exportTotal").textContent   = fmt(state.lastData.cards?.total || 0);
-    $("exportReserve").textContent = fmt(state.lastData.cards?.reserve || 0);
-    $("exportCall").textContent    = fmt(state.lastData.cards?.call || 0);
-    $("exportKakao").textContent   = fmt(state.lastData.cards?.kakao || 0);
-    $("exportMore").textContent    = fmt(state.lastData.cards?.more || 0);
+    // cards + chart data
+    let cards, chartType, labels, values;
 
-    // export 차트 렌더
-    renderExportChart(state.lastData.labels || [], state.lastData.values || []);
+    if(branch === "전체"){
+      const all = state.lastAll || await fetchAllBranchesForCompare({ from, to, group });
+      state.lastAll = all;
 
-    await new Promise(r=>setTimeout(r, 120));
+      cards = all.sum;
+      chartType = "bar";
+      labels = all.rows.map(r=>r.branch);
+      values = all.rows.map(r=>r.total);
+
+      $("exportFoot").innerHTML =
+        `• 전체 보기(지점별 비교)는 <b>기간 내 총 클릭</b>을 지점별로 비교합니다.<br>` +
+        `• 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.`;
+
+    } else {
+      const data = state.lastData || await fetchReport({ branch, from, to, group });
+      state.lastData = data;
+
+      cards = data.cards || {};
+      chartType = "line";
+      labels = data.labels || [];
+      values = data.values || [];
+
+      $("exportFoot").innerHTML =
+        `• 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.<br>` +
+        `• 생성일시/기간/지점/기준이 포함되어 지점별 보고에 바로 사용 가능합니다.`;
+    }
+
+    $("exportTotal").textContent   = fmt(cards.total || 0);
+    $("exportReserve").textContent = fmt(cards.reserve || 0);
+    $("exportCall").textContent    = fmt(cards.call || 0);
+    $("exportKakao").textContent   = fmt(cards.kakao || 0);
+    $("exportMore").textContent    = fmt(cards.more || 0);
+
+    renderExportChart({ type: chartType, labels, values });
+
+    await new Promise(r=>setTimeout(r, 140));
 
     const node = $("exportDoc");
-
     const canvas = await html2canvas(node, {
       backgroundColor: "#ffffff",
       scale: 2,
@@ -767,8 +915,8 @@
     a.remove();
   }
 
+  /** ===== init ===== */
   function init(){
-    // dropdown 채우기
     const sel = $("branchSelect");
     BRANCHES.forEach(b=>{
       const opt = document.createElement("option");
@@ -777,14 +925,12 @@
       sel.appendChild(opt);
     });
 
-    // 기본 7일
     applyPreset("7d");
     setGroupActive("day");
 
-    // 이벤트
+    // events
     sel.addEventListener("change", refresh);
 
-    // 토글
     document.querySelectorAll(".toggleRow button").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         setGroupActive(btn.dataset.group);
