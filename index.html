@@ -4,73 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>한빔한복 무료상담</title>
-  <link rel="stylesheet" href="style.css?v=20260112-200" />
-
-  <!-- ✅ iPhone date-picker / overlay 클릭 이슈 핫픽스 (style.css 위에 "덮어쓰기"용) -->
-  <style>
-    /* ✅ iOS에서 date input 터치 씹힘 방지: overlay 내부 폼요소는 확실히 터치 허용 */
-    .overlay-layer input,
-    .overlay-layer select,
-    .overlay-layer textarea,
-    .overlay-layer button,
-    .overlay-layer a{
-      pointer-events:auto !important;
-    }
-
-    /* ✅ ov 공통 z-index 올려서 덮임 방지 */
-    .ov{ z-index: 20; }
-
-    /* ✅ iOS Safari: date는 네이티브 UI라 더 강하게 올림 */
-    .ov-date{
-      position:absolute;
-      z-index: 999 !important;
-      pointer-events:auto !important;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    /* ✅ iOS: indicator 영역을 0으로 만들면 캘린더가 안 열릴 수 있음 */
-    .ov-date::-webkit-calendar-picker-indicator{
-      opacity:0; /* 아이콘만 숨김, 영역은 유지 */
-    }
-
-    /* ✅ fixed CTA / toast safe-area 반영 */
-    .fixed-cta{
-      bottom: calc(10px + env(safe-area-inset-bottom));
-    }
-    #toast{
-      bottom: calc(120px + env(safe-area-inset-bottom));
-    }
-
-    /* (선택) 텍스트 자동 확대 방지 안정화 */
-    html{ -webkit-text-size-adjust: 100%; }
-  </style>
+  <link rel="stylesheet" href="style.css?v=20260302-1" />
 </head>
 <body>
 
 <main class="landing">
 
-  <!-- 01 히어로 -->
   <section class="block">
     <img src="assets/01_hero.webp" alt="히어로">
   </section>
 
-  <!-- 03 매장소개 (높이 변경/축소) -->
   <section class="block short">
     <img src="assets/03_store_intro.webp" alt="매장소개">
   </section>
 
-  <!-- 01 디자인 보유 (높이 변경/축소) -->
   <section class="block short">
     <img src="assets/01_design.webp" alt="강점소개">
   </section>
 
-  <!-- 01 악세사리 제공 (높이 변경/축소) -->
   <section class="block short">
     <img src="assets/01_accesary.webp" alt="예약고객혜택">
   </section>
 
-  <!-- 01 고객만족서비스 (높이 변경/축소) -->
   <section class="block short">
     <img src="assets/01_cs.webp" alt="고객만족서비스">
   </section>
@@ -78,28 +33,22 @@
   <!-- 08 지점별 네이버링크 (오버레이) -->
   <section class="block block-overlay naver-grid">
     <img src="assets/08_naver_links.webp" alt="지점별 네이버 예약">
-    <div class="overlay-layer" id="naverOverlay"></div>
+    <div class="overlay-layer" id="naverOverlay" aria-label="지점별 네이버 예약 오버레이"></div>
   </section>
 
-      <!-- ✅ iOS 안정: date는 네이티브 UI에 맡기는 게 제일 안정적 -->
-      <input class="ov ov-date" name="date" type="date" required>
-
-      <button class="ov ov-submit" type="submit" aria-label="제출하기"></button>
-    </form>
-  </section>
-
-  <!-- 09 푸터 -->
   <section class="block">
     <img src="assets/09_footer.webp" alt="푸터">
   </section>
 
 </main>
 
+<!-- ✅ Toast -->
+<div id="toast" role="status" aria-live="polite"></div>
+
 <!-- =========================
-   ✅ FIXED CTA : 지점선택 + 액션버튼 (추가)
+   ✅ Hanbeam Fixed CTA : 지점선택 + 액션버튼
    ========================= -->
 <div class="hb-fixed-cta" id="hbFixedCta" aria-label="하단 고정 CTA">
-  <!-- 지점 선택 버튼(와인색) -->
   <button class="hb-branchBtn" id="hbOpenBranch" type="button" aria-label="지점 선택">
     <span class="hb-branchTxt" id="hbBranchText">가까운 지점 선택하기</span>
     <svg class="hb-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -107,7 +56,6 @@
     </svg>
   </button>
 
-  <!-- 액션 버튼 -->
   <div class="hb-actionPanel" aria-label="바로가기 버튼">
     <a class="hb-action" id="hbBtnCall" href="#" aria-label="전화문의">
       <span class="hb-ico" style="background-image:url('assets/btn-call.png');"></span>
@@ -132,7 +80,7 @@
 </div>
 
 <!-- =========================
-     ✅ 지점 선택 모달 (추가)
+     ✅ 지점 선택 모달
      ========================= -->
 <div class="hb-branchBackdrop" id="hbBranchBackdrop" aria-hidden="true">
   <div class="hb-modal" role="dialog" aria-modal="true" aria-label="지점 선택">
@@ -145,15 +93,27 @@
 </div>
 
 <script>
+  // =========================
+  // ✅ CONFIG
+  // =========================
   const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec".trim();
 
-  /* ==================================================
-     ✅ 리포트 수집 (CLICK 로그) - 여기만 핵심 수정
-     - action: reserve/call/kakao/more/branch_select 등
-     - branch: 지점명
-     - source: overlay/cta 등(분석용, 리포트 합산에는 영향 없음)
-     ================================================== */
+  // =========================
+  // ✅ Toast (null-safe)
+  // =========================
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(msg){
+    if(!toastEl){ alert(msg); return; }
+    toastEl.textContent = String(msg || "");
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+  }
 
+  // =========================
+  // ✅ Session + Logger
+  // =========================
   function getHBSessionId(){
     const k="HB_LANDING_SID";
     let v = localStorage.getItem(k);
@@ -167,7 +127,6 @@
     return v;
   }
 
-  // ✅ 새 로거: action 기반
   function sendClickEvent({ action, branch, source } = {}){
     const payloadObj = {
       type: "click",
@@ -190,144 +149,15 @@
       }
     }catch(e){}
 
-    fetch(GAS_WEBAPP_URL, { method:"POST", body: payload, keepalive:true }).catch(()=>{});
+    try{
+      fetch(GAS_WEBAPP_URL, { method:"POST", body: payload, keepalive:true })
+        .catch(()=>{});
+    }catch(e){}
   }
 
-  // ✅ 기존 코드 호환용(혹시 다른 곳에서 sendClick(branchName) 호출해도 깨지지 않게)
-  function sendClick(branchName){
-    sendClickEvent({ action:"reserve", branch: branchName, source:"overlay" });
-  }
-
-  // ✅ 오버레이(지점별 네이버예약) 클릭 → action="reserve" 로 통일 기록
-  document.addEventListener('click', (e)=>{
-    const a = e.target.closest('a[data-branch]');
-    if(!a) return;
-    const branchName = (a.dataset.branch || "").trim();
-    if(!branchName) return;
-
-    // 오버레이 예약 클릭은 무조건 reserve로 기록
-    sendClickEvent({ action:"reserve", branch: branchName, source:"overlay" });
-  }, true);
-
-
-  // -------------------------------
-  // 아래는 기존 코드 (유지)
-  // -------------------------------
-
-  // 토스트
-  const toast = document.getElementById('toast');
-  let toastTimer = null;
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=>toast.classList.remove('show'),2200);
-  }
-
-  // ✅ KB FIX: fixed CTA 높이를 CSS 변수로 반영(스크롤/포커스 보정에 사용)
-  function setCtaHeightVar(){
-    const cta = document.querySelector('.fixed-cta');
-    const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
-    document.documentElement.style.setProperty('--ctaH', h + 'px');
-  }
-  window.addEventListener('resize', setCtaHeightVar);
-  window.addEventListener('orientationchange', ()=> setTimeout(setCtaHeightVar, 250));
-  window.addEventListener('load', ()=> setTimeout(setCtaHeightVar, 50));
-
-  // CTA 이미지 로드 후에도 한번 더 (모바일에서 높이 변화 대응)
-  const ctaImg = document.querySelector('.cta-picture img');
-  if (ctaImg && !ctaImg.complete) ctaImg.addEventListener('load', setCtaHeightVar, { once:true });
-  setCtaHeightVar();
-
-  // ✅ KB FIX: 포커스 요소가 키보드/CTA에 가리면 자동으로 올려주는 유틸
-  (function KeyboardSafeFocus(){
-    const FORM_SECTION_SEL = '#formSection';
-
-    function isEditable(el){
-      if(!el) return false;
-      const t = (el.tagName || '').toLowerCase();
-      return t === 'input' || t === 'textarea' || t === 'select' || el.isContentEditable;
-    }
-
-    function getBottomOverlay(){
-      const cta = document.querySelector('.fixed-cta');
-      const ctaH = cta ? cta.getBoundingClientRect().height : 0;
-      return Math.max(16, Math.round(ctaH) + 16);
-    }
-
-    function ensureVisible(el){
-      if(!isEditable(el)) return;
-      if(!el.closest(FORM_SECTION_SEL)) return;
-
-      const vv = window.visualViewport;
-      const vh = vv ? vv.height : window.innerHeight;
-
-      const r = el.getBoundingClientRect();
-      const bottomSafe = vh - getBottomOverlay();
-      const topSafe = 12;
-
-      if (r.bottom > bottomSafe) {
-        const dy = (r.bottom - bottomSafe) + 12;
-        window.scrollBy({ top: dy, left: 0, behavior: 'smooth' });
-        return;
-      }
-      if (r.top < topSafe) {
-        const dy = (topSafe - r.top) + 12;
-        window.scrollBy({ top: -dy, left: 0, behavior: 'smooth' });
-        return;
-      }
-    }
-
-    function ensureVisibleTwice(el){
-      requestAnimationFrame(()=>ensureVisible(el));
-      setTimeout(()=>ensureVisible(el), 80);
-      setTimeout(()=>ensureVisible(el), 250);
-    }
-
-    document.addEventListener('focusin', (e) => {
-      ensureVisibleTwice(e.target);
-    });
-
-    if (window.visualViewport) {
-      let t = null;
-      window.visualViewport.addEventListener('resize', () => {
-        clearTimeout(t);
-        t = setTimeout(() => ensureVisibleTwice(document.activeElement), 50);
-      });
-    }
-
-    window.__ensureFormFieldVisible = ensureVisibleTwice;
-  })();
-
-  // 폼 섹션으로 이동
-  function goToForm(){
-    const sec = document.getElementById('formSection');
-    sec?.scrollIntoView({behavior:'smooth', block:'start'});
-
-    setTimeout(()=>{
-      const first = document.querySelector('.ov-name');
-      first?.focus();
-      if (first && window.__ensureFormFieldVisible) window.__ensureFormFieldVisible(first);
-    }, 450);
-  }
-
-  // ✅ 하단 CTA 클릭 → 폼 이동
-  document.querySelector('.fixed-cta-click')?.addEventListener('click', goToForm);
-
-  // 차별성 CTA → 폼 이동
-  document.querySelector('.ov-store-cta')?.addEventListener('click', goToForm);
-
-  // 연락처 자동 하이픈
-  const phone = document.querySelector('.ov-phone');
-  phone?.addEventListener('input', ()=>{
-    let n = phone.value.replace(/[^0-9]/g,'').slice(0,11);
-    phone.value =
-      n.length < 4 ? n :
-      n.length < 8 ? n.slice(0,3)+'-'+n.slice(3) :
-      n.slice(0,3)+'-'+n.slice(3,7)+'-'+n.slice(7);
-  });
-
-  // 지점 12개
+  // =========================
+  // ✅ 08 네이버 예약 오버레이
+  // =========================
   const BRANCHES = [
     { key:"busan",   name:"부산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/661812" },
     { key:"centum",  name:"센텀점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1577219" },
@@ -345,6 +175,7 @@
 
   const NAVER_BASE_W = 1080;
   const NAVER_BASE_H = 937.2;
+
   const NAVER_RECTS = {
     busan:   { x: 69, y:225, w:292, h:146 },
     centum:  { x:394, y:225, w:292, h:146 },
@@ -369,6 +200,9 @@
     a.setAttribute("data-branch", branch.name);
     a.setAttribute("aria-label", `${branch.name} 네이버 예약`);
     a.dataset.x = rect.x; a.dataset.y = rect.y; a.dataset.w = rect.w; a.dataset.h = rect.h;
+    a.addEventListener('click', ()=>{
+      sendClickEvent({ action:"reserve", branch: branch.name, source:"overlay" });
+    }, { capture:true });
     return a;
   }
 
@@ -379,7 +213,6 @@
     btn.setAttribute("aria-label", `${branch.name} 오픈 준비중`);
     btn.dataset.x = rect.x; btn.dataset.y = rect.y; btn.dataset.w = rect.w; btn.dataset.h = rect.h;
 
-    // 오픈 준비중은 클릭 집계(원하면 유지)
     btn.addEventListener('click', ()=>{
       showToast('오픈 준비중입니다.');
       sendClickEvent({ action:"coming", branch: branch.name, source:"overlay" });
@@ -414,9 +247,6 @@
         el.style.top    = (y * sy) + "px";
         el.style.width  = (w * sx) + "px";
         el.style.height = (h * sy) + "px";
-        el.style.background = "transparent";
-        el.style.border = "none";
-        el.style.cursor = "pointer";
       });
     };
 
@@ -425,30 +255,25 @@
   }
 
   function buildOverlays(){
-    const naverWrap  = document.getElementById('naverOverlay');
-    if(naverWrap) naverWrap.innerHTML  = "";
+    const wrap = document.getElementById('naverOverlay');
+    if(!wrap) return;
+    wrap.innerHTML = "";
 
     BRANCHES.forEach(b=>{
-      if(!naverWrap) return;
       const r = NAVER_RECTS[b.key];
       if(!r) return;
-      naverWrap.appendChild(b.status === "open" ? makeLink(b, r) : makeComing(b, r));
+      wrap.appendChild(b.status === "open" ? makeLink(b, r) : makeComing(b, r));
     });
 
-    applyRectsForSection('.naver-grid',  NAVER_BASE_W, NAVER_BASE_H);
+    applyRectsForSection('.naver-grid', NAVER_BASE_W, NAVER_BASE_H);
   }
 
-  window.addEventListener('resize', ()=>{
-    applyRectsForSection('.naver-grid',  NAVER_BASE_W, NAVER_BASE_H);
-  });
-
-  // start
+  window.addEventListener('resize', ()=> applyRectsForSection('.naver-grid', NAVER_BASE_W, NAVER_BASE_H));
   buildOverlays();
 
-  /* ==================================================
-     ✅ Hanbeam Fixed CTA Logic (ADD ONLY)
-     - 리포트는 action/branch로 통일 기록
-     ================================================== */
+  // =========================
+  // ✅ Hanbeam Fixed CTA Logic
+  // =========================
   (function(){
     const HB_CTA_BRANCHES = [
       { name:"부산점",     phone:"051.634.2325", reserve:"https://m.booking.naver.com/booking/6/bizes/661812",  kakao:"https://open.kakao.com/o/soq7Ns4d" },
@@ -463,9 +288,6 @@
       { name:"울산점",     phone:"010.9807.2325", reserve:"https://booking.naver.com/booking/6/bizes/1534767", kakao:"https://open.kakao.com/o/sKjCbA0h" },
       { name:"대구점",     phone:"010-8492-2328", reserve:"https://m.place.naver.com/place/2043617700/ticket?entry=pll&bk_query=%ED%95%9C%EB%B9%94%ED%95%9C%EB%B3%B5", kakao:null }
     ];
-
-    const toastFallback = (msg)=> alert(msg);
-    const safeToast = (typeof window.showToast === "function") ? window.showToast : toastFallback;
 
     const state = { branch: null };
 
@@ -500,10 +322,7 @@
     function selectBranch(b){
       state.branch = b;
       branchText.textContent = `${b.name} 선택됨 (변경하려면 클릭)`;
-
-      // ✅ 지점 선택도 찍고 싶으면 유지 / 원치 않으면 아래 1줄 주석 처리
       sendClickEvent({ action:"branch_select", branch:b.name, source:"cta" });
-
       closeModal();
     }
 
@@ -532,7 +351,6 @@
     closeBtn.addEventListener("click", closeModal);
     bd.addEventListener("click", (e)=>{ if(e.target === bd) closeModal(); });
 
-    // ✅ CTA: 전화
     btnCall.addEventListener("click", (e)=>{
       e.preventDefault();
       if(requireBranchOrOpen(e)) return;
@@ -544,14 +362,13 @@
       window.location.href = telHref;
     });
 
-    // ✅ CTA: 카톡
     btnKakao.addEventListener("click", (e)=>{
       e.preventDefault();
       if(requireBranchOrOpen(e)) return;
 
       const href = state.branch.kakao;
       if(!href){
-        safeToast("준비중입니다.");
+        showToast("준비중입니다.");
         sendClickEvent({ action:"kakao_pending", branch:state.branch.name, source:"cta" });
         return;
       }
@@ -559,7 +376,6 @@
       window.open(href, "_blank", "noopener,noreferrer");
     });
 
-    // ✅ CTA: 네이버예약 (오버레이 예약과 "동일 action=reserve"로 기록 → 리포트 합산)
     btnReserve.addEventListener("click", (e)=>{
       e.preventDefault();
       if(requireBranchOrOpen(e)) return;
@@ -571,12 +387,11 @@
       window.open(href, "_blank", "noopener,noreferrer");
     });
 
-    // ✅ CTA: 더 알아보기
     btnMore.addEventListener("click", ()=>{
       sendClickEvent({ action:"more", branch:(state.branch?.name || ""), source:"cta" });
     });
 
-    // ✅ 기존 로직이 --ctaH를 쓰고 있어서, 우리 CTA 높이도 반영
+    // ✅ CTA 높이를 --ctaH에 반영(본문이 CTA에 가리지 않도록)
     function setHbCtaHeightVar(){
       const cta = document.getElementById("hbFixedCta");
       const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
