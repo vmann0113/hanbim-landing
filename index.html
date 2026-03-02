@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>한빔한복 무료상담</title>
-  <link rel="stylesheet" href="style.css?v=20260302-1" />
+  <link rel="stylesheet" href="style.css?v=20260302-SSOT-1" />
 </head>
 <body>
 
@@ -131,7 +131,7 @@
     const payloadObj = {
       type: "click",
       action: String(action || "").trim(),
-      branch: String(branch || "").trim(),
+      branch: String(branch || "").trim(),   // ✅ 표준 지점명만
       source: String(source || "").trim(),
       sessionId: getHBSessionId(),
       page: location.pathname || "/",
@@ -150,29 +150,79 @@
     }catch(e){}
 
     try{
-      fetch(GAS_WEBAPP_URL, { method:"POST", body: payload, keepalive:true })
-        .catch(()=>{});
+      fetch(GAS_WEBAPP_URL, { method:"POST", body: payload, keepalive:true }).catch(()=>{});
     }catch(e){}
   }
 
-  // =========================
-  // ✅ 08 네이버 예약 오버레이
-  // =========================
-  const BRANCHES = [
-    { key:"busan",   name:"부산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/661812" },
-    { key:"centum",  name:"센텀점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1577219" },
-    { key:"ulsan",   name:"울산점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1534767" },
-    { key:"gimhae",  name:"김해점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1402679" },
-    { key:"yangsan", name:"양산점",  status:"open",   url:"https://booking.naver.com/booking/13/bizes/868629" },
-    { key:"changwon",name:"창원점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/843111" },
-    { key:"masan",   name:"마산점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1526541" },
-    { key:"jinju",   name:"진주점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1485854" },
-    { key:"incheon", name:"인천점",  status:"open",   url:"https://m.booking.naver.com/booking/13/bizes/1039475" },
-    { key:"ansan",   name:"안산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1500008" },
-    { key:"daegu",   name:"대구점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1600152" },
-    { key:"pohang",  name:"포항점",  status:"coming", url:"" },
+  // =========================================================
+  // ✅ SINGLE SOURCE OF TRUTH (지점 마스터) - 오버레이/CTA/로그/리포트 공통
+  // =========================================================
+  const MASTER_BRANCHES = [
+    { key:"busan",   name:"부산점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/661812",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/661812",
+      phone:"051.634.2325", kakao:"https://open.kakao.com/o/soq7Ns4d" },
+
+    // ✅ 센텀 예약 URL을 1577219로 통일 (사고 방지)
+    { key:"centum",  name:"센텀점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1577219",
+      overlay:"https://booking.naver.com/booking/6/bizes/1577219",
+      phone:"010-3052-2325", kakao:null },
+
+    { key:"ulsan",   name:"울산점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1534767",
+      overlay:"https://booking.naver.com/booking/6/bizes/1534767",
+      phone:"010.9807.2325", kakao:"https://open.kakao.com/o/sKjCbA0h" },
+
+    { key:"gimhae",  name:"김해점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1402679",
+      overlay:"https://booking.naver.com/booking/6/bizes/1402679",
+      phone:"010.8065.2325", kakao:"https://open.kakao.com/o/sHM2wwsh" },
+
+    // ✅ 양산 868629 유지
+    { key:"yangsan", name:"양산점",  status:"open",
+      reserve:"https://booking.naver.com/booking/13/bizes/868629",
+      overlay:"https://booking.naver.com/booking/13/bizes/868629",
+      phone:"055.912.0425", kakao:"https://open.kakao.com/o/sp44Hxaf" },
+
+    { key:"changwon",name:"창원점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/843111",
+      overlay:"https://booking.naver.com/booking/6/bizes/843111",
+      phone:"055.263.2325", kakao:"https://open.kakao.com/o/sdcvbh5e" },
+
+    { key:"masan",   name:"마산점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1526541",
+      overlay:"https://booking.naver.com/booking/6/bizes/1526541",
+      phone:"010.8832.2325", kakao:"https://open.kakao.com/o/ssWvuvYh" },
+
+    { key:"jinju",   name:"진주점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/1485854",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1485854",
+      phone:"010.5654.2407", kakao:"https://open.kakao.com/o/sbxBToNh" },
+
+    { key:"incheon", name:"인천점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/13/bizes/1039475",
+      overlay:"https://m.booking.naver.com/booking/13/bizes/1039475",
+      phone:"032.283.2325", kakao:"https://open.kakao.com/o/sIrXajUf" },
+
+    { key:"ansan",   name:"안산점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/1500008",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1500008",
+      phone:"010.6591.2322", kakao:"https://open.kakao.com/o/sqRSjaRh" },
+
+    { key:"daegu",   name:"대구점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/1600152",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1600152",
+      phone:"010-8492-2328", kakao:null },
+
+    { key:"pohang",  name:"포항점",  status:"coming",
+      reserve:"", overlay:"",
+      phone:"", kakao:null }
   ];
 
+  // =========================
+  // ✅ 08 네이버 예약 오버레이 좌표
+  // =========================
   const NAVER_BASE_W = 1080;
   const NAVER_BASE_H = 937.2;
 
@@ -191,31 +241,32 @@
     pohang:  { x:719, y:734, w:292, h:146 },
   };
 
-  function makeLink(branch, rect){
+  function makeOverlayLink(b, rect){
     const a = document.createElement('a');
     a.className = "ov";
-    a.href = branch.url;
+    a.href = b.overlay || b.reserve || "#";
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    a.setAttribute("data-branch", branch.name);
-    a.setAttribute("aria-label", `${branch.name} 네이버 예약`);
+    a.setAttribute("aria-label", `${b.name} 네이버 예약`);
     a.dataset.x = rect.x; a.dataset.y = rect.y; a.dataset.w = rect.w; a.dataset.h = rect.h;
+
     a.addEventListener('click', ()=>{
-      sendClickEvent({ action:"reserve", branch: branch.name, source:"overlay" });
+      sendClickEvent({ action:"reserve", branch: b.name, source:"overlay" });
     }, { capture:true });
+
     return a;
   }
 
-  function makeComing(branch, rect){
+  function makeOverlayComing(b, rect){
     const btn = document.createElement('button');
     btn.type = "button";
     btn.className = "ov";
-    btn.setAttribute("aria-label", `${branch.name} 오픈 준비중`);
+    btn.setAttribute("aria-label", `${b.name} 오픈 준비중`);
     btn.dataset.x = rect.x; btn.dataset.y = rect.y; btn.dataset.w = rect.w; btn.dataset.h = rect.h;
 
     btn.addEventListener('click', ()=>{
       showToast('오픈 준비중입니다.');
-      sendClickEvent({ action:"coming", branch: branch.name, source:"overlay" });
+      sendClickEvent({ action:"coming", branch: b.name, source:"overlay" });
     });
 
     return btn;
@@ -259,10 +310,10 @@
     if(!wrap) return;
     wrap.innerHTML = "";
 
-    BRANCHES.forEach(b=>{
+    MASTER_BRANCHES.forEach(b=>{
       const r = NAVER_RECTS[b.key];
       if(!r) return;
-      wrap.appendChild(b.status === "open" ? makeLink(b, r) : makeComing(b, r));
+      wrap.appendChild(b.status === "open" ? makeOverlayLink(b, r) : makeOverlayComing(b, r));
     });
 
     applyRectsForSection('.naver-grid', NAVER_BASE_W, NAVER_BASE_H);
@@ -272,23 +323,9 @@
   buildOverlays();
 
   // =========================
-  // ✅ Hanbeam Fixed CTA Logic
+  // ✅ Hanbeam Fixed CTA Logic (MASTER_BRANCHES 재사용)
   // =========================
   (function(){
-    const HB_CTA_BRANCHES = [
-      { name:"부산점",     phone:"051.634.2325", reserve:"https://m.booking.naver.com/booking/6/bizes/661812",  kakao:"https://open.kakao.com/o/soq7Ns4d" },
-      { name:"부산센텀점", phone:"010-3052-2325", reserve:"https://booking.naver.com/booking/13/bizes/868629", kakao:null },
-      { name:"김해점",     phone:"010.8065.2325", reserve:"https://booking.naver.com/booking/6/bizes/1402679", kakao:"https://open.kakao.com/o/sHM2wwsh" },
-      { name:"창원점",     phone:"055.263.2325", reserve:"https://booking.naver.com/booking/6/bizes/843111",  kakao:"https://open.kakao.com/o/sdcvbh5e" },
-      { name:"양산점",     phone:"055.912.0425", reserve:"https://booking.naver.com/booking/13/bizes/868629", kakao:"https://open.kakao.com/o/sp44Hxaf" },
-      { name:"진주점",     phone:"010.5654.2407", reserve:"https://m.booking.naver.com/booking/6/bizes/1485854", kakao:"https://open.kakao.com/o/sbxBToNh" },
-      { name:"인천점",     phone:"032.283.2325", reserve:"https://m.booking.naver.com/booking/13/bizes/1039475", kakao:"https://open.kakao.com/o/sIrXajUf" },
-      { name:"안산점",     phone:"010.6591.2322", reserve:"https://m.booking.naver.com/booking/6/bizes/1500008", kakao:"https://open.kakao.com/o/sqRSjaRh" },
-      { name:"마산점",     phone:"010.8832.2325", reserve:"https://booking.naver.com/booking/6/bizes/1526541", kakao:"https://open.kakao.com/o/ssWvuvYh" },
-      { name:"울산점",     phone:"010.9807.2325", reserve:"https://booking.naver.com/booking/6/bizes/1534767", kakao:"https://open.kakao.com/o/sKjCbA0h" },
-      { name:"대구점",     phone:"010-8492-2328", reserve:"https://m.place.naver.com/place/2043617700/ticket?entry=pll&bk_query=%ED%95%9C%EB%B9%94%ED%95%9C%EB%B3%B5", kakao:null }
-    ];
-
     const state = { branch: null };
 
     function toTelHref(phone){
@@ -328,13 +365,15 @@
 
     function renderList(){
       list.innerHTML = "";
-      HB_CTA_BRANCHES.forEach(b=>{
-        const row = document.createElement("div");
-        row.className = "hb-item";
-        row.innerHTML = `<div>${b.name}</div><div class="hb-badge">선택</div>`;
-        row.addEventListener("click", ()=> selectBranch(b));
-        list.appendChild(row);
-      });
+      MASTER_BRANCHES
+        .filter(b=>b.status==="open") // coming 제외
+        .forEach(b=>{
+          const row = document.createElement("div");
+          row.className = "hb-item";
+          row.innerHTML = `<div>${b.name}</div><div class="hb-badge">선택</div>`;
+          row.addEventListener("click", ()=> selectBranch(b));
+          list.appendChild(row);
+        });
     }
 
     function requireBranchOrOpen(e){
@@ -391,7 +430,6 @@
       sendClickEvent({ action:"more", branch:(state.branch?.name || ""), source:"cta" });
     });
 
-    // ✅ CTA 높이를 --ctaH에 반영(본문이 CTA에 가리지 않도록)
     function setHbCtaHeightVar(){
       const cta = document.getElementById("hbFixedCta");
       const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
