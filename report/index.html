@@ -12,6 +12,9 @@
   <!-- ✅ Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
+  <!-- ✅ Export to Image -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     :root{
       --wine:#7A1E2C;
@@ -69,6 +72,28 @@
       outline:none;
     }
 
+    /* ===== Toggle ===== */
+    .toggleRow{
+      display:flex;
+      gap:8px;
+      margin-top:12px;
+    }
+    .toggleRow button{
+      flex:1;
+      border:var(--border);
+      background:#fff;
+      color:var(--wine);
+      border-radius:14px;
+      padding:10px 0;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+    }
+    .toggleRow button.active{
+      background:var(--wine);
+      color:#fff;
+    }
+
     /* ===== Period UI ===== */
     .sectionTitle{
       margin-top:12px;
@@ -118,9 +143,13 @@
       color:#fff;
     }
 
-    .applyBtn{
-      width:100%;
+    .btnRow{
+      display:flex;
+      gap:10px;
       margin-top:10px;
+    }
+    .applyBtn{
+      flex:1;
       border:var(--border);
       background:var(--wine);
       color:#fff;
@@ -129,6 +158,18 @@
       font-weight:900;
       font-size:14px;
       cursor:pointer;
+    }
+    .exportBtn{
+      width:120px;
+      border:var(--border);
+      background:#fff;
+      color:var(--wine);
+      border-radius:14px;
+      padding:12px 0;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      flex:0 0 120px;
     }
 
     /* ===== Chart Card ===== */
@@ -212,6 +253,98 @@
       letter-spacing:-0.8px;
       color:var(--wine);
     }
+
+    /* ===== Export Doc (hidden) ===== */
+    .exportDocWrap{
+      position:fixed;
+      left:-99999px;
+      top:0;
+      width:860px; /* 문서 느낌 */
+      background:#fff;
+      padding:28px;
+      font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+      color:#111;
+    }
+    .docHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:14px;
+    }
+    .docTitle{
+      font-size:22px;
+      font-weight:900;
+      letter-spacing:-0.6px;
+      color:var(--wine);
+      line-height:1.2;
+    }
+    .docMeta{
+      font-size:13px;
+      color:#555;
+      line-height:1.55;
+      text-align:right;
+      white-space:pre-line;
+    }
+    .docBox{
+      border:2px solid var(--wine);
+      border-radius:18px;
+      padding:18px;
+    }
+    .docChartRow{
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    .docChartCard{
+      border:2px solid var(--wine);
+      border-radius:16px;
+      padding:14px;
+      position:relative;
+      background:#fff;
+    }
+    .docChartWrap{
+      height:280px;
+      position:relative;
+    }
+    #exportChart{
+      width:100% !important;
+      height:100% !important;
+      display:block;
+    }
+    .docCards{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
+    }
+    .docMini{
+      border:2px solid var(--wine);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:132px;
+    }
+    .docMini .t{
+      font-size:13px;
+      color:#666;
+      font-weight:900;
+    }
+    .docMini .n{
+      font-size:34px;
+      color:var(--wine);
+      font-weight:900;
+      letter-spacing:-0.8px;
+    }
+    .docFooter{
+      margin-top:12px;
+      font-size:12px;
+      color:#777;
+      line-height:1.45;
+    }
   </style>
 </head>
 
@@ -220,12 +353,18 @@
     <div class="title">한빔한복 전지점 랜딩유입 리포트</div>
 
     <div class="card">
-      <!-- 2) Branch dropdown -->
+      <!-- Branch dropdown -->
       <select id="branchSelect" aria-label="지점 선택">
         <option value="전체">전체</option>
       </select>
 
-      <!-- 3) 기간 선택 + 프리셋 -->
+      <!-- ✅ 일별/월별 토글 -->
+      <div class="toggleRow" role="tablist" aria-label="리포트 기준">
+        <button type="button" data-group="day" class="active" id="btnDay">일별</button>
+        <button type="button" data-group="month" id="btnMonth">월별</button>
+      </div>
+
+      <!-- 기간 선택 + 프리셋 -->
       <div class="sectionTitle">기간 선택</div>
 
       <div class="periodRow">
@@ -239,7 +378,10 @@
         <button type="button" data-preset="3m">3개월</button>
       </div>
 
-      <button class="applyBtn" id="applyBtn" type="button">조회</button>
+      <div class="btnRow">
+        <button class="applyBtn" id="applyBtn" type="button">조회</button>
+        <button class="exportBtn" id="exportBtn" type="button">이미지 저장</button>
+      </div>
 
       <!-- Chart -->
       <div class="card chartCard">
@@ -255,11 +397,14 @@
           <canvas id="lineChart"></canvas>
         </div>
 
-
+        <div class="hint">
+          • 네이버예약(reserve)은 <b>오버레이 + CTA</b> 클릭이 합산됩니다.<br>
+          • “더 알아보기”는 지점을 선택하지 않은 경우 <b>전체</b>로 집계될 수 있습니다.
+        </div>
         <div class="error" id="errBox"></div>
       </div>
 
-      <!-- 4) Square cards (2x2) -->
+      <!-- 2x2 Square cards -->
       <div class="grid">
         <div class="card sq">
           <div class="lbl">네이버예약</div>
@@ -281,6 +426,57 @@
     </div>
   </div>
 
+  <!-- ===== Hidden Export Doc ===== -->
+  <div class="exportDocWrap" id="exportDoc">
+    <div class="docHeader">
+      <div>
+        <div class="docTitle">한빔한복 랜딩 유입 리포트</div>
+        <div style="margin-top:6px; font-size:13px; color:#444; font-weight:800;" id="exportSub">
+          지점별 클릭 요약 (일별/월별 공유용)
+        </div>
+      </div>
+      <div class="docMeta" id="exportMeta"></div>
+    </div>
+
+    <div class="docBox">
+      <div class="docChartRow">
+        <div class="docChartCard">
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
+            <div style="font-weight:900; color:var(--wine); font-size:14px;" id="exportChartLabel">기간 내 추이</div>
+            <div style="font-weight:900; color:var(--wine); font-size:16px;" id="exportTotal">0</div>
+          </div>
+          <div class="docChartWrap">
+            <canvas id="exportChart"></canvas>
+          </div>
+        </div>
+
+        <div class="docCards">
+          <div class="docMini">
+            <div class="t">네이버예약</div>
+            <div class="n" id="exportReserve">0</div>
+          </div>
+          <div class="docMini">
+            <div class="t">전화문의</div>
+            <div class="n" id="exportCall">0</div>
+          </div>
+          <div class="docMini">
+            <div class="t">카톡문의</div>
+            <div class="n" id="exportKakao">0</div>
+          </div>
+          <div class="docMini">
+            <div class="t">더 알아보기</div>
+            <div class="n" id="exportMore">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="docFooter">
+        • 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.<br>
+        • 생성일시/기간/지점/기준(일별/월별)이 포함되어 지점별 월별 보고에 바로 사용 가능합니다.
+      </div>
+    </div>
+  </div>
+
 <script>
   /** ✅ 너 WebApp /exec URL */
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
@@ -292,6 +488,11 @@
 
   const $ = (id)=>document.getElementById(id);
 
+  const state = {
+    group: "day",   // day|month
+    lastData: null
+  };
+
   function fmt(n){
     try{ return Number(n||0).toLocaleString("ko-KR"); }catch(e){ return String(n||0); }
   }
@@ -301,6 +502,13 @@
     const m = String(d.getMonth()+1).padStart(2,"0");
     const da = String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
+  }
+
+  function setGroupActive(group){
+    state.group = group;
+    document.querySelectorAll(".toggleRow button").forEach(b=>{
+      b.classList.toggle("active", b.dataset.group === group);
+    });
   }
 
   function setPresetActive(preset){
@@ -361,17 +569,17 @@
     });
   }
 
-  async function fetchReport({branch="전체", from, to}){
+  async function fetchReport({branch="전체", from, to, group="day"}){
     const url =
       `${GAS_URL}?page=report` +
       `&branch=${encodeURIComponent(branch)}` +
-      `&group=day` +
+      `&group=${encodeURIComponent(group)}` +
       `&from=${encodeURIComponent(from)}` +
       `&to=${encodeURIComponent(to)}`;
     return await loadJsonp(url);
   }
 
-  // Chart
+  // Chart (screen)
   let chart = null;
   function renderChart(labels, values){
     const ctx = $("lineChart").getContext("2d");
@@ -387,8 +595,8 @@
           borderColor: "#7A1E2C",
           backgroundColor: "rgba(122,30,44,0.15)",
           tension: 0.35,
-          pointRadius: 2,
-          pointHoverRadius: 4
+          pointRadius: (state.group === "month") ? 0 : 2,
+          pointHoverRadius: (state.group === "month") ? 0 : 4
         }]
       },
       options: {
@@ -407,6 +615,39 @@
             ticks: { color: "#7A1E2C" },
             grid: { color: "rgba(122,30,44,0.10)" }
           }
+        }
+      }
+    });
+  }
+
+  // Chart (export doc)
+  let exportChart = null;
+  function renderExportChart(labels, values){
+    const ctx = $("exportChart").getContext("2d");
+    if(exportChart) exportChart.destroy();
+
+    exportChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "클릭",
+          data: values,
+          borderColor: "#7A1E2C",
+          backgroundColor: "rgba(122,30,44,0.12)",
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: { legend: { display:false } },
+        scales: {
+          x: { ticks: { maxRotation: 0, autoSkip: true }, grid: { color:"rgba(122,30,44,0.08)" } },
+          y: { ticks: { autoSkip: true }, grid: { color:"rgba(122,30,44,0.08)" } }
         }
       }
     });
@@ -440,9 +681,11 @@
     const { from, to } = getRangeSafe();
 
     try{
-      const data = await fetchReport({ branch, from, to });
+      const data = await fetchReport({ branch, from, to, group: state.group });
+      state.lastData = data;
 
-      $("metaTitle").textContent = (data.branch || branch);
+      const gLabel = (state.group === "month") ? "월별" : "일별";
+      $("metaTitle").textContent = `${data.branch || branch} · ${gLabel}`;
       $("metaRange").textContent = (data.range?.from && data.range?.to)
         ? `${data.range.from} ~ ${data.range.to}`
         : `${from} ~ ${to}`;
@@ -455,6 +698,7 @@
 
       renderChart(data.labels || [], data.values || []);
     }catch(err){
+      state.lastData = null;
       showError("리포트 로드 실패\n" + (err?.message || String(err)));
       $("metaTotal").textContent = "0";
       $("cardReserve").textContent = "0";
@@ -463,6 +707,64 @@
       $("cardMore").textContent = "0";
       renderChart([], []);
     }
+  }
+
+  function safeFileName(branch, from, to, group){
+    const b = String(branch || "전체").replace(/\s+/g,"");
+    const g = (group === "month") ? "month" : "day";
+    return `hanbeam_report_${b}_${g}_${from}_${to}.png`;
+  }
+
+  async function exportAsImage(){
+    // 데이터가 없으면 먼저 조회
+    if(!state.lastData){
+      await refresh();
+      if(!state.lastData){
+        alert("리포트를 먼저 조회해 주세요.");
+        return;
+      }
+    }
+
+    const branch = $("branchSelect").value || "전체";
+    const { from, to } = getRangeSafe();
+    const group = state.group;
+
+    const now = new Date();
+    const generatedAt = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+    const gLabel = (group === "month") ? "월별" : "일별";
+    $("exportSub").textContent = `지점별 클릭 요약 (${gLabel} 공유용)`;
+    $("exportChartLabel").textContent = `기간 내 추이 (${gLabel})`;
+
+    $("exportMeta").textContent =
+      `지점: ${branch}\n기준: ${gLabel}\n기간: ${from} ~ ${to}\n생성: ${generatedAt}`;
+
+    // 수치 반영
+    $("exportTotal").textContent   = fmt(state.lastData.cards?.total || 0);
+    $("exportReserve").textContent = fmt(state.lastData.cards?.reserve || 0);
+    $("exportCall").textContent    = fmt(state.lastData.cards?.call || 0);
+    $("exportKakao").textContent   = fmt(state.lastData.cards?.kakao || 0);
+    $("exportMore").textContent    = fmt(state.lastData.cards?.more || 0);
+
+    // export 차트 렌더
+    renderExportChart(state.lastData.labels || [], state.lastData.values || []);
+
+    await new Promise(r=>setTimeout(r, 120));
+
+    const node = $("exportDoc");
+
+    const canvas = await html2canvas(node, {
+      backgroundColor: "#ffffff",
+      scale: 2,
+      useCORS: true
+    });
+
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = safeFileName(branch, from, to, group);
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 
   function init(){
@@ -477,9 +779,18 @@
 
     // 기본 7일
     applyPreset("7d");
+    setGroupActive("day");
 
     // 이벤트
     sel.addEventListener("change", refresh);
+
+    // 토글
+    document.querySelectorAll(".toggleRow button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        setGroupActive(btn.dataset.group);
+        refresh();
+      });
+    });
 
     document.querySelectorAll(".presetRow button").forEach(btn=>{
       btn.addEventListener("click", ()=>{
@@ -492,6 +803,7 @@
     $("toDate").addEventListener("change", clearPresetActive);
 
     $("applyBtn").addEventListener("click", refresh);
+    $("exportBtn").addEventListener("click", exportAsImage);
 
     refresh();
   }
