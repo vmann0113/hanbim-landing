@@ -22,6 +22,12 @@
       --border:2px solid var(--wine);
       --softBorder:1px solid rgba(122,30,44,0.25);
       --shadow:0 8px 20px rgba(20,10,10,0.06);
+
+      /* ✅ 버튼/카드 높이 줄이기용 */
+      --btnPadY:6px;     /* 기존 대비 약 60% */
+      --btnPadY2:7px;    /* 조회/저장 */
+      --inputPadY:10px;  /* date/select */
+      --cardPad:12px;    /* 카드 패딩 감소 */
     }
     *{ box-sizing:border-box; }
     body{
@@ -33,7 +39,6 @@
       text-rendering:optimizeLegibility;
     }
 
-    /* ✅ 기존 느낌 유지: 폭/여백만 살짝 다듬음 */
     .wrap{ max-width:520px; margin:0 auto; padding:0 16px 28px; }
 
     .title{
@@ -55,7 +60,6 @@
       padding:var(--pad);
     }
 
-    /* ✅ 인풋/셀렉트 미세 개선: 눌림감/정렬 */
     select{
       width:100%;
       appearance:none;
@@ -63,23 +67,23 @@
       color:var(--text);
       border:var(--border);
       border-radius:14px;
-      padding:14px;
+      padding:var(--inputPadY) 14px;
       font-size:15px;
       font-weight:800;
       outline:none;
       box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
     }
 
-    .toggleRow{ display:flex; gap:8px; margin-top:12px; }
+    .toggleRow{ display:flex; gap:8px; margin-top:10px; }
     .toggleRow button{
       flex:1;
       border:var(--border);
       background:#fff;
       color:var(--wine);
       border-radius:14px;
-      padding:10px 0;
+      padding:var(--btnPadY) 0;   /* ✅ 높이 축소 */
       font-weight:900;
-      font-size:14px;
+      font-size:13px;
       cursor:pointer;
       transition:transform .06s ease, filter .12s ease;
     }
@@ -87,21 +91,21 @@
     .toggleRow button.active{ background:var(--wine); color:#fff; }
 
     .sectionTitle{
-      margin-top:12px;
+      margin-top:10px;
       font-size:13px;
       font-weight:900;
       letter-spacing:-0.2px;
       color:var(--wine);
     }
 
-    .periodRow{ display:flex; gap:10px; margin-top:10px; }
+    .periodRow{ display:flex; gap:10px; margin-top:8px; }
     .periodRow input[type="date"]{
       flex:1;
       width:100%;
       border:var(--border);
       border-radius:14px;
-      padding:12px 12px;
-      font-size:14px;
+      padding:var(--inputPadY) 12px; /* ✅ 높이 축소 */
+      font-size:13px;
       font-weight:900;
       outline:none;
       background:#fff;
@@ -110,32 +114,32 @@
       box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
     }
 
-    .presetRow{ display:flex; gap:8px; margin-top:10px; }
+    .presetRow{ display:flex; gap:8px; margin-top:8px; }
     .presetRow button{
       flex:1;
       border:var(--border);
       background:#fff;
       color:var(--wine);
       border-radius:14px;
-      padding:10px 0;
+      padding:var(--btnPadY) 0;   /* ✅ 높이 축소 */
       font-weight:900;
-      font-size:14px;
+      font-size:13px;
       cursor:pointer;
       transition:transform .06s ease, filter .12s ease;
     }
     .presetRow button:active{ transform:translateY(1px); filter:brightness(0.99); }
     .presetRow button.active{ background:var(--wine); color:#fff; }
 
-    .btnRow{ display:flex; gap:10px; margin-top:10px; }
+    .btnRow{ display:flex; gap:10px; margin-top:8px; }
     .applyBtn{
       flex:1;
       border:var(--border);
       background:var(--wine);
       color:#fff;
       border-radius:14px;
-      padding:12px 0;
+      padding:var(--btnPadY2) 0;  /* ✅ 높이 축소 */
       font-weight:900;
-      font-size:14px;
+      font-size:13px;
       cursor:pointer;
       transition:transform .06s ease, filter .12s ease;
     }
@@ -147,18 +151,17 @@
       background:#fff;
       color:var(--wine);
       border-radius:14px;
-      padding:12px 0;
+      padding:var(--btnPadY2) 0;  /* ✅ 높이 축소 */
       font-weight:900;
-      font-size:14px;
+      font-size:13px;
       cursor:pointer;
       flex:0 0 120px;
       transition:transform .06s ease, filter .12s ease;
     }
     .exportBtn:active{ transform:translateY(1px); filter:brightness(0.99); }
 
-    /* ✅ 차트 카드: 기존 구조 유지 + 안쪽 카드만 ‘부드럽게’ */
-    .chartCard{ margin-top:14px; border-color:rgba(122,30,44,0.75); }
-    .meta{ display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:10px; }
+    .chartCard{ margin-top:12px; border-color:rgba(122,30,44,0.75); }
+    .meta{ display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:8px; }
     .meta .left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
     .meta .big{
       font-size:16px;
@@ -171,7 +174,6 @@
     }
     .meta .small{ font-size:12px; color:var(--muted); }
 
-    /* ✅ 차트 영역만 미세 업그레이드 */
     .chartWrap{
       height:290px;
       position:relative;
@@ -184,12 +186,19 @@
 
     .error{ color:#c0392b; font-size:13px; margin-top:10px; white-space:pre-wrap; display:none; }
 
-    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
-    .sq{ aspect-ratio:1/1; display:flex; flex-direction:column; justify-content:space-between; }
+    /* ✅ 카드 4개: 불필요 높이 제거 (정사각 비율 제거 + 패딩 축소) */
+    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px; }
+    .sq{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:var(--cardPad); /* ✅ 내부 패딩 감소 */
+      min-height:120px;       /* ✅ 과도한 높이 제거 */
+    }
     .lbl{ font-size:13px; font-weight:900; color:var(--muted); letter-spacing:-0.2px; }
-    .val{ font-size:30px; font-weight:900; letter-spacing:-0.8px; color:var(--wine); }
+    .val{ font-size:28px; font-weight:900; letter-spacing:-0.8px; color:var(--wine); }
 
-    /* Export doc (원본 유지) */
+    /* Export doc */
     .exportDocWrap{
       position:fixed; left:-99999px; top:0; width:860px;
       background:#fff; padding:28px;
@@ -213,7 +222,7 @@
     @media (min-width: 900px){
       .wrap{ max-width: 980px; }
       .grid{ grid-template-columns:repeat(4,1fr); }
-      .sq{ aspect-ratio:auto; min-height:140px; }
+      .sq{ min-height:110px; }
       .chartWrap{ height: 360px; }
     }
   </style>
@@ -247,7 +256,7 @@
 
       <div class="btnRow">
         <button class="applyBtn" id="applyBtn" type="button">조회</button>
-        <button class="exportBtn" id="exportBtn" type="button">이미지 저장</button>
+        <button class="exportBtn" id="exportBtn" type="button">리포트 저장</button>
       </div>
 
       <div class="card chartCard">
@@ -324,14 +333,16 @@
 <script>
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
 
+  // ✅ 지점 이름은 고정(0이어도 반드시 포함)
   const BRANCHES = [
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
+  // ✅ 컬러 구분: 파랑/빨강/초록 (막대 + 선그래프 공통)
   const COLORS = {
-    reserve: { border: "#7A1E2C", fill: "rgba(122,30,44,0.25)" },
-    call:    { border: "#B04A57", fill: "rgba(176,74,87,0.25)" },
-    kakao:   { border: "#D28A5A", fill: "rgba(210,138,90,0.25)" }
+    reserve: { border: "#1F5EFF", fill: "rgba(31,94,255,0.22)" },   // Blue
+    call:    { border: "#E03131", fill: "rgba(224,49,49,0.22)" },   // Red
+    kakao:   { border: "#2F9E44", fill: "rgba(47,158,68,0.22)" }    // Green
   };
 
   const $ = (id)=>document.getElementById(id);
@@ -342,6 +353,26 @@
   function dateISO(d){
     const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), da=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
+  }
+
+  function parseISODateLocal(ymd){
+    const s = String(ymd||"").trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+    const [y,m,d]=s.split("-").map(Number);
+    return new Date(y, m-1, d, 0,0,0,0);
+  }
+
+  function toYmd(d){
+    const y=d.getFullYear();
+    const m=String(d.getMonth()+1).padStart(2,"0");
+    const da=String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${da}`;
+  }
+
+  function toYm(d){
+    const y=d.getFullYear();
+    const m=String(d.getMonth()+1).padStart(2,"0");
+    return `${y}-${m}`;
   }
 
   function shortBranchName(name){
@@ -422,6 +453,80 @@
     $("cardCall").textContent = fmt(c.call||0);
     $("cardKakao").textContent = fmt(c.kakao||0);
     $("cardMore").textContent = fmt(c.more||0);
+  }
+
+  /* ✅ (2) 전체 비교: 지점 0이어도 항상 보이게 고정 라벨/시리즈 만들기 */
+  function fillAllCompareToFixedBranches(data){
+    const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
+    const s = data?.series || {};
+    const map = {}; // branch -> {reserve, call, kakao}
+    labelsIn.forEach((b, i)=>{
+      map[b] = {
+        reserve: Number(s.reserve?.[i] || 0),
+        call:   Number(s.call?.[i] || 0),
+        kakao:  Number(s.kakao?.[i] || 0)
+      };
+    });
+
+    const fixedLabels = BRANCHES.slice();
+    const outSeries = { reserve:[], call:[], kakao:[] };
+
+    fixedLabels.forEach(b=>{
+      outSeries.reserve.push(map[b]?.reserve || 0);
+      outSeries.call.push(map[b]?.call || 0);
+      outSeries.kakao.push(map[b]?.kakao || 0);
+    });
+
+    return { labels: fixedLabels, series: outSeries };
+  }
+
+  /* ✅ (6) 지점 추이: 조회기간 전체 날짜/월을 생성하고 0 채우기 */
+  function fillTrendToFullRange(data, fromYmd, toYmd, group){
+    const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
+    const s = data?.series || {};
+    const map = {}; // key(yyyy-mm-dd or yyyy-mm) -> {reserve,call,kakao}
+    labelsIn.forEach((k, i)=>{
+      map[k] = {
+        reserve: Number(s.reserve?.[i] || 0),
+        call:   Number(s.call?.[i] || 0),
+        kakao:  Number(s.kakao?.[i] || 0)
+      };
+    });
+
+    const fromD = parseISODateLocal(fromYmd);
+    const toD   = parseISODateLocal(toYmd);
+    if(!fromD || !toD) return { labels: labelsIn, series: {reserve:s.reserve||[], call:s.call||[], kakao:s.kakao||[]} };
+
+    const grp = (String(group||"day").toLowerCase()==="month") ? "month" : "day";
+
+    const labelsOut = [];
+    const outSeries = { reserve:[], call:[], kakao:[] };
+
+    if(grp==="day"){
+      const cur = new Date(fromD.getTime());
+      while(cur.getTime() <= toD.getTime()){
+        const k = toYmd(cur);
+        labelsOut.push(k);
+        outSeries.reserve.push(map[k]?.reserve || 0);
+        outSeries.call.push(map[k]?.call || 0);
+        outSeries.kakao.push(map[k]?.kakao || 0);
+        cur.setDate(cur.getDate()+1);
+      }
+    }else{
+      // month
+      const cur = new Date(fromD.getFullYear(), fromD.getMonth(), 1, 0,0,0,0);
+      const end = new Date(toD.getFullYear(), toD.getMonth(), 1, 0,0,0,0);
+      while(cur.getTime() <= end.getTime()){
+        const k = toYm(cur);
+        labelsOut.push(k);
+        outSeries.reserve.push(map[k]?.reserve || 0);
+        outSeries.call.push(map[k]?.call || 0);
+        outSeries.kakao.push(map[k]?.kakao || 0);
+        cur.setMonth(cur.getMonth()+1);
+      }
+    }
+
+    return { labels: labelsOut, series: outSeries };
   }
 
   const ValueLabelPlugin = {
@@ -658,7 +763,21 @@
     const {from,to}=getRangeSafe();
 
     try{
-      const data = await fetchReport({ branch, from, to, group: state.group });
+      const dataRaw = await fetchReport({ branch, from, to, group: state.group });
+
+      // ✅ 여기서 “0 채우기”와 “지점 고정”을 프론트에서 보정
+      let data = JSON.parse(JSON.stringify(dataRaw || {}));
+
+      if(data.mode === "all_compare"){
+        const fixed = fillAllCompareToFixedBranches(data);
+        data.labels = fixed.labels;
+        data.series = fixed.series;
+      }else{
+        const filled = fillTrendToFullRange(data, from, to, state.group);
+        data.labels = filled.labels;
+        data.series = filled.series;
+      }
+
       state.lastData=data;
 
       const gLabel=(state.group==="month")?"월별":"일별";
