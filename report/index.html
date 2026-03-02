@@ -23,6 +23,7 @@
       --softBorder:1px solid rgba(122,30,44,0.25);
       --shadow:0 8px 20px rgba(20,10,10,0.06);
 
+      /* ✅ 버튼/카드 높이 줄이기 */
       --btnPadY:6px;
       --btnPadY2:7px;
       --inputPadY:10px;
@@ -39,87 +40,45 @@
     }
     .wrap{ max-width:520px; margin:0 auto; padding:0 16px 28px; }
     .title{
-      background:var(--wine);
-      color:#fff;
-      padding:18px 16px;
-      font-size:18px;
-      font-weight:800;
-      letter-spacing:-0.4px;
-      border-bottom-left-radius:20px;
-      border-bottom-right-radius:20px;
+      background:var(--wine); color:#fff; padding:18px 16px;
+      font-size:18px; font-weight:800; letter-spacing:-0.4px;
+      border-bottom-left-radius:20px; border-bottom-right-radius:20px;
       margin:0 -16px 16px;
     }
-    .card{
-      background:#fff;
-      border:var(--border);
-      border-radius:var(--radius);
-      padding:var(--pad);
-    }
+    .card{ background:#fff; border:var(--border); border-radius:var(--radius); padding:var(--pad); }
+
     select{
-      width:100%;
-      appearance:none;
-      background:#fff;
-      color:var(--text);
-      border:var(--border);
-      border-radius:14px;
-      padding:var(--inputPadY) 14px;
-      font-size:15px;
-      font-weight:800;
-      outline:none;
+      width:100%; appearance:none; background:#fff; color:var(--text);
+      border:var(--border); border-radius:14px; padding:var(--inputPadY) 14px;
+      font-size:15px; font-weight:800; outline:none;
       box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
     }
 
     .toggleRow{ display:flex; gap:8px; margin-top:10px; }
     .toggleRow button{
-      flex:1;
-      border:var(--border);
-      background:#fff;
-      color:var(--wine);
-      border-radius:14px;
-      padding:var(--btnPadY) 0;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
+      flex:1; border:var(--border); background:#fff; color:var(--wine);
+      border-radius:14px; padding:var(--btnPadY) 0;
+      font-weight:900; font-size:13px; cursor:pointer;
       transition:transform .06s ease, filter .12s ease;
     }
     .toggleRow button:active{ transform:translateY(1px); filter:brightness(0.99); }
     .toggleRow button.active{ background:var(--wine); color:#fff; }
 
-    .sectionTitle{
-      margin-top:10px;
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:-0.2px;
-      color:var(--wine);
-    }
+    .sectionTitle{ margin-top:10px; font-size:13px; font-weight:900; letter-spacing:-0.2px; color:var(--wine); }
 
     .periodRow{ display:flex; gap:10px; margin-top:8px; }
     .periodRow input[type="date"]{
-      flex:1;
-      width:100%;
-      border:var(--border);
-      border-radius:14px;
-      padding:var(--inputPadY) 12px;
-      font-size:13px;
-      font-weight:900;
-      outline:none;
-      background:#fff;
-      color:var(--text);
-      min-width:0;
+      flex:1; width:100%; border:var(--border); border-radius:14px;
+      padding:var(--inputPadY) 12px; font-size:13px; font-weight:900; outline:none;
+      background:#fff; color:var(--text); min-width:0;
       box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
     }
 
     .presetRow{ display:flex; gap:8px; margin-top:8px; }
     .presetRow button{
-      flex:1;
-      border:var(--border);
-      background:#fff;
-      color:var(--wine);
-      border-radius:14px;
-      padding:var(--btnPadY) 0;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
+      flex:1; border:var(--border); background:#fff; color:var(--wine);
+      border-radius:14px; padding:var(--btnPadY) 0;
+      font-weight:900; font-size:13px; cursor:pointer;
       transition:transform .06s ease, filter .12s ease;
     }
     .presetRow button:active{ transform:translateY(1px); filter:brightness(0.99); }
@@ -127,30 +86,17 @@
 
     .btnRow{ display:flex; gap:10px; margin-top:8px; }
     .applyBtn{
-      flex:1;
-      border:var(--border);
-      background:var(--wine);
-      color:#fff;
-      border-radius:14px;
-      padding:var(--btnPadY2) 0;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
+      flex:1; border:var(--border); background:var(--wine); color:#fff;
+      border-radius:14px; padding:var(--btnPadY2) 0;
+      font-weight:900; font-size:13px; cursor:pointer;
       transition:transform .06s ease, filter .12s ease;
     }
     .applyBtn:active{ transform:translateY(1px); filter:brightness(0.99); }
 
     .exportBtn{
-      width:120px;
-      border:var(--border);
-      background:#fff;
-      color:var(--wine);
-      border-radius:14px;
-      padding:var(--btnPadY2) 0;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
-      flex:0 0 120px;
+      width:120px; border:var(--border); background:#fff; color:var(--wine);
+      border-radius:14px; padding:var(--btnPadY2) 0;
+      font-weight:900; font-size:13px; cursor:pointer; flex:0 0 120px;
       transition:transform .06s ease, filter .12s ease;
     }
     .exportBtn:active{ transform:translateY(1px); filter:brightness(0.99); }
@@ -159,42 +105,28 @@
     .meta{ display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:8px; }
     .meta .left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
     .meta .big{
-      font-size:16px;
-      font-weight:900;
-      letter-spacing:-0.4px;
-      color:var(--wine);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      font-size:16px; font-weight:900; letter-spacing:-0.4px; color:var(--wine);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
     .meta .small{ font-size:12px; color:var(--muted); }
 
     .chartWrap{
-      height:290px;
-      position:relative;
-      border-radius:14px;
-      overflow:hidden;
+      height:290px; position:relative;
+      border-radius:14px; overflow:hidden;
       border:var(--softBorder);
       box-shadow:var(--shadow);
     }
     canvas#lineChart{ width:100% !important; height:100% !important; display:block; }
 
     .error{
-      color:#c0392b;
-      font-size:12px;
-      margin-top:10px;
-      white-space:pre-wrap;
-      display:none;
+      color:#c0392b; font-size:12px; margin-top:10px; white-space:pre-wrap; display:none;
       border:1px dashed rgba(192,57,43,0.35);
-      border-radius:12px;
-      padding:10px 12px;
+      border-radius:12px; padding:10px 12px;
     }
 
     .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px; }
     .sq{
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
+      display:flex; flex-direction:column; justify-content:space-between;
       padding:var(--cardPad);
       min-height:120px;
     }
@@ -336,10 +268,12 @@
 <script>
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
 
+  // ✅ 지점 이름 고정(0이어도 반드시 포함)
   const BRANCHES = [
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
+  // ✅ 컬러 구분: 파랑/빨강/초록 (막대 + 선 공통)
   const COLORS = {
     reserve: { border: "#1F5EFF", fill: "rgba(31,94,255,0.22)" },   // Blue
     call:    { border: "#E03131", fill: "rgba(224,49,49,0.22)" },   // Red
@@ -355,20 +289,21 @@
     const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), da=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
   }
-
-  function parseISODateLocal(ymd){
+  function parseISODateLocal_(ymd){
     const s = String(ymd||"").trim();
     if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
     const [y,m,d]=s.split("-").map(Number);
     return new Date(y, m-1, d, 0,0,0,0);
   }
-  function toYmd(d){
+
+  // ✅ 충돌 방지용: 키 생성 함수명 변경
+  function ymdKey_(d){
     const y=d.getFullYear();
     const m=String(d.getMonth()+1).padStart(2,"0");
     const da=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
   }
-  function toYm(d){
+  function ymKey_(d){
     const y=d.getFullYear();
     const m=String(d.getMonth()+1).padStart(2,"0");
     return `${y}-${m}`;
@@ -398,10 +333,7 @@
       b.classList.toggle("active", b.dataset.preset===preset);
     });
   }
-
-  function clearPresetActive(){
-    document.querySelectorAll(".presetRow button").forEach(b=>b.classList.remove("active"));
-  }
+  function clearPresetActive(){ document.querySelectorAll(".presetRow button").forEach(b=>b.classList.remove("active")); }
 
   function setGroup(group){
     state.group = group;
@@ -427,7 +359,7 @@
     b.textContent="";
   }
 
-  // ✅ 전역 에러도 errBox에 노출 (디버깅용)
+  // 디버그용 전역 에러 노출
   window.addEventListener("error", (e)=>{
     const msg = [
       "프론트 에러 감지",
@@ -437,7 +369,6 @@
     ].filter(Boolean).join("\n");
     showError(msg);
   });
-
   window.addEventListener("unhandledrejection", (e)=>{
     const reason = e?.reason;
     const msg = [
@@ -457,7 +388,8 @@
     $("cardMore").textContent = fmt(c.more||0);
   }
 
-  function fillAllCompareToFixedBranches(data){
+  // ✅ (2) 전체 비교: 지점 0이어도 항상 보이게
+  function fillAllCompareToFixedBranches_(data){
     const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
     const s = data?.series || {};
     const map = {};
@@ -481,7 +413,8 @@
     return { labels: fixedLabels, series: outSeries };
   }
 
-  function fillTrendToFullRange(data, fromYmd, toYmd, group){
+  // ✅ (6) 지점 추이: 조회기간 전체 날짜/월을 생성하고 0 채우기
+  function fillTrendToFullRange_(data, fromYmd, toYmd, group){
     const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
     const s = data?.series || {};
     const map = {};
@@ -493,8 +426,8 @@
       };
     });
 
-    const fromD = parseISODateLocal(fromYmd);
-    const toD   = parseISODateLocal(toYmd);
+    const fromD = parseISODateLocal_(fromYmd);
+    const toD   = parseISODateLocal_(toYmd);
     if(!fromD || !toD){
       return { labels: labelsIn, series: {reserve:s.reserve||[], call:s.call||[], kakao:s.kakao||[]} };
     }
@@ -506,7 +439,7 @@
     if(grp==="day"){
       const cur = new Date(fromD.getTime());
       while(cur.getTime() <= toD.getTime()){
-        const k = toYmd(cur);
+        const k = ymdKey_(cur);
         labelsOut.push(k);
         outSeries.reserve.push(map[k]?.reserve || 0);
         outSeries.call.push(map[k]?.call || 0);
@@ -517,7 +450,7 @@
       const cur = new Date(fromD.getFullYear(), fromD.getMonth(), 1, 0,0,0,0);
       const end = new Date(toD.getFullYear(), toD.getMonth(), 1, 0,0,0,0);
       while(cur.getTime() <= end.getTime()){
-        const k = toYm(cur);
+        const k = ymKey_(cur);
         labelsOut.push(k);
         outSeries.reserve.push(map[k]?.reserve || 0);
         outSeries.call.push(map[k]?.call || 0);
@@ -529,7 +462,7 @@
     return { labels: labelsOut, series: outSeries };
   }
 
-  // ✅ JSONP 강화: 타임아웃/캐시버스터/정확한 실패 메시지
+  // JSONP (타임아웃/캐시버스터)
   function loadJsonp(url){
     return new Promise((resolve,reject)=>{
       const cb="__hb_cb_"+Math.random().toString(16).slice(2);
@@ -587,8 +520,7 @@
     id: "hb_value_labels",
     afterDatasetsDraw(chart, args, pluginOptions){
       const { ctx } = chart;
-      const type = chart.config.type;
-      if(type !== "bar") return;
+      if(chart.config.type !== "bar") return;
 
       const opts = pluginOptions || {};
       const minH = opts.minBarHeightPx ?? 16;
@@ -608,16 +540,11 @@
           if(!v) return;
 
           const props = elem.getProps(["x","y","base"], true);
-          const x = props.x;
-          const y = props.y;
-          const base = props.base;
-
-          const h = Math.abs(base - y);
+          const h = Math.abs(props.base - props.y);
           if(h < minH) return;
 
-          const cy = (y + base) / 2;
           ctx.fillStyle = "#ffffff";
-          ctx.fillText(String(v), x, cy);
+          ctx.fillText(String(v), props.x, (props.y + props.base) / 2);
         });
       });
 
@@ -645,18 +572,8 @@
         hb_value_labels:{ minBarHeightPx: 16, fontSize: 11 }
       },
       scales:{
-        x:{
-          type:"category",
-          position:"bottom",
-          ticks:{ color:"#8c8c8c", maxRotation:0, minRotation:0, autoSkip:true },
-          grid:{ color:"rgba(122,30,44,0.10)" }
-        },
-        y:{
-          position:"left",
-          beginAtZero:true,
-          ticks:{ color:"#7A1E2C" },
-          grid:{ color:"rgba(122,30,44,0.10)" }
-        }
+        x:{ type:"category", position:"bottom", ticks:{ color:"#8c8c8c", maxRotation:0, minRotation:0, autoSkip:true }, grid:{ color:"rgba(122,30,44,0.10)" } },
+        y:{ position:"left", beginAtZero:true, ticks:{ color:"#7A1E2C" }, grid:{ color:"rgba(122,30,44,0.10)" } }
       }
     };
   }
@@ -818,20 +735,19 @@
 
     try{
       const dataRaw = await fetchReport({ branch, from, to, group: state.group });
-
       if(!dataRaw || typeof dataRaw !== "object"){
         throw new Error("INVALID_REPORT_RESPONSE\n" + String(dataRaw));
       }
 
-      // 보정 로직
+      // ✅ 여기서 0채우기/지점고정 보정
       const data = dataRaw;
 
       if(data.mode === "all_compare"){
-        const fixed = fillAllCompareToFixedBranches(data);
+        const fixed = fillAllCompareToFixedBranches_(data);
         data.labels = fixed.labels;
         data.series = fixed.series;
       }else{
-        const filled = fillTrendToFullRange(data, from, to, state.group);
+        const filled = fillTrendToFullRange_(data, from, to, state.group);
         data.labels = filled.labels;
         data.series = filled.series;
       }
