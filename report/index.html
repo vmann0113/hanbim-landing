@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>한빔한복 전지점 랜딩유입 리포트</title>
 
-  <!-- ✅ Paperlogy (Noonnu CDN) -->
+  <!-- Paperlogy -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307@1.0/Paperlogy.css">
 
-  <!-- ✅ Chart.js -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- ✅ Export to Image -->
+  <!-- Export -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <style>
@@ -38,13 +38,12 @@
       padding:0 16px 28px;
     }
 
-    /* ===== Title ===== */
     .title{
       background:var(--wine);
       color:#fff;
       padding:18px 16px;
       font-size:18px;
-      font-weight:700;
+      font-weight:800;
       letter-spacing:-0.4px;
       border-bottom-left-radius:20px;
       border-bottom-right-radius:20px;
@@ -58,7 +57,6 @@
       padding:var(--pad);
     }
 
-    /* ===== Dropdown ===== */
     select{
       width:100%;
       appearance:none;
@@ -68,11 +66,10 @@
       border-radius:14px;
       padding:14px;
       font-size:15px;
-      font-weight:600;
+      font-weight:800;
       outline:none;
     }
 
-    /* ===== Toggle ===== */
     .toggleRow{
       display:flex;
       gap:8px;
@@ -94,7 +91,6 @@
       color:#fff;
     }
 
-    /* ===== Period UI ===== */
     .sectionTitle{
       margin-top:12px;
       font-size:13px;
@@ -115,7 +111,7 @@
       border-radius:14px;
       padding:12px 12px;
       font-size:14px;
-      font-weight:800;
+      font-weight:900;
       outline:none;
       background:#fff;
       color:var(--text);
@@ -172,7 +168,6 @@
       flex:0 0 120px;
     }
 
-    /* ===== Chart Card ===== */
     .chartCard{
       margin-top:14px;
     }
@@ -203,9 +198,9 @@
       color:var(--muted);
     }
 
-    /* ✅ 무한 높이 이슈 방지: 차트 영역 고정 */
+    /* 차트 무한 높이 방지 */
     .chartWrap{
-      height:240px;
+      height:260px; /* ✅ 막대 라벨 세로로 내려가도 보기 좋게 살짝 증가 */
       position:relative;
     }
     canvas#lineChart{
@@ -214,12 +209,6 @@
       display:block;
     }
 
-    .hint{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:10px;
-      line-height:1.45;
-    }
     .error{
       color:#c0392b;
       font-size:13px;
@@ -228,7 +217,6 @@
       display:none;
     }
 
-    /* ===== 2x2 Square Cards ===== */
     .grid{
       display:grid;
       grid-template-columns:repeat(2,1fr);
@@ -254,7 +242,7 @@
       color:var(--wine);
     }
 
-    /* ===== Export Doc (hidden) ===== */
+    /* Export doc */
     .exportDocWrap{
       position:fixed;
       left:-99999px;
@@ -353,20 +341,16 @@
     <div class="title">한빔한복 전지점 랜딩유입 리포트</div>
 
     <div class="card">
-      <!-- Branch dropdown -->
       <select id="branchSelect" aria-label="지점 선택">
         <option value="전체">전체</option>
       </select>
 
-      <!-- ✅ 일별/월별 토글 -->
       <div class="toggleRow" role="tablist" aria-label="리포트 기준">
-        <button type="button" data-group="day" class="active" id="btnDay">일별</button>
-        <button type="button" data-group="month" id="btnMonth">월별</button>
+        <button type="button" data-group="day" class="active">일별</button>
+        <button type="button" data-group="month">월별</button>
       </div>
 
-      <!-- 기간 선택 + 프리셋 -->
       <div class="sectionTitle">기간 선택</div>
-
       <div class="periodRow">
         <input id="fromDate" type="date" aria-label="시작일">
         <input id="toDate" type="date" aria-label="종료일">
@@ -383,7 +367,6 @@
         <button class="exportBtn" id="exportBtn" type="button">이미지 저장</button>
       </div>
 
-      <!-- Chart -->
       <div class="card chartCard">
         <div class="meta">
           <div class="left">
@@ -397,15 +380,9 @@
           <canvas id="lineChart"></canvas>
         </div>
 
-        <div class="hint" id="hintBox">
-          • 전체 보기에서는 <b>지점별 비교 막대그래프</b>가 표시됩니다.<br>
-          • 지점 선택 시 <b>추이(선형)</b>로 표시됩니다.<br>
-          • 네이버예약(reserve)은 <b>오버레이 + CTA</b> 클릭이 합산됩니다.
-        </div>
         <div class="error" id="errBox"></div>
       </div>
 
-      <!-- 2x2 Square cards -->
       <div class="grid">
         <div class="card sq">
           <div class="lbl">네이버예약</div>
@@ -427,14 +404,12 @@
     </div>
   </div>
 
-  <!-- ===== Hidden Export Doc ===== -->
+  <!-- Export doc -->
   <div class="exportDocWrap" id="exportDoc">
     <div class="docHeader">
       <div>
         <div class="docTitle">한빔한복 랜딩 유입 리포트</div>
-        <div style="margin-top:6px; font-size:13px; color:#444; font-weight:800;" id="exportSub">
-          지점별 클릭 요약 (일별/월별 공유용)
-        </div>
+        <div style="margin-top:6px; font-size:13px; color:#444; font-weight:800;" id="exportSub">공유용 리포트</div>
       </div>
       <div class="docMeta" id="exportMeta"></div>
     </div>
@@ -443,7 +418,7 @@
       <div class="docChartRow">
         <div class="docChartCard">
           <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
-            <div style="font-weight:900; color:var(--wine); font-size:14px;" id="exportChartLabel">기간 내 추이</div>
+            <div style="font-weight:900; color:var(--wine); font-size:14px;" id="exportChartLabel">그래프</div>
             <div style="font-weight:900; color:var(--wine); font-size:16px;" id="exportTotal">0</div>
           </div>
           <div class="docChartWrap">
@@ -452,193 +427,119 @@
         </div>
 
         <div class="docCards">
-          <div class="docMini">
-            <div class="t">네이버예약</div>
-            <div class="n" id="exportReserve">0</div>
-          </div>
-          <div class="docMini">
-            <div class="t">전화문의</div>
-            <div class="n" id="exportCall">0</div>
-          </div>
-          <div class="docMini">
-            <div class="t">카톡문의</div>
-            <div class="n" id="exportKakao">0</div>
-          </div>
-          <div class="docMini">
-            <div class="t">더 알아보기</div>
-            <div class="n" id="exportMore">0</div>
-          </div>
+          <div class="docMini"><div class="t">네이버예약</div><div class="n" id="exportReserve">0</div></div>
+          <div class="docMini"><div class="t">전화문의</div><div class="n" id="exportCall">0</div></div>
+          <div class="docMini"><div class="t">카톡문의</div><div class="n" id="exportKakao">0</div></div>
+          <div class="docMini"><div class="t">더 알아보기</div><div class="n" id="exportMore">0</div></div>
         </div>
       </div>
 
-      <div class="docFooter" id="exportFoot">
-        • 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.<br>
-        • 생성일시/기간/지점/기준(일별/월별)이 포함되어 지점별 보고에 바로 사용 가능합니다.
-      </div>
+      <div class="docFooter" id="exportFoot">• 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.</div>
     </div>
   </div>
 
 <script>
-  /** ✅ 너 WebApp /exec URL */
   const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
 
-  /** 지점 목록(실제 표기와 동일하게) */
   const BRANCHES = [
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
   const $ = (id)=>document.getElementById(id);
 
-  const state = {
-    group: "day",      // day|month
-    lastData: null,    // 마지막 조회 데이터(지점일 때)
-    lastAll: null      // 마지막 전체 비교 데이터(전체일 때)
-  };
+  const state = { group:"day", lastData:null };
 
-  function fmt(n){
-    try{ return Number(n||0).toLocaleString("ko-KR"); }catch(e){ return String(n||0); }
-  }
-
+  function fmt(n){ try{return Number(n||0).toLocaleString("ko-KR");}catch(e){return String(n||0);} }
   function dateISO(d){
-    const y = d.getFullYear();
-    const m = String(d.getMonth()+1).padStart(2,"0");
-    const da = String(d.getDate()).padStart(2,"0");
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), da=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
-  }
-
-  function setGroupActive(group){
-    state.group = group;
-    document.querySelectorAll(".toggleRow button").forEach(b=>{
-      b.classList.toggle("active", b.dataset.group === group);
-    });
-  }
-
-  function setPresetActive(preset){
-    document.querySelectorAll(".presetRow button").forEach(b=>{
-      b.classList.toggle("active", b.dataset.preset === preset);
-    });
   }
 
   function applyPreset(preset){
     const now = new Date();
     const to = new Date(now);
-
     const from = new Date(now);
-    if(preset === "7d"){
-      from.setDate(from.getDate() - 6);
-    } else if(preset === "1m"){
-      from.setMonth(from.getMonth() - 1);
-      from.setDate(from.getDate() + 1);
-    } else if(preset === "3m"){
-      from.setMonth(from.getMonth() - 3);
-      from.setDate(from.getDate() + 1);
-    }
+
+    if(preset==="7d"){ from.setDate(from.getDate()-6); }
+    else if(preset==="1m"){ from.setMonth(from.getMonth()-1); from.setDate(from.getDate()+1); }
+    else if(preset==="3m"){ from.setMonth(from.getMonth()-3); from.setDate(from.getDate()+1); }
 
     $("fromDate").value = dateISO(from);
     $("toDate").value = dateISO(to);
 
-    setPresetActive(preset);
+    document.querySelectorAll(".presetRow button").forEach(b=>{
+      b.classList.toggle("active", b.dataset.preset===preset);
+    });
   }
 
   function clearPresetActive(){
-    document.querySelectorAll(".presetRow button").forEach(b=> b.classList.remove("active"));
+    document.querySelectorAll(".presetRow button").forEach(b=>b.classList.remove("active"));
+  }
+
+  function setGroup(group){
+    state.group = group;
+    document.querySelectorAll(".toggleRow button").forEach(b=>{
+      b.classList.toggle("active", b.dataset.group===group);
+    });
   }
 
   function getRangeSafe(){
-    const from = $("fromDate").value;
-    const to = $("toDate").value;
-    if(!from || !to){
-      applyPreset("7d");
-      return { from: $("fromDate").value, to: $("toDate").value };
-    }
+    let from=$("fromDate").value, to=$("toDate").value;
+    if(!from||!to){ applyPreset("7d"); from=$("fromDate").value; to=$("toDate").value; }
     return { from, to };
   }
 
-  /** ===== JSONP Loader (CORS-free) ===== */
+  // JSONP
   function loadJsonp(url){
-    return new Promise((resolve, reject)=>{
-      const cbName = "__hb_cb_" + Math.random().toString(16).slice(2);
-      const s = document.createElement("script");
-      const sep = url.includes("?") ? "&" : "?";
-      s.src = url + sep + "callback=" + cbName;
+    return new Promise((resolve,reject)=>{
+      const cb="__hb_cb_"+Math.random().toString(16).slice(2);
+      const s=document.createElement("script");
+      const sep=url.includes("?") ? "&" : "?";
+      s.src = url + sep + "callback=" + cb;
 
-      window[cbName] = (data)=>{
+      window[cb]=(data)=>{
         try{ resolve(data); }
-        finally{
-          delete window[cbName];
-          s.remove();
-        }
+        finally{ delete window[cb]; s.remove(); }
       };
-
-      s.onerror = ()=>{
-        delete window[cbName];
-        s.remove();
-        reject(new Error("JSONP_LOAD_FAILED"));
-      };
-
+      s.onerror=()=>{ delete window[cb]; s.remove(); reject(new Error("JSONP_LOAD_FAILED")); };
       document.head.appendChild(s);
     });
   }
 
   async function fetchReport({branch="전체", from, to, group="day"}){
-    const url =
-      `${GAS_URL}?page=report` +
-      `&branch=${encodeURIComponent(branch)}` +
-      `&group=${encodeURIComponent(group)}` +
-      `&from=${encodeURIComponent(from)}` +
-      `&to=${encodeURIComponent(to)}`;
+    const url = `${GAS_URL}?page=report`
+      + `&branch=${encodeURIComponent(branch)}`
+      + `&group=${encodeURIComponent(group)}`
+      + `&from=${encodeURIComponent(from)}`
+      + `&to=${encodeURIComponent(to)}`;
     return await loadJsonp(url);
   }
 
-  async function fetchAllBranchesForCompare({from, to, group}){
-    // ✅ 전체 비교용: 지점별 totals + action 합계까지 계산
-    const jobs = BRANCHES.map(async (b)=> {
-      const d = await fetchReport({ branch:b, from, to, group });
-      return {
-        branch: b,
-        total: Number(d?.cards?.total || 0),
-        reserve: Number(d?.cards?.reserve || 0),
-        call: Number(d?.cards?.call || 0),
-        kakao: Number(d?.cards?.kakao || 0),
-        more: Number(d?.cards?.more || 0)
-      };
-    });
+  function showError(msg){ const b=$("errBox"); b.style.display="block"; b.textContent=msg; }
+  function hideError(){ const b=$("errBox"); b.style.display="none"; b.textContent=""; }
 
-    const rows = await Promise.all(jobs);
-
-    const sum = rows.reduce((acc, r)=>{
-      acc.total += r.total;
-      acc.reserve += r.reserve;
-      acc.call += r.call;
-      acc.kakao += r.kakao;
-      acc.more += r.more;
-      return acc;
-    }, { total:0, reserve:0, call:0, kakao:0, more:0 });
-
-    return { rows, sum };
+  function setCards(cards){
+    const c=cards||{};
+    $("metaTotal").textContent = fmt(c.total||0);
+    $("cardReserve").textContent = fmt(c.reserve||0);
+    $("cardCall").textContent = fmt(c.call||0);
+    $("cardKakao").textContent = fmt(c.kakao||0);
+    $("cardMore").textContent = fmt(c.more||0);
   }
 
-  /** ===== Chart Render ===== */
-  let chart = null;
+  let chart=null;
+  function destroyChart(){ if(chart){ chart.destroy(); chart=null; } }
 
-  function destroyChart(){
-    if(chart){ chart.destroy(); chart = null; }
-  }
-
-  function baseChartOptions_(){
-    // ✅ Y축이 중앙으로 오는 이상현상 방지: position 강제
+  function baseOptions(){
     return {
       responsive:true,
       maintainAspectRatio:false,
-      plugins:{
-        legend:{ display:false },
-        tooltip:{ callbacks:{ label:(c)=>` ${fmt(c.raw)}` } }
-      },
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:(c)=>` ${fmt(c.raw)}` } } },
       scales:{
         x:{
           type:"category",
           position:"bottom",
-          ticks:{ color:"#8c8c8c", maxRotation:0, autoSkip:true },
+          ticks:{ color:"#8c8c8c", maxRotation:0, minRotation:0, autoSkip:true },
           grid:{ color:"rgba(122,30,44,0.10)" }
         },
         y:{
@@ -652,288 +553,179 @@
   }
 
   function renderLine(labels, values){
-    const ctx = $("lineChart").getContext("2d");
+    const ctx=$("lineChart").getContext("2d");
     destroyChart();
-    chart = new Chart(ctx, {
+    chart=new Chart(ctx,{
       type:"line",
-      data:{
-        labels,
-        datasets:[{
-          label:"클릭",
-          data:values,
-          borderColor:"#7A1E2C",
-          backgroundColor:"rgba(122,30,44,0.15)",
-          tension:0.35,
-          pointRadius:(state.group === "month") ? 0 : 2,
-          pointHoverRadius:(state.group === "month") ? 0 : 4
-        }]
-      },
-      options: baseChartOptions_()
+      data:{ labels, datasets:[{
+        data:values,
+        borderColor:"#7A1E2C",
+        backgroundColor:"rgba(122,30,44,0.15)",
+        tension:0.35,
+        pointRadius:(state.group==="month")?0:2,
+        pointHoverRadius:(state.group==="month")?0:4
+      }]},
+      options: baseOptions()
     });
   }
 
+  // ✅ 전체 막대그래프: 지점명 세로(90도)
   function renderBar(labels, values){
-    const ctx = $("lineChart").getContext("2d");
+    const ctx=$("lineChart").getContext("2d");
     destroyChart();
-    chart = new Chart(ctx, {
+
+    const opt = baseOptions();
+    opt.scales.x.ticks.autoSkip = false;
+    opt.scales.x.ticks.maxRotation = 90;
+    opt.scales.x.ticks.minRotation = 90;
+
+    chart=new Chart(ctx,{
       type:"bar",
-      data:{
-        labels,
-        datasets:[{
-          label:"클릭",
-          data:values,
-          borderColor:"#7A1E2C",
-          backgroundColor:"rgba(122,30,44,0.18)",
-          borderWidth:1.5,
-          borderRadius:8
-        }]
-      },
-      options: {
-        ...baseChartOptions_(),
-        scales:{
-          x:{
-            type:"category",
-            position:"bottom",
-            ticks:{ color:"#8c8c8c", maxRotation:0, autoSkip:false },
-            grid:{ color:"rgba(122,30,44,0.08)" }
-          },
-          y:{
-            position:"left",
-            beginAtZero:true,
-            ticks:{ color:"#7A1E2C" },
-            grid:{ color:"rgba(122,30,44,0.10)" }
-          }
-        }
-      }
+      data:{ labels, datasets:[{
+        data:values,
+        borderColor:"#7A1E2C",
+        backgroundColor:"rgba(122,30,44,0.18)",
+        borderWidth:1.5,
+        borderRadius:8
+      }]},
+      options: opt
     });
   }
 
-  /** ===== Export Chart (doc) ===== */
-  let exportChart = null;
-
-  function destroyExportChart(){
-    if(exportChart){ exportChart.destroy(); exportChart = null; }
-  }
-
-  function renderExportChart({type, labels, values}){
-    const ctx = $("exportChart").getContext("2d");
+  // Export
+  let exportChart=null;
+  function destroyExportChart(){ if(exportChart){ exportChart.destroy(); exportChart=null; } }
+  function renderExportChart(type, labels, values){
+    const ctx=$("exportChart").getContext("2d");
     destroyExportChart();
-
-    exportChart = new Chart(ctx, {
+    exportChart=new Chart(ctx,{
       type,
-      data:{
-        labels,
-        datasets:[{
-          label:"클릭",
-          data:values,
-          borderColor:"#7A1E2C",
-          backgroundColor: type === "bar" ? "rgba(122,30,44,0.18)" : "rgba(122,30,44,0.12)",
-          tension:0.35,
-          pointRadius:0,
-          pointHoverRadius:0,
-          borderRadius: type === "bar" ? 10 : 0
-        }]
-      },
+      data:{ labels, datasets:[{
+        data:values,
+        borderColor:"#7A1E2C",
+        backgroundColor: type==="bar" ? "rgba(122,30,44,0.18)" : "rgba(122,30,44,0.12)",
+        tension:0.35,
+        pointRadius:0,
+        borderRadius: type==="bar" ? 10 : 0
+      }]},
       options:{
         responsive:true,
         maintainAspectRatio:false,
         animation:false,
-        plugins:{ legend:{ display:false } },
+        plugins:{ legend:{display:false} },
         scales:{
-          x:{ position:"bottom", grid:{ color:"rgba(122,30,44,0.08)" }, ticks:{ maxRotation:0, autoSkip:true } },
+          x:{
+            type:"category",
+            position:"bottom",
+            ticks:{
+              autoSkip: type!=="bar",
+              maxRotation: type==="bar" ? 90 : 0,
+              minRotation: type==="bar" ? 90 : 0
+            },
+            grid:{ color:"rgba(122,30,44,0.08)" }
+          },
           y:{ position:"left", beginAtZero:true, grid:{ color:"rgba(122,30,44,0.08)" } }
         }
       }
     });
   }
 
-  /** ===== UI helpers ===== */
-  function showError(msg){
-    const box = $("errBox");
-    box.style.display = "block";
-    box.textContent = msg;
-  }
-  function hideError(){
-    const box = $("errBox");
-    box.style.display = "none";
-    box.textContent = "";
-  }
-
-  function setCards({reserve=0, call=0, kakao=0, more=0, total=0}){
-    $("metaTotal").textContent = fmt(total);
-    $("cardReserve").textContent = fmt(reserve);
-    $("cardCall").textContent    = fmt(call);
-    $("cardKakao").textContent   = fmt(kakao);
-    $("cardMore").textContent    = fmt(more);
-  }
-
-  /** ===== Refresh ===== */
-  async function refresh(){
-    hideError();
-
-    const branch = $("branchSelect").value || "전체";
-    const { from, to } = getRangeSafe();
-    const gLabel = (state.group === "month") ? "월별" : "일별";
-
-    try{
-      if(branch === "전체"){
-        // ✅ 전체: 지점별 비교 막대 그래프
-        const all = await fetchAllBranchesForCompare({ from, to, group: state.group });
-        state.lastAll = all;
-        state.lastData = null;
-
-        $("metaTitle").textContent = `전체 · 지점별 비교 · ${gLabel}`;
-        $("metaRange").textContent = `${from} ~ ${to}`;
-
-        // bar: branch totals
-        const labels = all.rows.map(r=>r.branch);
-        const values = all.rows.map(r=>r.total);
-
-        renderBar(labels, values);
-        setCards(all.sum);
-
-      } else {
-        // ✅ 지점: 추이 선형 그래프
-        const data = await fetchReport({ branch, from, to, group: state.group });
-        state.lastData = data;
-        state.lastAll = null;
-
-        $("metaTitle").textContent = `${data.branch || branch} · ${gLabel}`;
-        $("metaRange").textContent = (data.range?.from && data.range?.to)
-          ? `${data.range.from} ~ ${data.range.to}`
-          : `${from} ~ ${to}`;
-
-        setCards({
-          reserve: Number(data.cards?.reserve || 0),
-          call: Number(data.cards?.call || 0),
-          kakao: Number(data.cards?.kakao || 0),
-          more: Number(data.cards?.more || 0),
-          total: Number(data.cards?.total || 0),
-        });
-
-        renderLine(data.labels || [], data.values || []);
-      }
-    }catch(err){
-      state.lastData = null;
-      state.lastAll = null;
-      showError("리포트 로드 실패\n" + (err?.message || String(err)));
-      setCards({reserve:0, call:0, kakao:0, more:0, total:0});
-      renderLine([], []);
-    }
-  }
-
-  /** ===== Export ===== */
   function safeFileName(branch, from, to, group){
-    const b = String(branch || "전체").replace(/\s+/g,"");
-    const g = (group === "month") ? "month" : "day";
+    const b=String(branch||"전체").replace(/\s+/g,"");
+    const g=(group==="month")?"month":"day";
     return `hanbeam_report_${b}_${g}_${from}_${to}.png`;
   }
 
   async function exportAsImage(){
-    // ✅ 없으면 먼저 조회
-    if(!state.lastData && !state.lastAll){
+    if(!state.lastData){
       await refresh();
-      if(!state.lastData && !state.lastAll){
-        alert("리포트를 먼저 조회해 주세요.");
-        return;
-      }
+      if(!state.lastData){ alert("리포트를 먼저 조회해 주세요."); return; }
     }
 
-    const branch = $("branchSelect").value || "전체";
-    const { from, to } = getRangeSafe();
-    const group = state.group;
-    const gLabel = (group === "month") ? "월별" : "일별";
+    const branch=$("branchSelect").value||"전체";
+    const {from,to}=getRangeSafe();
+    const group=state.group;
+    const gLabel=(group==="month")?"월별":"일별";
 
-    const now = new Date();
+    const now=new Date();
     const generatedAt =
       `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ` +
       `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-    $("exportSub").textContent = (branch === "전체")
-      ? `지점별 비교 요약 (${gLabel} 공유용)`
-      : `지점별 클릭 요약 (${gLabel} 공유용)`;
+    const isAll = (state.lastData.mode==="all_compare");
 
-    $("exportChartLabel").textContent = (branch === "전체")
-      ? `지점별 비교 (${gLabel})`
-      : `기간 내 추이 (${gLabel})`;
+    $("exportSub").textContent = isAll ? `지점별 비교 요약 (${gLabel})` : `지점별 클릭 요약 (${gLabel})`;
+    $("exportChartLabel").textContent = isAll ? `지점별 비교 (${gLabel})` : `기간 내 추이 (${gLabel})`;
 
     $("exportMeta").textContent =
       `지점: ${branch}\n기준: ${gLabel}\n기간: ${from} ~ ${to}\n생성: ${generatedAt}`;
 
-    // cards + chart data
-    let cards, chartType, labels, values;
+    const cards=state.lastData.cards||{};
+    $("exportTotal").textContent=fmt(cards.total||0);
+    $("exportReserve").textContent=fmt(cards.reserve||0);
+    $("exportCall").textContent=fmt(cards.call||0);
+    $("exportKakao").textContent=fmt(cards.kakao||0);
+    $("exportMore").textContent=fmt(cards.more||0);
 
-    if(branch === "전체"){
-      const all = state.lastAll || await fetchAllBranchesForCompare({ from, to, group });
-      state.lastAll = all;
+    renderExportChart(isAll ? "bar" : "line", state.lastData.labels||[], state.lastData.values||[]);
 
-      cards = all.sum;
-      chartType = "bar";
-      labels = all.rows.map(r=>r.branch);
-      values = all.rows.map(r=>r.total);
+    await new Promise(r=>setTimeout(r,140));
 
-      $("exportFoot").innerHTML =
-        `• 전체 보기(지점별 비교)는 <b>기간 내 총 클릭</b>을 지점별로 비교합니다.<br>` +
-        `• 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.`;
-
-    } else {
-      const data = state.lastData || await fetchReport({ branch, from, to, group });
-      state.lastData = data;
-
-      cards = data.cards || {};
-      chartType = "line";
-      labels = data.labels || [];
-      values = data.values || [];
-
-      $("exportFoot").innerHTML =
-        `• 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.<br>` +
-        `• 생성일시/기간/지점/기준이 포함되어 지점별 보고에 바로 사용 가능합니다.`;
-    }
-
-    $("exportTotal").textContent   = fmt(cards.total || 0);
-    $("exportReserve").textContent = fmt(cards.reserve || 0);
-    $("exportCall").textContent    = fmt(cards.call || 0);
-    $("exportKakao").textContent   = fmt(cards.kakao || 0);
-    $("exportMore").textContent    = fmt(cards.more || 0);
-
-    renderExportChart({ type: chartType, labels, values });
-
-    await new Promise(r=>setTimeout(r, 140));
-
-    const node = $("exportDoc");
-    const canvas = await html2canvas(node, {
-      backgroundColor: "#ffffff",
-      scale: 2,
-      useCORS: true
-    });
-
-    const a = document.createElement("a");
-    a.href = canvas.toDataURL("image/png");
-    a.download = safeFileName(branch, from, to, group);
+    const canvas = await html2canvas($("exportDoc"), { backgroundColor:"#fff", scale:2, useCORS:true });
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download=safeFileName(branch, from, to, group);
     document.body.appendChild(a);
     a.click();
     a.remove();
   }
 
-  /** ===== init ===== */
+  async function refresh(){
+    hideError();
+    const branch=$("branchSelect").value||"전체";
+    const {from,to}=getRangeSafe();
+
+    try{
+      const data = await fetchReport({ branch, from, to, group: state.group });
+      state.lastData=data;
+
+      const gLabel=(state.group==="month")?"월별":"일별";
+
+      $("metaRange").textContent = `${from} ~ ${to}`;
+
+      if(data.mode==="all_compare"){
+        $("metaTitle").textContent = `전체 · 지점별 비교 · ${gLabel}`;
+        setCards(data.cards);
+        renderBar(data.labels||[], data.values||[]);
+      }else{
+        $("metaTitle").textContent = `${branch} · ${gLabel}`;
+        setCards(data.cards);
+        renderLine(data.labels||[], data.values||[]);
+      }
+    }catch(err){
+      state.lastData=null;
+      showError("리포트 로드 실패\n" + (err?.message || String(err)));
+      setCards({total:0,reserve:0,call:0,kakao:0,more:0});
+      renderLine([],[]);
+    }
+  }
+
   function init(){
-    const sel = $("branchSelect");
+    const sel=$("branchSelect");
     BRANCHES.forEach(b=>{
-      const opt = document.createElement("option");
-      opt.value = b;
-      opt.textContent = b;
+      const opt=document.createElement("option");
+      opt.value=b; opt.textContent=b;
       sel.appendChild(opt);
     });
 
     applyPreset("7d");
-    setGroupActive("day");
+    setGroup("day");
 
-    // events
     sel.addEventListener("change", refresh);
 
     document.querySelectorAll(".toggleRow button").forEach(btn=>{
       btn.addEventListener("click", ()=>{
-        setGroupActive(btn.dataset.group);
+        setGroup(btn.dataset.group);
         refresh();
       });
     });
