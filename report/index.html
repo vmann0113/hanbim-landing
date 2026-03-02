@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>한빔한복 전지점 랜딩유입 리포트</title>
 
-  <!-- Paperlogy -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307@1.0/Paperlogy.css">
 
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <!-- Export -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <style>
@@ -32,307 +28,94 @@
       color:var(--text);
       font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
     }
-    .wrap{
-      max-width:520px;
-      margin:0 auto;
-      padding:0 16px 28px;
-    }
-
+    .wrap{ max-width:520px; margin:0 auto; padding:0 16px 28px; }
     .title{
-      background:var(--wine);
-      color:#fff;
-      padding:18px 16px;
-      font-size:18px;
-      font-weight:800;
-      letter-spacing:-0.4px;
-      border-bottom-left-radius:20px;
-      border-bottom-right-radius:20px;
+      background:var(--wine); color:#fff; padding:18px 16px;
+      font-size:18px; font-weight:800; letter-spacing:-0.4px;
+      border-bottom-left-radius:20px; border-bottom-right-radius:20px;
       margin:0 -16px 16px;
     }
-
-    .card{
-      background:#fff;
-      border:var(--border);
-      border-radius:var(--radius);
-      padding:var(--pad);
-    }
+    .card{ background:#fff; border:var(--border); border-radius:var(--radius); padding:var(--pad); }
 
     select{
-      width:100%;
-      appearance:none;
-      background:#fff;
-      color:var(--text);
-      border:var(--border);
-      border-radius:14px;
-      padding:14px;
-      font-size:15px;
-      font-weight:800;
-      outline:none;
+      width:100%; appearance:none; background:#fff; color:var(--text);
+      border:var(--border); border-radius:14px; padding:14px;
+      font-size:15px; font-weight:800; outline:none;
     }
 
-    .toggleRow{
-      display:flex;
-      gap:8px;
-      margin-top:12px;
-    }
+    .toggleRow{ display:flex; gap:8px; margin-top:12px; }
     .toggleRow button{
-      flex:1;
-      border:var(--border);
-      background:#fff;
-      color:var(--wine);
-      border-radius:14px;
-      padding:10px 0;
-      font-weight:900;
-      font-size:14px;
-      cursor:pointer;
+      flex:1; border:var(--border); background:#fff; color:var(--wine);
+      border-radius:14px; padding:10px 0; font-weight:900; font-size:14px; cursor:pointer;
     }
-    .toggleRow button.active{
-      background:var(--wine);
-      color:#fff;
-    }
+    .toggleRow button.active{ background:var(--wine); color:#fff; }
 
-    .sectionTitle{
-      margin-top:12px;
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:-0.2px;
-      color:var(--wine);
-    }
+    .sectionTitle{ margin-top:12px; font-size:13px; font-weight:900; letter-spacing:-0.2px; color:var(--wine); }
 
-    .periodRow{
-      display:flex;
-      gap:10px;
-      margin-top:10px;
-    }
+    .periodRow{ display:flex; gap:10px; margin-top:10px; }
     .periodRow input[type="date"]{
-      flex:1;
-      width:100%;
-      border:var(--border);
-      border-radius:14px;
-      padding:12px 12px;
-      font-size:14px;
-      font-weight:900;
-      outline:none;
-      background:#fff;
-      color:var(--text);
-      min-width:0;
+      flex:1; width:100%; border:var(--border); border-radius:14px;
+      padding:12px 12px; font-size:14px; font-weight:900; outline:none;
+      background:#fff; color:var(--text); min-width:0;
     }
 
-    .presetRow{
-      display:flex;
-      gap:8px;
-      margin-top:10px;
-    }
+    .presetRow{ display:flex; gap:8px; margin-top:10px; }
     .presetRow button{
-      flex:1;
-      border:var(--border);
-      background:#fff;
-      color:var(--wine);
-      border-radius:14px;
-      padding:10px 0;
-      font-weight:900;
-      font-size:14px;
-      cursor:pointer;
+      flex:1; border:var(--border); background:#fff; color:var(--wine);
+      border-radius:14px; padding:10px 0; font-weight:900; font-size:14px; cursor:pointer;
     }
-    .presetRow button.active{
-      background:var(--wine);
-      color:#fff;
-    }
+    .presetRow button.active{ background:var(--wine); color:#fff; }
 
-    .btnRow{
-      display:flex;
-      gap:10px;
-      margin-top:10px;
-    }
+    .btnRow{ display:flex; gap:10px; margin-top:10px; }
     .applyBtn{
-      flex:1;
-      border:var(--border);
-      background:var(--wine);
-      color:#fff;
-      border-radius:14px;
-      padding:12px 0;
-      font-weight:900;
-      font-size:14px;
-      cursor:pointer;
+      flex:1; border:var(--border); background:var(--wine); color:#fff;
+      border-radius:14px; padding:12px 0; font-weight:900; font-size:14px; cursor:pointer;
     }
     .exportBtn{
-      width:120px;
-      border:var(--border);
-      background:#fff;
-      color:var(--wine);
-      border-radius:14px;
-      padding:12px 0;
-      font-weight:900;
-      font-size:14px;
-      cursor:pointer;
+      width:120px; border:var(--border); background:#fff; color:var(--wine);
+      border-radius:14px; padding:12px 0; font-weight:900; font-size:14px; cursor:pointer;
       flex:0 0 120px;
     }
 
-    .chartCard{
-      margin-top:14px;
-    }
-    .meta{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .meta .left{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width:0;
-    }
+    .chartCard{ margin-top:14px; }
+    .meta{ display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:10px; }
+    .meta .left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
     .meta .big{
-      font-size:16px;
-      font-weight:900;
-      letter-spacing:-0.4px;
-      color:var(--wine);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      font-size:16px; font-weight:900; letter-spacing:-0.4px; color:var(--wine);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
-    .meta .small{
-      font-size:12px;
-      color:var(--muted);
-    }
+    .meta .small{ font-size:12px; color:var(--muted); }
 
-    /* 차트 무한 높이 방지 */
-    .chartWrap{
-      height:260px; /* ✅ 막대 라벨 세로로 내려가도 보기 좋게 살짝 증가 */
-      position:relative;
-    }
-    canvas#lineChart{
-      width:100% !important;
-      height:100% !important;
-      display:block;
-    }
+    .chartWrap{ height:290px; position:relative; }
+    canvas#lineChart{ width:100% !important; height:100% !important; display:block; }
 
-    .error{
-      color:#c0392b;
-      font-size:13px;
-      margin-top:10px;
-      white-space:pre-wrap;
-      display:none;
-    }
+    .error{ color:#c0392b; font-size:13px; margin-top:10px; white-space:pre-wrap; display:none; }
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-      margin-top:14px;
-    }
-    .sq{
-      aspect-ratio:1/1;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
-    .lbl{
-      font-size:13px;
-      font-weight:900;
-      color:var(--muted);
-      letter-spacing:-0.2px;
-    }
-    .val{
-      font-size:30px;
-      font-weight:900;
-      letter-spacing:-0.8px;
-      color:var(--wine);
-    }
+    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
+    .sq{ aspect-ratio:1/1; display:flex; flex-direction:column; justify-content:space-between; }
+    .lbl{ font-size:13px; font-weight:900; color:var(--muted); letter-spacing:-0.2px; }
+    .val{ font-size:30px; font-weight:900; letter-spacing:-0.8px; color:var(--wine); }
 
     /* Export doc */
     .exportDocWrap{
-      position:fixed;
-      left:-99999px;
-      top:0;
-      width:860px;
-      background:#fff;
-      padding:28px;
+      position:fixed; left:-99999px; top:0; width:860px;
+      background:#fff; padding:28px;
       font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
       color:#111;
     }
-    .docHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      margin-bottom:14px;
-    }
-    .docTitle{
-      font-size:22px;
-      font-weight:900;
-      letter-spacing:-0.6px;
-      color:var(--wine);
-      line-height:1.2;
-    }
-    .docMeta{
-      font-size:13px;
-      color:#555;
-      line-height:1.55;
-      text-align:right;
-      white-space:pre-line;
-    }
-    .docBox{
-      border:2px solid var(--wine);
-      border-radius:18px;
-      padding:18px;
-    }
-    .docChartRow{
-      display:grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap:14px;
-      align-items:stretch;
-    }
-    .docChartCard{
-      border:2px solid var(--wine);
-      border-radius:16px;
-      padding:14px;
-      position:relative;
-      background:#fff;
-    }
-    .docChartWrap{
-      height:280px;
-      position:relative;
-    }
-    #exportChart{
-      width:100% !important;
-      height:100% !important;
-      display:block;
-    }
-    .docCards{
-      display:grid;
-      grid-template-columns:repeat(2, 1fr);
-      gap:12px;
-    }
-    .docMini{
-      border:2px solid var(--wine);
-      border-radius:16px;
-      padding:14px;
-      background:#fff;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      min-height:132px;
-    }
-    .docMini .t{
-      font-size:13px;
-      color:#666;
-      font-weight:900;
-    }
-    .docMini .n{
-      font-size:34px;
-      color:var(--wine);
-      font-weight:900;
-      letter-spacing:-0.8px;
-    }
-    .docFooter{
-      margin-top:12px;
-      font-size:12px;
-      color:#777;
-      line-height:1.45;
-    }
+    .docHeader{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:14px; }
+    .docTitle{ font-size:22px; font-weight:900; letter-spacing:-0.6px; color:var(--wine); line-height:1.2; }
+    .docMeta{ font-size:13px; color:#555; line-height:1.55; text-align:right; white-space:pre-line; }
+    .docBox{ border:2px solid var(--wine); border-radius:18px; padding:18px; }
+    .docChartRow{ display:grid; grid-template-columns: 1.2fr 0.8fr; gap:14px; align-items:stretch; }
+    .docChartCard{ border:2px solid var(--wine); border-radius:16px; padding:14px; background:#fff; }
+    .docChartWrap{ height:280px; position:relative; }
+    #exportChart{ width:100% !important; height:100% !important; display:block; }
+    .docCards{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
+    .docMini{ border:2px solid var(--wine); border-radius:16px; padding:14px; background:#fff; display:flex; flex-direction:column; justify-content:space-between; min-height:132px; }
+    .docMini .t{ font-size:13px; color:#666; font-weight:900; }
+    .docMini .n{ font-size:34px; color:var(--wine); font-weight:900; letter-spacing:-0.8px; }
+    .docFooter{ margin-top:12px; font-size:12px; color:#777; line-height:1.45; }
   </style>
 </head>
 
@@ -445,14 +228,36 @@
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
-  const $ = (id)=>document.getElementById(id);
+  // ✅ 색(요청: 3개 액션 각각 다른 색)
+  // 너무 튀지 않게 와인 톤에 어울리게 잡음
+  const COLORS = {
+    reserve: { border: "#7A1E2C", fill: "rgba(122,30,44,0.25)" },
+    call:    { border: "#B04A57", fill: "rgba(176,74,87,0.25)" },
+    kakao:   { border: "#D28A5A", fill: "rgba(210,138,90,0.25)" }
+  };
 
+  const $ = (id)=>document.getElementById(id);
   const state = { group:"day", lastData:null };
 
   function fmt(n){ try{return Number(n||0).toLocaleString("ko-KR");}catch(e){return String(n||0);} }
+
   function dateISO(d){
     const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), da=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${da}`;
+  }
+
+  function shortBranchName(name){
+    let s = String(name||"").trim();
+    if(!s) return s;
+
+    // ✅ 부산센텀점 / 부산센텀 -> 센텀
+    if (s.includes("센텀")) return "센텀";
+
+    // ✅ ~점 제거
+    if (s.endsWith("점")) s = s.slice(0, -1);
+
+    // 부산점 -> 부산 같은 형태
+    return s;
   }
 
   function applyPreset(preset){
@@ -527,6 +332,56 @@
     $("cardMore").textContent = fmt(c.more||0);
   }
 
+  /** ✅ 값 라벨(겹치면 생략) 커스텀 플러그인
+   * - 스택 막대: 각 조각 높이가 충분할 때만 안에 출력
+   * - 라인: 포인트 라벨은 안 그림(과밀)
+   */
+  const ValueLabelPlugin = {
+    id: "hb_value_labels",
+    afterDatasetsDraw(chart, args, pluginOptions){
+      const { ctx } = chart;
+      const type = chart.config.type;
+      if(type !== "bar") return;
+
+      const opts = pluginOptions || {};
+      const minH = opts.minBarHeightPx ?? 16; // 이보다 작으면 라벨 생략
+      const fontSize = opts.fontSize ?? 11;
+
+      ctx.save();
+      ctx.font = `900 ${fontSize}px Paperlogy, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      chart.data.datasets.forEach((ds, di)=>{
+        const meta = chart.getDatasetMeta(di);
+        if(meta.hidden) return;
+
+        meta.data.forEach((elem, i)=>{
+          const v = Number(ds.data?.[i] || 0);
+          if(!v) return;
+
+          // stacked segment bbox
+          const props = elem.getProps(["x","y","base"], true);
+          const x = props.x;
+          const y = props.y;
+          const base = props.base;
+
+          const h = Math.abs(base - y);
+          if(h < minH) return; // 겹침 방지
+
+          // 텍스트 위치: segment 중앙
+          const cy = (y + base) / 2;
+
+          // 색: 조각 안이면 흰색이 제일 잘 보임
+          ctx.fillStyle = "#ffffff";
+          ctx.fillText(String(v), x, cy);
+        });
+      });
+
+      ctx.restore();
+    }
+  };
+
   let chart=null;
   function destroyChart(){ if(chart){ chart.destroy(); chart=null; } }
 
@@ -534,7 +389,18 @@
     return {
       responsive:true,
       maintainAspectRatio:false,
-      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:(c)=>` ${fmt(c.raw)}` } } },
+      plugins:{
+        legend:{ display:true, labels:{ usePointStyle:true, boxWidth:10, boxHeight:10 } },
+        tooltip:{
+          callbacks:{
+            label:(c)=>{
+              const lbl = c.dataset.label ? (c.dataset.label + ": ") : "";
+              return " " + lbl + fmt(c.raw);
+            }
+          }
+        },
+        hb_value_labels:{ minBarHeightPx: 16, fontSize: 11 }
+      },
       scales:{
         x:{
           type:"category",
@@ -552,25 +418,9 @@
     };
   }
 
-  function renderLine(labels, values){
-    const ctx=$("lineChart").getContext("2d");
-    destroyChart();
-    chart=new Chart(ctx,{
-      type:"line",
-      data:{ labels, datasets:[{
-        data:values,
-        borderColor:"#7A1E2C",
-        backgroundColor:"rgba(122,30,44,0.15)",
-        tension:0.35,
-        pointRadius:(state.group==="month")?0:2,
-        pointHoverRadius:(state.group==="month")?0:4
-      }]},
-      options: baseOptions()
-    });
-  }
-
-  // ✅ 전체 막대그래프: 지점명 세로(90도)
-  function renderBar(labels, values){
+  // ✅ 전체: 스택 막대(예약/전화/카톡)
+  function renderStackedBar(rawLabels, series){
+    const labels = (rawLabels || []).map(shortBranchName);
     const ctx=$("lineChart").getContext("2d");
     destroyChart();
 
@@ -578,56 +428,147 @@
     opt.scales.x.ticks.autoSkip = false;
     opt.scales.x.ticks.maxRotation = 90;
     opt.scales.x.ticks.minRotation = 90;
+    opt.scales.x.stacked = true;
+    opt.scales.y.stacked = true;
 
-    chart=new Chart(ctx,{
+    chart = new Chart(ctx, {
       type:"bar",
-      data:{ labels, datasets:[{
-        data:values,
-        borderColor:"#7A1E2C",
-        backgroundColor:"rgba(122,30,44,0.18)",
-        borderWidth:1.5,
-        borderRadius:8
-      }]},
+      data:{
+        labels,
+        datasets:[
+          {
+            label:"네이버예약",
+            data: series?.reserve || [],
+            borderColor: COLORS.reserve.border,
+            backgroundColor: COLORS.reserve.fill,
+            borderWidth: 1.2,
+            borderRadius: 8,
+            stack: "total"
+          },
+          {
+            label:"전화문의",
+            data: series?.call || [],
+            borderColor: COLORS.call.border,
+            backgroundColor: COLORS.call.fill,
+            borderWidth: 1.2,
+            borderRadius: 8,
+            stack: "total"
+          },
+          {
+            label:"카톡문의",
+            data: series?.kakao || [],
+            borderColor: COLORS.kakao.border,
+            backgroundColor: COLORS.kakao.fill,
+            borderWidth: 1.2,
+            borderRadius: 8,
+            stack: "total"
+          }
+        ]
+      },
+      options: opt,
+      plugins: [ValueLabelPlugin]
+    });
+  }
+
+  // ✅ 지점: 3개 선형(예약/전화/카톡)
+  function renderMultiLine(labels, series){
+    const ctx=$("lineChart").getContext("2d");
+    destroyChart();
+
+    const opt = baseOptions();
+    // 라인은 legend 필요하지만 value label plugin은 bar만 처리해서 영향 없음
+
+    chart = new Chart(ctx, {
+      type:"line",
+      data:{
+        labels: labels || [],
+        datasets:[
+          {
+            label:"네이버예약",
+            data: series?.reserve || [],
+            borderColor: COLORS.reserve.border,
+            backgroundColor: COLORS.reserve.fill,
+            tension: 0.35,
+            pointRadius: (state.group==="month") ? 0 : 2,
+            pointHoverRadius: (state.group==="month") ? 0 : 4
+          },
+          {
+            label:"전화문의",
+            data: series?.call || [],
+            borderColor: COLORS.call.border,
+            backgroundColor: COLORS.call.fill,
+            tension: 0.35,
+            pointRadius: (state.group==="month") ? 0 : 2,
+            pointHoverRadius: (state.group==="month") ? 0 : 4
+          },
+          {
+            label:"카톡문의",
+            data: series?.kakao || [],
+            borderColor: COLORS.kakao.border,
+            backgroundColor: COLORS.kakao.fill,
+            tension: 0.35,
+            pointRadius: (state.group==="month") ? 0 : 2,
+            pointHoverRadius: (state.group==="month") ? 0 : 4
+          }
+        ]
+      },
       options: opt
     });
   }
 
-  // Export
+  // Export chart (문서 저장용): 동일하게 스택/멀티라인 반영
   let exportChart=null;
   function destroyExportChart(){ if(exportChart){ exportChart.destroy(); exportChart=null; } }
-  function renderExportChart(type, labels, values){
+
+  function renderExport(type, labels, series, isAll){
     const ctx=$("exportChart").getContext("2d");
     destroyExportChart();
-    exportChart=new Chart(ctx,{
-      type,
-      data:{ labels, datasets:[{
-        data:values,
-        borderColor:"#7A1E2C",
-        backgroundColor: type==="bar" ? "rgba(122,30,44,0.18)" : "rgba(122,30,44,0.12)",
-        tension:0.35,
-        pointRadius:0,
-        borderRadius: type==="bar" ? 10 : 0
-      }]},
-      options:{
-        responsive:true,
-        maintainAspectRatio:false,
-        animation:false,
-        plugins:{ legend:{display:false} },
-        scales:{
-          x:{
-            type:"category",
-            position:"bottom",
-            ticks:{
-              autoSkip: type!=="bar",
-              maxRotation: type==="bar" ? 90 : 0,
-              minRotation: type==="bar" ? 90 : 0
-            },
-            grid:{ color:"rgba(122,30,44,0.08)" }
-          },
-          y:{ position:"left", beginAtZero:true, grid:{ color:"rgba(122,30,44,0.08)" } }
-        }
+
+    const common = {
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:false,
+      plugins:{ legend:{ display:true } },
+      scales:{
+        x:{ type:"category", position:"bottom", grid:{ color:"rgba(122,30,44,0.08)" } },
+        y:{ position:"left", beginAtZero:true, grid:{ color:"rgba(122,30,44,0.08)" } }
       }
-    });
+    };
+
+    if(isAll){
+      common.scales.x.ticks = { autoSkip:false, maxRotation:90, minRotation:90 };
+      common.scales.x.stacked = true;
+      common.scales.y.stacked = true;
+
+      exportChart = new Chart(ctx,{
+        type:"bar",
+        data:{
+          labels: (labels||[]).map(shortBranchName),
+          datasets:[
+            { label:"네이버예약", data: series?.reserve||[], borderColor:COLORS.reserve.border, backgroundColor:COLORS.reserve.fill, stack:"total", borderWidth:1.2, borderRadius:10 },
+            { label:"전화문의",   data: series?.call||[],    borderColor:COLORS.call.border,    backgroundColor:COLORS.call.fill,    stack:"total", borderWidth:1.2, borderRadius:10 },
+            { label:"카톡문의",   data: series?.kakao||[],   borderColor:COLORS.kakao.border,   backgroundColor:COLORS.kakao.fill,   stack:"total", borderWidth:1.2, borderRadius:10 }
+          ]
+        },
+        options: common,
+        plugins:[ValueLabelPlugin]
+      });
+    }else{
+      common.scales.x.ticks = { autoSkip:true, maxRotation:0, minRotation:0 };
+
+      exportChart = new Chart(ctx,{
+        type:"line",
+        data:{
+          labels: labels||[],
+          datasets:[
+            { label:"네이버예약", data: series?.reserve||[], borderColor:COLORS.reserve.border, backgroundColor:COLORS.reserve.fill, tension:0.35, pointRadius:0 },
+            { label:"전화문의",   data: series?.call||[],    borderColor:COLORS.call.border,    backgroundColor:COLORS.call.fill,    tension:0.35, pointRadius:0 },
+            { label:"카톡문의",   data: series?.kakao||[],   borderColor:COLORS.kakao.border,   backgroundColor:COLORS.kakao.fill,   tension:0.35, pointRadius:0 }
+          ]
+        },
+        options: common
+      });
+    }
   }
 
   function safeFileName(branch, from, to, group){
@@ -667,7 +608,12 @@
     $("exportKakao").textContent=fmt(cards.kakao||0);
     $("exportMore").textContent=fmt(cards.more||0);
 
-    renderExportChart(isAll ? "bar" : "line", state.lastData.labels||[], state.lastData.values||[]);
+    renderExport(
+      isAll ? "bar" : "line",
+      state.lastData.labels||[],
+      state.lastData.series||{},
+      isAll
+    );
 
     await new Promise(r=>setTimeout(r,140));
 
@@ -690,23 +636,23 @@
       state.lastData=data;
 
       const gLabel=(state.group==="month")?"월별":"일별";
-
       $("metaRange").textContent = `${from} ~ ${to}`;
+
+      setCards(data.cards);
 
       if(data.mode==="all_compare"){
         $("metaTitle").textContent = `전체 · 지점별 비교 · ${gLabel}`;
-        setCards(data.cards);
-        renderBar(data.labels||[], data.values||[]);
+        renderStackedBar(data.labels||[], data.series||{});
       }else{
-        $("metaTitle").textContent = `${branch} · ${gLabel}`;
-        setCards(data.cards);
-        renderLine(data.labels||[], data.values||[]);
+        $("metaTitle").textContent = `${shortBranchName(branch)} · ${gLabel}`;
+        renderMultiLine(data.labels||[], data.series||{});
       }
+
     }catch(err){
       state.lastData=null;
       showError("리포트 로드 실패\n" + (err?.message || String(err)));
       setCards({total:0,reserve:0,call:0,kakao:0,more:0});
-      renderLine([],[]);
+      destroyChart();
     }
   }
 
