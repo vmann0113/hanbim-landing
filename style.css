@@ -1,16 +1,16 @@
 html, body { margin:0; padding:0; overflow-x:hidden; }
 
-/* ✅ KB FIX: 하단 fixed CTA가 콘텐츠를 덮지 않도록 여유 확보 */
+/* ✅ CTA가 콘텐츠를 덮지 않도록 여유 확보 */
 :root{ --ctaH: 0px; }
-.landing {
+
+.landing{
   max-width:1080px;
   margin:0 auto;
   padding-bottom: calc(var(--ctaH) + 24px + env(safe-area-inset-bottom));
 }
 
-.block img { width:100%; display:block; }
+.block img{ width:100%; display:block; }
 
-/* ✅ 03 매장소개 높이 변경 (section class="block short") */
 .block.short{
   height:985.1337px;
   overflow:hidden;
@@ -22,112 +22,35 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   display:block;
 }
 
-/* 오버레이 섹션 공통 */
-.block-overlay { position:relative; }
+@media (max-width: 600px){
+  .block.short{ height:auto; }
+  .block.short img{ height:auto; object-fit:contain; }
+}
 
-/* ✅ (중요) overlay-layer가 클릭을 먹는 문제 방지
-   - overlay-layer 자체는 클릭 비활성
-   - 그 안의 ov 버튼/링크만 클릭 활성 */
-.overlay-layer { position:absolute; inset:0; pointer-events:none; }
+/* 오버레이 섹션 */
+.block-overlay{ position:relative; }
+
+/* overlay-layer는 클릭 비활성, 내부 ov만 클릭 활성 */
+.overlay-layer{ position:absolute; inset:0; pointer-events:none; }
 .overlay-layer .ov,
 .overlay-layer a{ pointer-events:auto; }
 
-/* 오버레이 요소 공통 */
+/* 오버레이 요소 */
 .ov{
   position:absolute;
   background:transparent;
   border:none;
   outline:none;
   box-sizing:border-box;
-}
-
-/* ✅ KB FIX: 포커스 시 스크롤 여유(브라우저 자동 스크롤 안정화) */
-input, textarea, select { scroll-margin-bottom: 240px; }
-
-/* 폼 공통 스타일 */
-.ov-name,.ov-phone,.ov-branch,.ov-date{
-  padding:0 12px;
-  font-size:16px;
-}
-.ov::placeholder{ color:#b5b5b5; }
-
-.ov-branch{
-  appearance:none;
-  -webkit-appearance:none;
-  background:transparent;
-  color:#b5b5b5;
-}
-.ov-branch:valid{ color:#222; }
-
-.ov-date::-webkit-calendar-picker-indicator{ opacity:0; width:0; height:0; }
-.ov-date:invalid{ color:#b5b5b5; }
-.ov-date:valid{ color:#222; }
-
-.ov-submit{ cursor:pointer; }
-
-/* ===============================
-   02_form (1080 x 703) - 좌표 %
-=============================== */
-.ov-name   { left:14.35%; top:51.64%; width:33.61%; height:10.10%; }
-.ov-phone  { left:64.26%; top:51.64%; width:33.61%; height:10.10%; }
-.ov-branch { left:14.35%; top:67.00%; width:33.61%; height:10.10%; }
-.ov-date   { left:64.26%; top:66.86%; width:33.61%; height:10.10%; }
-.ov-submit { left:33.15%; top:83.21%; width:33.61%; height:10.81%; }
-
-
-
-/* ===============================
-   04_differentiation (차별성) - 투명버튼
-   (X:71.5, Y:519.2, W:395, H:69) / 기준가로 1080 → %
-=============================== */
-.ov-store-cta {
-  left:6.62%;
-  top:79.23%;
-  width:36.57%;
-  height:6.39%;
   cursor:pointer;
-  z-index:5; /* ✅ 레이어 최상단 보장 */
+  z-index: 20;
 }
 
-/* ===============================
-   08_naver_links (1080 x 758) - 네이버 링크 버튼들
-=============================== */
-.ov-busan     { left:6.39%;  top:29.67%; width:27.04%; height:19.26%; }
-.ov-incheon   { left:36.48%; top:29.67%; width:27.04%; height:19.26%; }
-.ov-ansan     { left:66.57%; top:29.67%; width:27.04%; height:19.26%; }
-
-.ov-ulsan     { left:6.39%;  top:52.11%; width:27.04%; height:19.26%; }
-.ov-masan     { left:36.48%; top:52.11%; width:27.04%; height:19.26%; }
-.ov-jinju     { left:66.57%; top:52.11%; width:27.04%; height:19.26%; }
-
-.ov-changwon  { left:6.39%;  top:74.54%; width:27.04%; height:19.26%; }
-.ov-gimhae    { left:36.48%; top:74.54%; width:27.04%; height:19.26%; }
-.ov-yangsan   { left:66.57%; top:74.54%; width:27.04%; height:19.26%; }
-
-/* ✅ 하단 고정 CTA (picture 사용) */
-.fixed-cta{
-  position:fixed;
-  left:50%;
-  bottom:10px;
-  transform:translateX(-50%);
-  width:calc(100vw - 20px);
-  max-width:1080px;
-  z-index:9999;
-}
-.cta-picture, .cta-picture img { width:100%; display:block; }
-.fixed-cta-click{
-  position:absolute;
-  inset:0;
-  background:transparent;
-  border:none;
-  cursor:pointer;
-}
-
-/* 토스트 */
+/* Toast */
 #toast{
   position:fixed;
   left:50%;
-  bottom:120px;
+  bottom: calc(160px + env(safe-area-inset-bottom));
   transform:translateX(-50%);
   background:rgba(0,0,0,.82);
   color:#fff;
@@ -138,31 +61,24 @@ input, textarea, select { scroll-margin-bottom: 240px; }
   transition:.2s;
   z-index:10000;
   pointer-events:none;
+  max-width: min(520px, calc(100vw - 24px));
+  text-align:center;
 }
 #toast.show{ opacity:1; }
 
-/* (권장) 모바일에서 터치 영역 확보 + 매장소개는 자동 높이로 자연스럽게 */
-@media (max-width: 600px){
-  .ov-store-cta{ min-height:44px; }
-  .block.short{ height:auto; }
-  .block.short img{ height:auto; object-fit:contain; }
-}
-
-
 /* ==================================================
-   ✅ Hanbeam Fixed CTA (Branch + Actions) - ADD ONLY
+   ✅ Hanbeam Fixed CTA (Branch + Actions)
    ================================================== */
 :root{
   --hbCtaPadX: 14px;
   --hbCtaPadY: 10px;
-
   --hbGap: 8px;
 
-  --hbBranchH: 44px;          /* 지점 선택 버튼 높이 */
-  --hbActionIcon: 54px;       /* 아이콘 사이즈 */
+  --hbBranchH: 44px;
+  --hbActionIcon: 54px;
   --hbActionRadius: 18px;
 
-  --hbWine: #5a1f2b;          /* ✅ 와인색 */
+  --hbWine: #5a1f2b;
   --hbWineHi: #6a2736;
 }
 
@@ -189,7 +105,6 @@ input, textarea, select { scroll-margin-bottom: 240px; }
   box-shadow: 0 18px 60px rgba(0,0,0,0.35);
 }
 
-/* ✅ 지점 선택 버튼 (와인 + 흰 글씨) */
 .hb-branchBtn{
   height: var(--hbBranchH);
   width: 100%;
@@ -213,8 +128,8 @@ input, textarea, select { scroll-margin-bottom: 240px; }
 
   -webkit-tap-highlight-color: transparent;
 }
-
 .hb-branchBtn:active{ transform: translateY(1px); }
+
 .hb-branchTxt{
   font-size: 14px;
   white-space: nowrap;
@@ -223,14 +138,9 @@ input, textarea, select { scroll-margin-bottom: 240px; }
   max-width: 78%;
 }
 
-.hb-chevron{
-  width: 16px;
-  height: 16px;
-  opacity: 0.95;
-}
+.hb-chevron{ width:16px; height:16px; opacity:.95; }
 .hb-chevron path{ stroke: rgba(255,255,255,0.95); }
 
-/* ✅ 액션 버튼 영역 */
 .hb-actionPanel{
   width: 100%;
   display: flex;
@@ -263,8 +173,8 @@ input, textarea, select { scroll-margin-bottom: 240px; }
     0 12px 26px rgba(0,0,0,0.28),
     inset 0 1px 0 rgba(255,255,255,0.18);
 }
-
 .hb-action:active .hb-ico{ transform: translateY(1px); }
+
 .hb-lbl{
   font-size: 11px;
   font-weight: 900;
@@ -272,13 +182,8 @@ input, textarea, select { scroll-margin-bottom: 240px; }
   line-height: 1;
 }
 
-/* ✅ 기존 페이지의 toast가 CTA에 가리지 않도록: 너 코드가 이미 120px safe 처리중이지만, CTA가 더 커질 수 있어 보정 */
-#toast{
-  bottom: calc(160px + env(safe-area-inset-bottom));
-}
-
 /* ==================================================
-   ✅ Branch Modal (ADD ONLY)
+   ✅ Branch Modal
    ================================================== */
 .hb-branchBackdrop{
   position: fixed;
@@ -338,7 +243,8 @@ input, textarea, select { scroll-margin-bottom: 240px; }
   background: rgba(255,255,255,0.25);
 }
 .hb-item:last-child{ border-bottom:none; }
-.hb-item:active{ background: rgba(90,31,43,0.10); } /* 와인 톤 눌림 */
+.hb-item:active{ background: rgba(90,31,43,0.10); }
+
 .hb-badge{
   font-size: 11px;
   font-weight:900;
