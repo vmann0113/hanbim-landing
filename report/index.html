@@ -53,6 +53,7 @@
       font-size:15px; font-weight:800; outline:none;
       box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
     }
+    .selectGap{ margin-top:10px; }
 
     .toggleRow{ display:flex; gap:8px; margin-top:10px; }
     .toggleRow button{
@@ -168,8 +169,17 @@
     <div class="title">한빔한복 전지점 랜딩유입 리포트</div>
 
     <div class="card">
+
+      <!-- ✅ Landing Filter -->
+      <select id="landingSelect" aria-label="랜딩 선택">
+        <option value="ALL">랜딩 전체(합산)</option>
+        <option value="all">통합 랜딩(all)</option>
+      </select>
+
+      <div class="selectGap"></div>
+
       <select id="branchSelect" aria-label="지점 선택">
-        <option value="전체">전체</option>
+        <option value="전체">지점 전체</option>
       </select>
 
       <div class="toggleRow" role="tablist" aria-label="리포트 기준">
@@ -273,11 +283,27 @@
     "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
   ];
 
-  // ✅ 컬러 구분: 파랑/빨강/초록 (막대 + 선 공통)
+  // ✅ 랜딩 목록 (키는 landing 값과 동일)
+  const LANDINGS = [
+    { key:"busan",   label:"부산 전용(busan)" },
+    { key:"centum",  label:"센텀 전용(centum)" },
+    { key:"ulsan",   label:"울산 전용(ulsan)" },
+    { key:"gimhae",  label:"김해 전용(gimhae)" },
+    { key:"yangsan", label:"양산 전용(yangsan)" },
+    { key:"changwon",label:"창원 전용(changwon)" },
+    { key:"masan",   label:"마산 전용(masan)" },
+    { key:"jinju",   label:"진주 전용(jinju)" },
+    { key:"incheon", label:"인천 전용(incheon)" },
+    { key:"ansan",   label:"안산 전용(ansan)" },
+    { key:"daegu",   label:"대구 전용(daegu)" },
+    { key:"pohang",  label:"포항 전용(pohang)" }
+  ];
+
+  // ✅ 컬러 구분
   const COLORS = {
-    reserve: { border: "#1F5EFF", fill: "rgba(31,94,255,0.22)" },   // Blue
-    call:    { border: "#E03131", fill: "rgba(224,49,49,0.22)" },   // Red
-    kakao:   { border: "#2F9E44", fill: "rgba(47,158,68,0.22)" }    // Green
+    reserve: { border: "#1F5EFF", fill: "rgba(31,94,255,0.22)" },
+    call:    { border: "#E03131", fill: "rgba(224,49,49,0.22)" },
+    kakao:   { border: "#2F9E44", fill: "rgba(47,158,68,0.22)" }
   };
 
   const $ = (id)=>document.getElementById(id);
@@ -296,7 +322,6 @@
     return new Date(y, m-1, d, 0,0,0,0);
   }
 
-  // ✅ 충돌 방지용: 키 생성 함수명 변경
   function ymdKey_(d){
     const y=d.getFullYear();
     const m=String(d.getMonth()+1).padStart(2,"0");
@@ -315,6 +340,14 @@
     if (s.includes("센텀")) return "센텀";
     if (s.endsWith("점")) s = s.slice(0, -1);
     return s;
+  }
+
+  function landingLabel(key){
+    const k = String(key||"").trim();
+    if(!k || k==="ALL") return "랜딩 전체(합산)";
+    if(k==="all") return "통합(all)";
+    const hit = LANDINGS.find(x=>x.key===k);
+    return hit ? hit.label : k;
   }
 
   function applyPreset(preset){
@@ -359,7 +392,6 @@
     b.textContent="";
   }
 
-  // 디버그용 전역 에러 노출
   window.addEventListener("error", (e)=>{
     const msg = [
       "프론트 에러 감지",
@@ -388,7 +420,7 @@
     $("cardMore").textContent = fmt(c.more||0);
   }
 
-  // ✅ (2) 전체 비교: 지점 0이어도 항상 보이게
+  // ✅ 전체 비교: 지점 0이어도 항상 보이게
   function fillAllCompareToFixedBranches_(data){
     const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
     const s = data?.series || {};
@@ -413,7 +445,7 @@
     return { labels: fixedLabels, series: outSeries };
   }
 
-  // ✅ (6) 지점 추이: 조회기간 전체 날짜/월을 생성하고 0 채우기
+  // ✅ 지점 추이: 조회기간 전체 날짜/월 생성 후 0 채우기
   function fillTrendToFullRange_(data, fromYmd, toYmd, group){
     const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
     const s = data?.series || {};
@@ -462,7 +494,7 @@
     return { labels: labelsOut, series: outSeries };
   }
 
-  // JSONP (타임아웃/캐시버스터)
+  // JSONP
   function loadJsonp(url){
     return new Promise((resolve,reject)=>{
       const cb="__hb_cb_"+Math.random().toString(16).slice(2);
@@ -507,9 +539,10 @@
     });
   }
 
-  async function fetchReport({branch="전체", from, to, group="day"}){
+  async function fetchReport({branch="전체", landing="ALL", from, to, group="day"}){
     const url = `${GAS_URL}?page=report`
       + `&branch=${encodeURIComponent(branch)}`
+      + `&landing=${encodeURIComponent(landing)}`
       + `&group=${encodeURIComponent(group)}`
       + `&from=${encodeURIComponent(from)}`
       + `&to=${encodeURIComponent(to)}`;
@@ -679,10 +712,11 @@
     }
   }
 
-  function safeFileName(branch, from, to, group){
+  function safeFileName(branch, landing, from, to, group){
     const b=String(branch||"전체").replace(/\s+/g,"");
+    const l=String(landing||"ALL").replace(/\s+/g,"");
     const g=(group==="month")?"month":"day";
-    return `hanbeam_report_${b}_${g}_${from}_${to}.png`;
+    return `hanbeam_report_${l}_${b}_${g}_${from}_${to}.png`;
   }
 
   async function exportAsImage(){
@@ -692,6 +726,7 @@
     }
 
     const branch=$("branchSelect").value||"전체";
+    const landing=$("landingSelect").value||"ALL";
     const {from,to}=getRangeSafe();
     const group=state.group;
     const gLabel=(group==="month")?"월별":"일별";
@@ -707,7 +742,7 @@
     $("exportChartLabel").textContent = isAll ? `지점별 비교 (${gLabel})` : `기간 내 추이 (${gLabel})`;
 
     $("exportMeta").textContent =
-      `지점: ${branch}\n기준: ${gLabel}\n기간: ${from} ~ ${to}\n생성: ${generatedAt}`;
+      `랜딩: ${landingLabel(landing)}\n지점: ${branch}\n기준: ${gLabel}\n기간: ${from} ~ ${to}\n생성: ${generatedAt}`;
 
     const cards=state.lastData.cards||{};
     $("exportTotal").textContent=fmt(cards.total||0);
@@ -722,7 +757,7 @@
     const canvas = await html2canvas($("exportDoc"), { backgroundColor:"#fff", scale:2, useCORS:true });
     const a=document.createElement("a");
     a.href=canvas.toDataURL("image/png");
-    a.download=safeFileName(branch, from, to, group);
+    a.download=safeFileName(branch, landing, from, to, group);
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -731,15 +766,15 @@
   async function refresh(){
     hideError();
     const branch=$("branchSelect").value||"전체";
+    const landing=$("landingSelect").value||"ALL";
     const {from,to}=getRangeSafe();
 
     try{
-      const dataRaw = await fetchReport({ branch, from, to, group: state.group });
+      const dataRaw = await fetchReport({ branch, landing, from, to, group: state.group });
       if(!dataRaw || typeof dataRaw !== "object"){
         throw new Error("INVALID_REPORT_RESPONSE\n" + String(dataRaw));
       }
 
-      // ✅ 여기서 0채우기/지점고정 보정
       const data = dataRaw;
 
       if(data.mode === "all_compare"){
@@ -756,14 +791,15 @@
 
       const gLabel=(state.group==="month")?"월별":"일별";
       $("metaRange").textContent = `${from} ~ ${to}`;
-
       setCards(data.cards);
 
+      const landingTxt = landingLabel(landing);
+
       if(data.mode==="all_compare"){
-        $("metaTitle").textContent = `전체 · 지점별 비교 · ${gLabel}`;
+        $("metaTitle").textContent = `${landingTxt} · 지점별 비교 · ${gLabel}`;
         renderStackedBar(data.labels||[], data.series||{});
       }else{
-        $("metaTitle").textContent = `${shortBranchName(branch)} · ${gLabel}`;
+        $("metaTitle").textContent = `${landingTxt} · ${shortBranchName(branch)} · ${gLabel}`;
         renderMultiLine(data.labels||[], data.series||{});
       }
 
@@ -781,6 +817,16 @@
   }
 
   function init(){
+    // landing select 채우기
+    const landingSel=$("landingSelect");
+    LANDINGS.forEach(x=>{
+      const opt=document.createElement("option");
+      opt.value=x.key;
+      opt.textContent=x.label;
+      landingSel.appendChild(opt);
+    });
+
+    // branch select 채우기
     const sel=$("branchSelect");
     BRANCHES.forEach(b=>{
       const opt=document.createElement("option");
@@ -791,6 +837,7 @@
     applyPreset("7d");
     setGroup("day");
 
+    landingSel.addEventListener("change", refresh);
     sel.addEventListener("change", refresh);
 
     document.querySelectorAll(".toggleRow button").forEach(btn=>{
