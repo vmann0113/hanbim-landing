@@ -89,14 +89,16 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 }
 
 /* ==================================================
-   ✅ Footer (전용 랜딩에서만 사용) — 겹침 방지 확정판
+   ✅ Footer (전용 랜딩에서만 사용) — FINAL
+   - 로고: 모바일에서도 너무 작아지지 않게 clamp
+   - 텍스트: 굵기 낮춤(사업자정보 톤)
+   - ⓒ: 지점정보보다 확실히 작게
    ================================================== */
 .hb-footerStage{
   background:#000 !important;
   color:#fff;
 }
 
-/* 1080x985 비율 유지 */
 .hb-footerCanvas{
   width: 100%;
   max-width: 1080px;
@@ -107,62 +109,72 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   position: relative;
 }
 
-/* ✅ 로고+텍스트를 한 덩어리로 세로 정렬 → 절대 안 겹침 */
+/* 로고+텍스트: 한 덩어리로 세로 정렬 → 겹침 방지 */
 .hb-footerStack{
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;      /* 중앙 정렬 */
-  justify-content: center;  /* 전체 가운데 배치 */
-  gap: 22px;                /* 로고-텍스트 간격 */
-  padding: 70px 60px;       /* 상하좌우 안전 여백 */
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 64px 56px;
   text-align: center;
 }
 
-/* ✅ 로고 규격: "1080 기준 높이 200"을 비율로 유지 + 상한/하한 */
+/* ✅ 로고: 1080 기준 높이 200, 모바일에서도 너무 작아지지 않게 */
 .hb-footerLogo{
-  height: min(200px, 20.3%);  /* 200/985=20.3% */
+  height: clamp(160px, 18.5vw, 200px);
   width: auto;
-  max-width: 70%;
+  max-width: 82%;
   object-fit: contain;
   opacity: .95;
 }
 
-/* ✅ 텍스트: 프리젠테이션 계열 폰트 */
+/* ✅ 텍스트: 프리젠테이션 계열 + 굵기 다운 */
 .hb-footerText{
   font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color:#fff;
-  width: min(940px, 100%);
+  width: min(980px, 100%);
 }
 
-/* 1줄(강조) */
+/* 1줄(대표/등록번호) */
 .hb-footerLineStrong{
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  font-size: clamp(13px, 1.9vw, 18px);
-  line-height: 1.55;
-  opacity: 0.92;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: clamp(12px, 1.7vw, 16px);
+  line-height: 1.6;
+  opacity: 0.88;
 }
 
-/* 2줄(일반) */
+/* 2줄(주소/전화) */
 .hb-footerLine{
   margin-top: 8px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-size: clamp(12px, 1.7vw, 16px);
-  line-height: 1.55;
-  opacity: 0.82;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  font-size: clamp(12px, 1.6vw, 15px);
+  line-height: 1.65;
+  opacity: 0.78;
 }
 
-/* 모바일에서 여백 조정 */
+/* ⓒ 라인(지점정보보다 확실히 작게) */
+.hb-footerCopy{
+  margin-top: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size: clamp(10px, 1.2vw, 11px);
+  line-height: 1.3;
+  opacity: 0.45;
+}
+
 @media (max-width: 420px){
   .hb-footerStack{
-    padding: 56px 22px;
-    gap: 18px;
+    padding: 54px 18px;
+    gap: 14px;
   }
   .hb-footerLogo{
-    max-width: 78%;
+    max-width: 88%;
+    height: clamp(150px, 28vw, 190px);
   }
 }
 
@@ -378,5 +390,6 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   color: rgba(90,31,43,0.92);
   line-height: 1;
 }
+
 
 
