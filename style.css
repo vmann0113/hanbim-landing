@@ -89,83 +89,83 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 }
 
 /* ==================================================
-   ✅ Footer (전용 랜딩에서만 사용)
-   - 기존(통합) 랜딩은 hb-footerStage를 안 쓰면 영향 0
+   ✅ Footer (전용 랜딩에서만 사용) — 겹침 방지 확정판
    ================================================== */
 .hb-footerStage{
   background:#000 !important;
   color:#fff;
 }
 
+/* 1080x985 비율 유지 */
 .hb-footerCanvas{
-  position: relative;
   width: 100%;
   max-width: 1080px;
   margin: 0 auto;
   aspect-ratio: 1080 / 985;
   background:#000 !important;
   overflow:hidden;
+  position: relative;
 }
 
-@supports not (aspect-ratio: 1 / 1){
-  .hb-footerCanvas{ height:0; padding-top: calc(985 / 1080 * 100%); }
-  .hb-footerCanvas > *{ position:absolute; }
+/* ✅ 로고+텍스트를 한 덩어리로 세로 정렬 → 절대 안 겹침 */
+.hb-footerStack{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* 중앙 정렬 */
+  justify-content: center;  /* 전체 가운데 배치 */
+  gap: 22px;                /* 로고-텍스트 간격 */
+  padding: 70px 60px;       /* 상하좌우 안전 여백 */
+  text-align: center;
 }
 
-/* ✅ 로고: 1080x985 기준 "높이 200" => 캔버스 높이의 약 20.3% */
+/* ✅ 로고 규격: "1080 기준 높이 200"을 비율로 유지 + 상한/하한 */
 .hb-footerLogo{
-  position:absolute;
-  left: 50%;
-  top: 10.5%;                 /* 985 기준 103px 정도 느낌 (원하면 조정) */
-  transform: translateX(-50%);
-
-  height: 20.3%;              /* ✅ 핵심: 비율로 고정 */
+  height: min(200px, 20.3%);  /* 200/985=20.3% */
   width: auto;
-  object-fit: contain;
-
-  /* ✅ 화면이 너무 크거나 작을 때만 제한 */
-  max-height: 200px;          /* 데스크톱 최대 */
-  min-height: 120px;          /* 모바일 최소 */
-
   max-width: 70%;
+  object-fit: contain;
   opacity: .95;
 }
 
-/* ✅ 텍스트 영역: 로고 아래에서 시작하도록 %로 배치 */
+/* ✅ 텍스트: 프리젠테이션 계열 폰트 */
 .hb-footerText{
-  position:absolute;
-  left: 50%;
-  top: 38%;                   /* ✅ 로고가 커져도 텍스트가 보이게(필요시 40~45로) */
-  transform: translateX(-50%);
-
-  width: min(940px, calc(100% - 120px));
-  text-align: center;
-
+  font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color:#fff;
+  width: min(940px, 100%);
+}
+
+/* 1줄(강조) */
+.hb-footerLineStrong{
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  font-size: clamp(13px, 1.9vw, 18px);
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+/* 2줄(일반) */
+.hb-footerLine{
+  margin-top: 8px;
   font-weight: 800;
   letter-spacing: -0.02em;
-
-  /* ✅ 프리젠테이션 계열 폰트 */
-  font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.hb-footerBranch{
-  font-size: clamp(20px, 3.2vw, 32px);   /* ✅ 화면에 맞춰 자동 */
-  font-weight: 900;
-  margin-bottom: 10px;
-}
-
-.hb-footerLine{
-  font-size: clamp(12px, 2.0vw, 17px);
+  font-size: clamp(12px, 1.7vw, 16px);
   line-height: 1.55;
-  opacity: 0.9;
+  opacity: 0.82;
 }
 
-.hb-footerSmall{
-  margin-top: 14px;
-  font-size: clamp(11px, 1.6vw, 13px);
-  opacity: 0.65;
+/* 모바일에서 여백 조정 */
+@media (max-width: 420px){
+  .hb-footerStack{
+    padding: 56px 22px;
+    gap: 18px;
+  }
+  .hb-footerLogo{
+    max-width: 78%;
+  }
 }
+
 /* ==================================================
    ✅ Toast
    ================================================== */
@@ -378,4 +378,5 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   color: rgba(90,31,43,0.92);
   line-height: 1;
 }
+
 
