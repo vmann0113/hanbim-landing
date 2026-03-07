@@ -97,7 +97,6 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   color:#fff;
 }
 
-/* 1080x985 비율 유지 */
 .hb-footerCanvas{
   position: relative;
   width: 100%;
@@ -108,31 +107,37 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   overflow:hidden;
 }
 
-/* 구형 브라우저 fallback */
 @supports not (aspect-ratio: 1 / 1){
   .hb-footerCanvas{ height:0; padding-top: calc(985 / 1080 * 100%); }
   .hb-footerCanvas > *{ position:absolute; }
 }
 
-/* ✅ 로고 크기 규격: 1080 기준 높이 200px (비율 유지) */
+/* ✅ 로고: 1080x985 기준 "높이 200" => 캔버스 높이의 약 20.3% */
 .hb-footerLogo{
   position:absolute;
   left: 50%;
-  top: 120px;
+  top: 10.5%;                 /* 985 기준 103px 정도 느낌 (원하면 조정) */
   transform: translateX(-50%);
-  height: 200px;          /* ✅ 요청값 */
-  width: auto;            /* 비율 유지 */
-  max-width: 70%;         /* 모바일에서 과대 확대 방지 */
+
+  height: 20.3%;              /* ✅ 핵심: 비율로 고정 */
+  width: auto;
   object-fit: contain;
+
+  /* ✅ 화면이 너무 크거나 작을 때만 제한 */
+  max-height: 200px;          /* 데스크톱 최대 */
+  min-height: 120px;          /* 모바일 최소 */
+
+  max-width: 70%;
   opacity: .95;
 }
 
-/* ✅ 텍스트: 프리젠테이션 계열 폰트 적용 */
+/* ✅ 텍스트 영역: 로고 아래에서 시작하도록 %로 배치 */
 .hb-footerText{
   position:absolute;
   left: 50%;
-  top: 390px; /* 로고가 커졌으니 텍스트 시작을 위로/아래로 여기서 조정 */
+  top: 38%;                   /* ✅ 로고가 커져도 텍스트가 보이게(필요시 40~45로) */
   transform: translateX(-50%);
+
   width: min(940px, calc(100% - 120px));
   text-align: center;
 
@@ -140,28 +145,27 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   font-weight: 800;
   letter-spacing: -0.02em;
 
-  /* ✅ 프리젠테이션 폰트 우선 적용 */
+  /* ✅ 프리젠테이션 계열 폰트 */
   font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .hb-footerBranch{
-  font-size: 32px;
+  font-size: clamp(20px, 3.2vw, 32px);   /* ✅ 화면에 맞춰 자동 */
   font-weight: 900;
   margin-bottom: 10px;
 }
 
 .hb-footerLine{
-  font-size: 17px;
+  font-size: clamp(12px, 2.0vw, 17px);
   line-height: 1.55;
   opacity: 0.9;
 }
 
 .hb-footerSmall{
   margin-top: 14px;
-  font-size: 13px;
+  font-size: clamp(11px, 1.6vw, 13px);
   opacity: 0.65;
 }
-
 /* ==================================================
    ✅ Toast
    ================================================== */
@@ -374,3 +378,4 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   color: rgba(90,31,43,0.92);
   line-height: 1;
 }
+
