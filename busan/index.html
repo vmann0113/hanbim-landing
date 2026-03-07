@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>한빔한복 부산점 무료상담</title>
-  <link rel="stylesheet" href="/style.css?v=20260307-busan-1" />
+  <title>한빔한복 부산·센텀 무료상담</title>
+  <link rel="stylesheet" href="/style.css?v=20260307-busan-centum-1" />
 </head>
 <body>
 
@@ -30,52 +30,70 @@
     <img src="/assets/01_cs.webp" alt="고객만족서비스">
   </section>
 
-  <!-- ✅ 오버레이(11개 지점) 유지 -->
+  <!-- 08 지점별 네이버링크 (오버레이 유지) -->
   <section class="block block-overlay naver-grid">
     <img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
     <div class="overlay-layer" id="naverOverlay" aria-label="지점별 네이버 예약 오버레이"></div>
   </section>
 
-  <!-- ✅ 검정 푸터(로고/텍스트) -->
-<section class="hb-footerStage" aria-label="푸터">
-  <div class="hb-footerCanvas">
-    <div class="hb-footerStack">
-      <img class="hb-footerLogo" src="/assets/footer_logo.png" alt="한빔한복 로고">
+  <!-- ✅ 푸터(부산/센텀 사업자 정보 2곳 표기 + ⓒ) -->
+  <section class="hb-footerStage" aria-label="푸터">
+    <div class="hb-footerCanvas">
+      <div class="hb-footerStack">
+        <img class="hb-footerLogo" src="/assets/footer_logo.png" alt="한빔한복 로고">
 
-      <div class="hb-footerText">
-        <div class="hb-footerLineStrong">
-          한빔한복 부산점 | 대표자: 김태현 | 등록번호: 637-48-00829
-        </div>
-        <div class="hb-footerLine">
-          부산광역시 부산진구 자유평화로 17, 3층 (범천동) | TEL.051-634-2325
-        </div>
+        <div class="hb-footerText">
+          <div class="hb-footerBlock">
+            <div class="hb-footerLineStrong">
+              한빔한복 부산점 | 대표자: 김태현 | 등록번호: 637-48-00829
+            </div>
+            <div class="hb-footerLine">
+              부산광역시 부산진구 자유평화로 17, 3층 (범천동) | TEL.051-634-2325
+            </div>
+          </div>
 
-        <!-- ✅ 추가 -->
-        <div class="hb-footerCopy">ⓒ Hanbim Hanbok</div>
+          <div class="hb-footerBlock">
+            <div class="hb-footerLineStrong">
+              한빔한복 센텀점 | 대표자: 이명진 | 등록번호: 419-10-03229
+            </div>
+            <div class="hb-footerLine">
+              부산광역시 해운대구 센텀3로 20, 3층 304호 (우동, 벡스코 비지니스호텔) | TEL.010-3052-2325
+            </div>
+          </div>
+
+          <div class="hb-footerCopy">ⓒ Hanbim Hanbok</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
 </main>
 
+<!-- ✅ Toast -->
 <div id="toast" role="status" aria-live="polite"></div>
 
+<!-- ✅ 하단 CTA: 부산/센텀 탭 + 공통 액션버튼(선택한 지점 기준으로 동작) -->
 <div class="hb-fixed-cta" id="hbFixedCta" aria-label="하단 고정 CTA">
+
+  <div class="hb-branchTabs" id="hbBranchTabs" aria-label="지점 선택 탭">
+    <button type="button" class="hb-tab active" data-idx="0">부산점</button>
+    <button type="button" class="hb-tab" data-idx="1">센텀점</button>
+  </div>
+
   <div class="hb-actionPanel" aria-label="바로가기 버튼">
     <a class="hb-action" id="hbBtnCall" href="#" aria-label="전화문의">
       <span class="hb-ico" style="background-image:url('/assets/btn-call.png');"></span>
-      <span class="hb-lbl">전화문의</span>
+      <span class="hb-lbl" id="hbLblCall">전화(부산점)</span>
     </a>
 
     <a class="hb-action" id="hbBtnKakao" href="#" aria-label="카톡문의">
       <span class="hb-ico" style="background-image:url('/assets/btn-kakao.png');"></span>
-      <span class="hb-lbl">카톡문의</span>
+      <span class="hb-lbl" id="hbLblKakao">카톡(부산점)</span>
     </a>
 
     <a class="hb-action" id="hbBtnReserve" href="#" aria-label="네이버예약">
       <span class="hb-ico" style="background-image:url('/assets/btn-reserve.png');"></span>
-      <span class="hb-lbl">네이버예약</span>
+      <span class="hb-lbl" id="hbLblReserve">예약(부산점)</span>
     </a>
 
     <a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9" aria-label="더 알아보기">
@@ -86,16 +104,31 @@
 </div>
 
 <script>
+  // =========================
+  // ✅ CONFIG
+  // =========================
   const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec".trim();
 
-  const LANDING_ID = "busan";
-  const FIXED_BRANCH = {
-    name: "부산점",
-    reserve: "https://m.booking.naver.com/booking/6/bizes/661812",
-    phone: "051.634.2325",
-    kakao: "https://open.kakao.com/o/soq7Ns4d"
-  };
+  // ✅ 이 랜딩의 ID (리포트 landing 필터용) - 부산/센텀 공동이므로 고유키 추천
+  const LANDING_ID = "busan_centum";
 
+  // ✅ 부산/센텀 CTA 정보 (선택한 탭 기준으로 전화/카톡/예약이 바뀜)
+  const CTA_BRANCHES = [
+    {
+      name: "부산점",
+      reserve: "https://m.booking.naver.com/booking/6/bizes/661812",
+      phone: "051-634-2325",
+      kakao: "https://open.kakao.com/o/soq7Ns4d"
+    },
+    {
+      name: "센텀점",
+      reserve: "https://booking.naver.com/booking/6/bizes/1577219",
+      phone: "010-3052-2325",
+      kakao: null
+    }
+  ];
+
+  // ✅ UTM campaign
   function getUtmCampaign(){
     try{
       const p = new URLSearchParams(location.search || "");
@@ -103,6 +136,9 @@
     }catch(e){ return ""; }
   }
 
+  // =========================
+  // ✅ Toast (null-safe)
+  // =========================
   const toastEl = document.getElementById('toast');
   let toastTimer = null;
   function showToast(msg){
@@ -113,6 +149,9 @@
     toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
   }
 
+  // =========================
+  // ✅ Session + Logger
+  // =========================
   function getHBSessionId(){
     const k="HB_LANDING_SID";
     let v = localStorage.getItem(k);
@@ -160,54 +199,56 @@
     }catch(e){}
   }
 
+  // =========================================================
+  // ✅ 오버레이 SSOT (전체 지점 유지)
+  // =========================================================
   const MASTER_BRANCHES = [
     { key:"busan",   name:"부산점",  status:"open",
       reserve:"https://m.booking.naver.com/booking/6/bizes/661812",
-      overlay:"https://m.booking.naver.com/booking/6/bizes/661812",
-      phone:"051.634.2325", kakao:"https://open.kakao.com/o/soq7Ns4d" },
+      overlay:"https://m.booking.naver.com/booking/6/bizes/661812" },
+
     { key:"centum",  name:"센텀점",  status:"open",
       reserve:"https://booking.naver.com/booking/6/bizes/1577219",
-      overlay:"https://booking.naver.com/booking/6/bizes/1577219",
-      phone:"010-3052-2325", kakao:null },
+      overlay:"https://booking.naver.com/booking/6/bizes/1577219" },
+
     { key:"ulsan",   name:"울산점",  status:"open",
       reserve:"https://booking.naver.com/booking/6/bizes/1534767",
-      overlay:"https://booking.naver.com/booking/6/bizes/1534767",
-      phone:"010.9807.2325", kakao:"https://open.kakao.com/o/sKjCbA0h" },
+      overlay:"https://booking.naver.com/booking/6/bizes/1534767" },
+
     { key:"gimhae",  name:"김해점",  status:"open",
       reserve:"https://booking.naver.com/booking/6/bizes/1402679",
-      overlay:"https://booking.naver.com/booking/6/bizes/1402679",
-      phone:"010.8065.2325", kakao:"https://open.kakao.com/o/sHM2wwsh" },
+      overlay:"https://booking.naver.com/booking/6/bizes/1402679" },
+
     { key:"yangsan", name:"양산점",  status:"open",
       reserve:"https://booking.naver.com/booking/13/bizes/868629",
-      overlay:"https://booking.naver.com/booking/13/bizes/868629",
-      phone:"055.912.0425", kakao:"https://open.kakao.com/o/sp44Hxaf" },
+      overlay:"https://booking.naver.com/booking/13/bizes/868629" },
+
     { key:"changwon",name:"창원점",  status:"open",
       reserve:"https://booking.naver.com/booking/6/bizes/843111",
-      overlay:"https://booking.naver.com/booking/6/bizes/843111",
-      phone:"055.263.2325", kakao:"https://open.kakao.com/o/sdcvbh5e" },
+      overlay:"https://booking.naver.com/booking/6/bizes/843111" },
+
     { key:"masan",   name:"마산점",  status:"open",
       reserve:"https://booking.naver.com/booking/6/bizes/1526541",
-      overlay:"https://booking.naver.com/booking/6/bizes/1526541",
-      phone:"010.8832.2325", kakao:"https://open.kakao.com/o/ssWvuvYh" },
+      overlay:"https://booking.naver.com/booking/6/bizes/1526541" },
+
     { key:"jinju",   name:"진주점",  status:"open",
       reserve:"https://m.booking.naver.com/booking/6/bizes/1485854",
-      overlay:"https://m.booking.naver.com/booking/6/bizes/1485854",
-      phone:"010.5654.2407", kakao:"https://open.kakao.com/o/sbxBToNh" },
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1485854" },
+
     { key:"incheon", name:"인천점",  status:"open",
       reserve:"https://m.booking.naver.com/booking/13/bizes/1039475",
-      overlay:"https://m.booking.naver.com/booking/13/bizes/1039475",
-      phone:"032.283.2325", kakao:"https://open.kakao.com/o/sIrXajUf" },
+      overlay:"https://m.booking.naver.com/booking/13/bizes/1039475" },
+
     { key:"ansan",   name:"안산점",  status:"open",
       reserve:"https://m.booking.naver.com/booking/6/bizes/1500008",
-      overlay:"https://m.booking.naver.com/booking/6/bizes/1500008",
-      phone:"010.6591.2322", kakao:"https://open.kakao.com/o/sqRSjaRh" },
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1500008" },
+
     { key:"daegu",   name:"대구점",  status:"open",
       reserve:"https://m.booking.naver.com/booking/6/bizes/1600152",
-      overlay:"https://m.booking.naver.com/booking/6/bizes/1600152",
-      phone:"010-8492-2328", kakao:null },
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1600152" },
+
     { key:"pohang",  name:"포항점",  status:"coming",
-      reserve:"", overlay:"",
-      phone:"", kakao:null }
+      reserve:"", overlay:"" }
   ];
 
   const NAVER_BASE_W = 1080;
@@ -309,48 +350,70 @@
   window.addEventListener('resize', ()=> applyRectsForSection('.naver-grid', NAVER_BASE_W, NAVER_BASE_H));
   buildOverlays();
 
+  // =========================================================
+  // ✅ CTA 탭 + 액션 동작
+  // =========================================================
+  const state = { activeIdx: 0 };
+
+  function setActiveBranch(i){
+    state.activeIdx = i;
+    document.querySelectorAll(".hb-tab").forEach((t, idx)=>{
+      t.classList.toggle("active", idx === i);
+    });
+    const b = CTA_BRANCHES[i];
+    document.getElementById("hbLblCall").textContent = `전화(${b.name})`;
+    document.getElementById("hbLblKakao").textContent = `카톡(${b.name})`;
+    document.getElementById("hbLblReserve").textContent = `예약(${b.name})`;
+  }
+
+  document.getElementById("hbBranchTabs")?.addEventListener("click", (e)=>{
+    const btn = e.target.closest(".hb-tab");
+    if(!btn) return;
+    const idx = Number(btn.dataset.idx);
+    if(!Number.isFinite(idx)) return;
+    setActiveBranch(idx);
+  });
+
   function toTelHref(phone){
     const digits = String(phone || "").replace(/[^\d]/g,"");
     return digits ? ("tel:" + digits) : "";
   }
 
-  const btnCall = document.getElementById("hbBtnCall");
-  const btnKakao = document.getElementById("hbBtnKakao");
-  const btnReserve = document.getElementById("hbBtnReserve");
-  const btnMore = document.getElementById("hbBtnMore");
-
-  btnCall?.addEventListener("click", (e)=>{
+  document.getElementById("hbBtnCall")?.addEventListener("click", (e)=>{
     e.preventDefault();
-    const telHref = toTelHref(FIXED_BRANCH.phone);
-    if(!telHref) return;
-    sendClickEvent({ action:"call", branch: FIXED_BRANCH.name, source:"cta" });
-    window.location.href = telHref;
+    const b = CTA_BRANCHES[state.activeIdx];
+    const tel = toTelHref(b.phone);
+    if(!tel) return;
+    sendClickEvent({ action:"call", branch:b.name, source:"cta" });
+    location.href = tel;
   });
 
-  btnKakao?.addEventListener("click", (e)=>{
+  document.getElementById("hbBtnKakao")?.addEventListener("click", (e)=>{
     e.preventDefault();
-    const href = FIXED_BRANCH.kakao;
-    if(!href){
+    const b = CTA_BRANCHES[state.activeIdx];
+    if(!b.kakao){
       showToast("준비중입니다.");
-      sendClickEvent({ action:"kakao_pending", branch: FIXED_BRANCH.name, source:"cta" });
+      sendClickEvent({ action:"kakao_pending", branch:b.name, source:"cta" });
       return;
     }
-    sendClickEvent({ action:"kakao", branch: FIXED_BRANCH.name, source:"cta" });
-    window.open(href, "_blank", "noopener,noreferrer");
+    sendClickEvent({ action:"kakao", branch:b.name, source:"cta" });
+    window.open(b.kakao, "_blank", "noopener,noreferrer");
   });
 
-  btnReserve?.addEventListener("click", (e)=>{
+  document.getElementById("hbBtnReserve")?.addEventListener("click", (e)=>{
     e.preventDefault();
-    const href = FIXED_BRANCH.reserve || "";
-    if(!href) return;
-    sendClickEvent({ action:"reserve", branch: FIXED_BRANCH.name, source:"cta" });
-    window.open(href, "_blank", "noopener,noreferrer");
+    const b = CTA_BRANCHES[state.activeIdx];
+    if(!b.reserve) return;
+    sendClickEvent({ action:"reserve", branch:b.name, source:"cta" });
+    window.open(b.reserve, "_blank", "noopener,noreferrer");
   });
 
-  btnMore?.addEventListener("click", ()=>{
-    sendClickEvent({ action:"more", branch: FIXED_BRANCH.name, source:"cta" });
+  document.getElementById("hbBtnMore")?.addEventListener("click", ()=>{
+    const b = CTA_BRANCHES[state.activeIdx];
+    sendClickEvent({ action:"more", branch:b.name, source:"cta" });
   });
 
+  // CTA 높이 반영
   function setHbCtaHeightVar(){
     const cta = document.getElementById("hbFixedCta");
     const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
@@ -360,6 +423,9 @@
   window.addEventListener('orientationchange', ()=> setTimeout(setHbCtaHeightVar, 250));
   window.addEventListener('load', ()=> setTimeout(setHbCtaHeightVar, 50));
   setHbCtaHeightVar();
+
+  // 초기
+  setActiveBranch(0);
 </script>
 
 </body>
