@@ -3,867 +3,591 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>한빔한복 전지점 랜딩유입 리포트</title>
+  <title>한빔한복 무료상담</title>
+  <link rel="stylesheet" href="style.css?v=20260112-200" />
 
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307@1.0/Paperlogy.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
+  <!-- ✅ iPhone date-picker / overlay 클릭 이슈 핫픽스 (style.css 위에 "덮어쓰기"용) -->
   <style>
-    :root{
-      --wine:#7A1E2C;
-      --bg:#ffffff;
-      --text:#1b1b1b;
-      --muted:#8c8c8c;
-      --radius:16px;
-      --pad:16px;
-      --border:2px solid var(--wine);
-      --softBorder:1px solid rgba(122,30,44,0.25);
-      --shadow:0 8px 20px rgba(20,10,10,0.06);
-
-      /* ✅ 버튼/카드 높이 줄이기 */
-      --btnPadY:6px;
-      --btnPadY2:7px;
-      --inputPadY:10px;
-      --cardPad:12px;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
-    }
-    .wrap{ max-width:520px; margin:0 auto; padding:0 16px 28px; }
-    .title{
-      background:var(--wine); color:#fff; padding:18px 16px;
-      font-size:18px; font-weight:800; letter-spacing:-0.4px;
-      border-bottom-left-radius:20px; border-bottom-right-radius:20px;
-      margin:0 -16px 16px;
-    }
-    .card{ background:#fff; border:var(--border); border-radius:var(--radius); padding:var(--pad); }
-
-    select{
-      width:100%; appearance:none; background:#fff; color:var(--text);
-      border:var(--border); border-radius:14px; padding:var(--inputPadY) 14px;
-      font-size:15px; font-weight:800; outline:none;
-      box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
-    }
-    .selectGap{ margin-top:10px; }
-
-    .toggleRow{ display:flex; gap:8px; margin-top:10px; }
-    .toggleRow button{
-      flex:1; border:var(--border); background:#fff; color:var(--wine);
-      border-radius:14px; padding:var(--btnPadY) 0;
-      font-weight:900; font-size:13px; cursor:pointer;
-      transition:transform .06s ease, filter .12s ease;
-    }
-    .toggleRow button:active{ transform:translateY(1px); filter:brightness(0.99); }
-    .toggleRow button.active{ background:var(--wine); color:#fff; }
-
-    .sectionTitle{ margin-top:10px; font-size:13px; font-weight:900; letter-spacing:-0.2px; color:var(--wine); }
-
-    .periodRow{ display:flex; gap:10px; margin-top:8px; }
-    .periodRow input[type="date"]{
-      flex:1; width:100%; border:var(--border); border-radius:14px;
-      padding:var(--inputPadY) 12px; font-size:13px; font-weight:900; outline:none;
-      background:#fff; color:var(--text); min-width:0;
-      box-shadow:inset 0 1px 0 rgba(0,0,0,0.03);
+    /* ✅ iOS에서 date input 터치 씹힘 방지: overlay 내부 폼요소는 확실히 터치 허용 */
+    .overlay-layer input,
+    .overlay-layer select,
+    .overlay-layer textarea,
+    .overlay-layer button,
+    .overlay-layer a{
+      pointer-events:auto !important;
     }
 
-    .presetRow{ display:flex; gap:8px; margin-top:8px; }
-    .presetRow button{
-      flex:1; border:var(--border); background:#fff; color:var(--wine);
-      border-radius:14px; padding:var(--btnPadY) 0;
-      font-weight:900; font-size:13px; cursor:pointer;
-      transition:transform .06s ease, filter .12s ease;
-    }
-    .presetRow button:active{ transform:translateY(1px); filter:brightness(0.99); }
-    .presetRow button.active{ background:var(--wine); color:#fff; }
+    /* ✅ ov 공통 z-index 올려서 덮임 방지 */
+    .ov{ z-index: 20; }
 
-    .btnRow{ display:flex; gap:10px; margin-top:8px; }
-    .applyBtn{
-      flex:1; border:var(--border); background:var(--wine); color:#fff;
-      border-radius:14px; padding:var(--btnPadY2) 0;
-      font-weight:900; font-size:13px; cursor:pointer;
-      transition:transform .06s ease, filter .12s ease;
-    }
-    .applyBtn:active{ transform:translateY(1px); filter:brightness(0.99); }
-
-    .exportBtn{
-      width:120px; border:var(--border); background:#fff; color:var(--wine);
-      border-radius:14px; padding:var(--btnPadY2) 0;
-      font-weight:900; font-size:13px; cursor:pointer; flex:0 0 120px;
-      transition:transform .06s ease, filter .12s ease;
-    }
-    .exportBtn:active{ transform:translateY(1px); filter:brightness(0.99); }
-
-    .chartCard{ margin-top:12px; border-color:rgba(122,30,44,0.75); }
-    .meta{ display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:8px; }
-    .meta .left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
-    .meta .big{
-      font-size:16px; font-weight:900; letter-spacing:-0.4px; color:var(--wine);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .meta .small{ font-size:12px; color:var(--muted); }
-
-    .chartWrap{
-      height:290px; position:relative;
-      border-radius:14px; overflow:hidden;
-      border:var(--softBorder);
-      box-shadow:var(--shadow);
-    }
-    canvas#lineChart{ width:100% !important; height:100% !important; display:block; }
-
-    .error{
-      color:#c0392b; font-size:12px; margin-top:10px; white-space:pre-wrap; display:none;
-      border:1px dashed rgba(192,57,43,0.35);
-      border-radius:12px; padding:10px 12px;
+    /* ✅ iOS Safari: date는 네이티브 UI라 더 강하게 올림 */
+    .ov-date{
+      position:absolute;
+      z-index: 999 !important;
+      pointer-events:auto !important;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px; }
-    .sq{
-      display:flex; flex-direction:column; justify-content:space-between;
-      padding:var(--cardPad);
-      min-height:120px;
+    /* ✅ iOS: indicator 영역을 0으로 만들면 캘린더가 안 열릴 수 있음 */
+    .ov-date::-webkit-calendar-picker-indicator{
+      opacity:0; /* 아이콘만 숨김, 영역은 유지 */
     }
-    .lbl{ font-size:13px; font-weight:900; color:var(--muted); letter-spacing:-0.2px; }
-    .val{ font-size:28px; font-weight:900; letter-spacing:-0.8px; color:var(--wine); }
 
-    /* Export doc */
-    .exportDocWrap{
-      position:fixed; left:-99999px; top:0; width:860px;
-      background:#fff; padding:28px;
-      font-family:"Paperlogy",-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
-      color:#111;
+    /* ✅ fixed CTA / toast safe-area 반영 */
+    .fixed-cta{
+      bottom: calc(10px + env(safe-area-inset-bottom));
     }
-    .docHeader{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:14px; }
-    .docTitle{ font-size:22px; font-weight:900; letter-spacing:-0.6px; color:var(--wine); line-height:1.2; }
-    .docMeta{ font-size:13px; color:#555; line-height:1.55; text-align:right; white-space:pre-line; }
-    .docBox{ border:2px solid var(--wine); border-radius:18px; padding:18px; }
-    .docChartRow{ display:grid; grid-template-columns: 1.2fr 0.8fr; gap:14px; align-items:stretch; }
-    .docChartCard{ border:2px solid var(--wine); border-radius:16px; padding:14px; background:#fff; }
-    .docChartWrap{ height:280px; position:relative; }
-    #exportChart{ width:100% !important; height:100% !important; display:block; }
-    .docCards{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
-    .docMini{ border:2px solid var(--wine); border-radius:16px; padding:14px; background:#fff; display:flex; flex-direction:column; justify-content:space-between; min-height:132px; }
-    .docMini .t{ font-size:13px; color:#666; font-weight:900; }
-    .docMini .n{ font-size:34px; color:var(--wine); font-weight:900; letter-spacing:-0.8px; }
-    .docFooter{ margin-top:12px; font-size:12px; color:#777; line-height:1.45; }
+    #toast{
+      bottom: calc(120px + env(safe-area-inset-bottom));
+    }
 
-    @media (min-width: 900px){
-      .wrap{ max-width: 980px; }
-      .grid{ grid-template-columns:repeat(4,1fr); }
-      .sq{ min-height:110px; }
-      .chartWrap{ height: 360px; }
-    }
+    /* (선택) 텍스트 자동 확대 방지 안정화 */
+    html{ -webkit-text-size-adjust: 100%; }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="title">한빔한복 전지점 랜딩유입 리포트</div>
 
-    <div class="card">
+<main class="landing">
 
-      <!-- ✅ Landing Filter -->
-      <select id="landingSelect" aria-label="랜딩 선택">
-        <option value="ALL">랜딩 전체(합산)</option>
-        <option value="all">통합 랜딩(all)</option>
-      </select>
+  <!-- 01 히어로 -->
+  <section class="block">
+    <img src="assets/01_hero.webp" alt="히어로">
+  </section>
 
-      <div class="selectGap"></div>
+  <!-- 03 매장소개 (높이 변경/축소) -->
+  <section class="block short">
+    <img src="assets/03_store_intro.webp" alt="매장소개">
+  </section>
 
-      <select id="branchSelect" aria-label="지점 선택">
-        <option value="전체">지점 전체</option>
-      </select>
+  <!-- 01 디자인 보유 (높이 변경/축소) -->
+  <section class="block short">
+    <img src="assets/01_design.webp" alt="강점소개">
+  </section>
 
-      <div class="toggleRow" role="tablist" aria-label="리포트 기준">
-        <button type="button" data-group="day" class="active">일별</button>
-        <button type="button" data-group="month">월별</button>
-      </div>
+  <!-- 01 악세사리 제공 (높이 변경/축소) -->
+  <section class="block short">
+    <img src="assets/01_accesary.webp" alt="예약고객혜택">
+  </section>
 
-      <div class="sectionTitle">기간 선택</div>
-      <div class="periodRow">
-        <input id="fromDate" type="date" aria-label="시작일">
-        <input id="toDate" type="date" aria-label="종료일">
-      </div>
+  <!-- 01 고객만족서비스 (높이 변경/축소) -->
+  <section class="block short">
+    <img src="assets/01_cs.webp" alt="고객만족서비스">
+  </section>
 
-      <div class="presetRow" role="tablist" aria-label="빠른 기간 선택">
-        <button type="button" data-preset="7d" class="active">1주일</button>
-        <button type="button" data-preset="1m">1개월</button>
-        <button type="button" data-preset="3m">3개월</button>
-      </div>
+  <!-- 08 지점별 네이버링크 (오버레이) -->
+  <section class="block block-overlay naver-grid">
+    <img src="assets/08_naver_links.webp" alt="지점별 네이버 예약">
+    <div class="overlay-layer" id="naverOverlay"></div>
+  </section>
 
-      <div class="btnRow">
-        <button class="applyBtn" id="applyBtn" type="button">조회</button>
-        <button class="exportBtn" id="exportBtn" type="button">리포트 저장</button>
-      </div>
+      <!-- ✅ iOS 안정: date는 네이티브 UI에 맡기는 게 제일 안정적 -->
+      <input class="ov ov-date" name="date" type="date" required>
 
-      <div class="card chartCard">
-        <div class="meta">
-          <div class="left">
-            <div class="big" id="metaTitle">전체</div>
-            <div class="small" id="metaRange">-</div>
-          </div>
-          <div class="big" id="metaTotal">0</div>
-        </div>
+      <button class="ov ov-submit" type="submit" aria-label="제출하기"></button>
+    </form>
+  </section>
 
-        <div class="chartWrap">
-          <canvas id="lineChart"></canvas>
-        </div>
+  <!-- 09 푸터 -->
+  <section class="block">
+    <img src="assets/09_footer.webp" alt="푸터">
+  </section>
 
-        <div class="error" id="errBox"></div>
-      </div>
+</main>
 
-      <div class="grid">
-        <div class="card sq">
-          <div class="lbl">네이버예약</div>
-          <div class="val" id="cardReserve">0</div>
-        </div>
-        <div class="card sq">
-          <div class="lbl">전화문의</div>
-          <div class="val" id="cardCall">0</div>
-        </div>
-        <div class="card sq">
-          <div class="lbl">카톡문의</div>
-          <div class="val" id="cardKakao">0</div>
-        </div>
-        <div class="card sq">
-          <div class="lbl">더 알아보기</div>
-          <div class="val" id="cardMore">0</div>
-        </div>
-      </div>
-    </div>
+<!-- =========================
+   ✅ FIXED CTA : 지점선택 + 액션버튼 (추가)
+   ========================= -->
+<div class="hb-fixed-cta" id="hbFixedCta" aria-label="하단 고정 CTA">
+  <!-- 지점 선택 버튼(와인색) -->
+  <button class="hb-branchBtn" id="hbOpenBranch" type="button" aria-label="지점 선택">
+    <span class="hb-branchTxt" id="hbBranchText">가까운 지점 선택하기</span>
+    <svg class="hb-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9L12 15L18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <!-- 액션 버튼 -->
+  <div class="hb-actionPanel" aria-label="바로가기 버튼">
+    <a class="hb-action" id="hbBtnCall" href="#" aria-label="전화문의">
+      <span class="hb-ico" style="background-image:url('assets/btn-call.png');"></span>
+      <span class="hb-lbl">전화문의</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnKakao" href="#" aria-label="카톡문의">
+      <span class="hb-ico" style="background-image:url('assets/btn-kakao.png');"></span>
+      <span class="hb-lbl">카톡문의</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnReserve" href="#" aria-label="네이버예약">
+      <span class="hb-ico" style="background-image:url('assets/btn-reserve.png');"></span>
+      <span class="hb-lbl">네이버예약</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9" aria-label="더 알아보기">
+      <span class="hb-ico" style="background-image:url('assets/btn-more.png');"></span>
+      <span class="hb-lbl">더 알아보기</span>
+    </a>
   </div>
+</div>
 
-  <!-- Export doc -->
-  <div class="exportDocWrap" id="exportDoc">
-    <div class="docHeader">
-      <div>
-        <div class="docTitle">한빔한복 랜딩 유입 리포트</div>
-        <div style="margin-top:6px; font-size:13px; color:#444; font-weight:800;" id="exportSub">공유용 리포트</div>
-      </div>
-      <div class="docMeta" id="exportMeta"></div>
+<!-- =========================
+     ✅ 지점 선택 모달 (추가)
+     ========================= -->
+<div class="hb-branchBackdrop" id="hbBranchBackdrop" aria-hidden="true">
+  <div class="hb-modal" role="dialog" aria-modal="true" aria-label="지점 선택">
+    <div class="hb-modalHead">
+      <div>지점 선택</div>
+      <button id="hbCloseBranch" type="button">닫기</button>
     </div>
-
-    <div class="docBox">
-      <div class="docChartRow">
-        <div class="docChartCard">
-          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
-            <div style="font-weight:900; color:var(--wine); font-size:14px;" id="exportChartLabel">그래프</div>
-            <div style="font-weight:900; color:var(--wine); font-size:16px;" id="exportTotal">0</div>
-          </div>
-          <div class="docChartWrap">
-            <canvas id="exportChart"></canvas>
-          </div>
-        </div>
-
-        <div class="docCards">
-          <div class="docMini"><div class="t">네이버예약</div><div class="n" id="exportReserve">0</div></div>
-          <div class="docMini"><div class="t">전화문의</div><div class="n" id="exportCall">0</div></div>
-          <div class="docMini"><div class="t">카톡문의</div><div class="n" id="exportKakao">0</div></div>
-          <div class="docMini"><div class="t">더 알아보기</div><div class="n" id="exportMore">0</div></div>
-        </div>
-      </div>
-
-      <div class="docFooter" id="exportFoot">• 네이버예약(reserve)은 오버레이 + CTA가 합산됩니다.</div>
-    </div>
+    <div class="hb-modalBody" id="hbBranchList"></div>
   </div>
+</div>
 
 <script>
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
+  const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec".trim();
 
-  // ✅ 지점 이름 고정(0이어도 반드시 포함)
-  const BRANCHES = [
-    "부산점","센텀점","울산점","김해점","양산점","창원점","마산점","진주점","인천점","안산점","대구점","포항점"
-  ];
+  /* ==================================================
+     ✅ 리포트 수집 (CLICK 로그) - 여기만 핵심 수정
+     - action: reserve/call/kakao/more/branch_select 등
+     - branch: 지점명
+     - source: overlay/cta 등(분석용, 리포트 합산에는 영향 없음)
+     ================================================== */
 
-  // ✅ 랜딩 목록 (키는 landing 값과 동일)
-  const LANDINGS = [
-    { key:"busan",   label:"부산 전용(busan)" },
-    { key:"centum",  label:"센텀 전용(centum)" },
-    { key:"ulsan",   label:"울산 전용(ulsan)" },
-    { key:"gimhae",  label:"김해 전용(gimhae)" },
-    { key:"yangsan", label:"양산 전용(yangsan)" },
-    { key:"changwon",label:"창원 전용(changwon)" },
-    { key:"masan",   label:"마산 전용(masan)" },
-    { key:"jinju",   label:"진주 전용(jinju)" },
-    { key:"incheon", label:"인천 전용(incheon)" },
-    { key:"ansan",   label:"안산 전용(ansan)" },
-    { key:"daegu",   label:"대구 전용(daegu)" },
-    { key:"pohang",  label:"포항 전용(pohang)" }
-  ];
-
-  // ✅ 컬러 구분
-  const COLORS = {
-    reserve: { border: "#1F5EFF", fill: "rgba(31,94,255,0.22)" },
-    call:    { border: "#E03131", fill: "rgba(224,49,49,0.22)" },
-    kakao:   { border: "#2F9E44", fill: "rgba(47,158,68,0.22)" }
-  };
-
-  const $ = (id)=>document.getElementById(id);
-  const state = { group:"day", lastData:null, lastUrl:"" };
-
-  function fmt(n){ try{return Number(n||0).toLocaleString("ko-KR");}catch(e){return String(n||0);} }
-
-  function dateISO(d){
-    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), da=String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${da}`;
-  }
-  function parseISODateLocal_(ymd){
-    const s = String(ymd||"").trim();
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
-    const [y,m,d]=s.split("-").map(Number);
-    return new Date(y, m-1, d, 0,0,0,0);
-  }
-
-  function ymdKey_(d){
-    const y=d.getFullYear();
-    const m=String(d.getMonth()+1).padStart(2,"0");
-    const da=String(d.getDate()).padStart(2,"0");
-    return `${y}-${m}-${da}`;
-  }
-  function ymKey_(d){
-    const y=d.getFullYear();
-    const m=String(d.getMonth()+1).padStart(2,"0");
-    return `${y}-${m}`;
-  }
-
-  function shortBranchName(name){
-    let s = String(name||"").trim();
-    if(!s) return s;
-    if (s.includes("센텀")) return "센텀";
-    if (s.endsWith("점")) s = s.slice(0, -1);
-    return s;
-  }
-
-  function landingLabel(key){
-    const k = String(key||"").trim();
-    if(!k || k==="ALL") return "랜딩 전체(합산)";
-    if(k==="all") return "통합(all)";
-    const hit = LANDINGS.find(x=>x.key===k);
-    return hit ? hit.label : k;
-  }
-
-  function applyPreset(preset){
-    const now = new Date();
-    const to = new Date(now);
-    const from = new Date(now);
-
-    if(preset==="7d"){ from.setDate(from.getDate()-6); }
-    else if(preset==="1m"){ from.setMonth(from.getMonth()-1); from.setDate(from.getDate()+1); }
-    else if(preset==="3m"){ from.setMonth(from.getMonth()-3); from.setDate(from.getDate()+1); }
-
-    $("fromDate").value = dateISO(from);
-    $("toDate").value = dateISO(to);
-
-    document.querySelectorAll(".presetRow button").forEach(b=>{
-      b.classList.toggle("active", b.dataset.preset===preset);
-    });
-  }
-  function clearPresetActive(){ document.querySelectorAll(".presetRow button").forEach(b=>b.classList.remove("active")); }
-
-  function setGroup(group){
-    state.group = group;
-    document.querySelectorAll(".toggleRow button").forEach(b=>{
-      b.classList.toggle("active", b.dataset.group===group);
-    });
-  }
-
-  function getRangeSafe(){
-    let from=$("fromDate").value, to=$("toDate").value;
-    if(!from||!to){ applyPreset("7d"); from=$("fromDate").value; to=$("toDate").value; }
-    return { from, to };
-  }
-
-  function showError(msg){
-    const b=$("errBox");
-    b.style.display="block";
-    b.textContent=msg;
-  }
-  function hideError(){
-    const b=$("errBox");
-    b.style.display="none";
-    b.textContent="";
-  }
-
-  window.addEventListener("error", (e)=>{
-    const msg = [
-      "프론트 에러 감지",
-      String(e?.message || e?.error?.message || "UNKNOWN_ERROR"),
-      e?.filename ? ("file: " + e.filename) : "",
-      (Number.isFinite(e?.lineno) ? ("line: " + e.lineno) : "")
-    ].filter(Boolean).join("\n");
-    showError(msg);
-  });
-  window.addEventListener("unhandledrejection", (e)=>{
-    const reason = e?.reason;
-    const msg = [
-      "Promise 에러 감지",
-      String(reason?.message || reason || "UNKNOWN_REJECTION"),
-      state.lastUrl ? ("lastUrl: " + state.lastUrl) : ""
-    ].filter(Boolean).join("\n");
-    showError(msg);
-  });
-
-  function setCards(cards){
-    const c=cards||{};
-    $("metaTotal").textContent = fmt(c.total||0);
-    $("cardReserve").textContent = fmt(c.reserve||0);
-    $("cardCall").textContent = fmt(c.call||0);
-    $("cardKakao").textContent = fmt(c.kakao||0);
-    $("cardMore").textContent = fmt(c.more||0);
-  }
-
-  // ✅ 전체 비교: 지점 0이어도 항상 보이게
-  function fillAllCompareToFixedBranches_(data){
-    const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
-    const s = data?.series || {};
-    const map = {};
-    labelsIn.forEach((b, i)=>{
-      map[b] = {
-        reserve: Number(s.reserve?.[i] || 0),
-        call:   Number(s.call?.[i] || 0),
-        kakao:  Number(s.kakao?.[i] || 0)
-      };
-    });
-
-    const fixedLabels = BRANCHES.slice();
-    const outSeries = { reserve:[], call:[], kakao:[] };
-
-    fixedLabels.forEach(b=>{
-      outSeries.reserve.push(map[b]?.reserve || 0);
-      outSeries.call.push(map[b]?.call || 0);
-      outSeries.kakao.push(map[b]?.kakao || 0);
-    });
-
-    return { labels: fixedLabels, series: outSeries };
-  }
-
-  // ✅ 지점 추이: 조회기간 전체 날짜/월 생성 후 0 채우기
-  function fillTrendToFullRange_(data, fromYmd, toYmd, group){
-    const labelsIn = Array.isArray(data?.labels) ? data.labels : [];
-    const s = data?.series || {};
-    const map = {};
-    labelsIn.forEach((k, i)=>{
-      map[k] = {
-        reserve: Number(s.reserve?.[i] || 0),
-        call:   Number(s.call?.[i] || 0),
-        kakao:  Number(s.kakao?.[i] || 0)
-      };
-    });
-
-    const fromD = parseISODateLocal_(fromYmd);
-    const toD   = parseISODateLocal_(toYmd);
-    if(!fromD || !toD){
-      return { labels: labelsIn, series: {reserve:s.reserve||[], call:s.call||[], kakao:s.kakao||[]} };
+  function getHBSessionId(){
+    const k="HB_LANDING_SID";
+    let v = localStorage.getItem(k);
+    if(!v){
+      const c = (typeof window !== "undefined") ? window.crypto : null;
+      v = (c && typeof c.randomUUID === "function")
+        ? c.randomUUID()
+        : (Date.now()+"_"+Math.random().toString(16).slice(2));
+      localStorage.setItem(k,v);
     }
-
-    const grp = (String(group||"day").toLowerCase()==="month") ? "month" : "day";
-    const labelsOut = [];
-    const outSeries = { reserve:[], call:[], kakao:[] };
-
-    if(grp==="day"){
-      const cur = new Date(fromD.getTime());
-      while(cur.getTime() <= toD.getTime()){
-        const k = ymdKey_(cur);
-        labelsOut.push(k);
-        outSeries.reserve.push(map[k]?.reserve || 0);
-        outSeries.call.push(map[k]?.call || 0);
-        outSeries.kakao.push(map[k]?.kakao || 0);
-        cur.setDate(cur.getDate()+1);
-      }
-    }else{
-      const cur = new Date(fromD.getFullYear(), fromD.getMonth(), 1, 0,0,0,0);
-      const end = new Date(toD.getFullYear(), toD.getMonth(), 1, 0,0,0,0);
-      while(cur.getTime() <= end.getTime()){
-        const k = ymKey_(cur);
-        labelsOut.push(k);
-        outSeries.reserve.push(map[k]?.reserve || 0);
-        outSeries.call.push(map[k]?.call || 0);
-        outSeries.kakao.push(map[k]?.kakao || 0);
-        cur.setMonth(cur.getMonth()+1);
-      }
-    }
-
-    return { labels: labelsOut, series: outSeries };
+    return v;
   }
 
-  // JSONP
-  function loadJsonp(url){
-    return new Promise((resolve,reject)=>{
-      const cb="__hb_cb_"+Math.random().toString(16).slice(2);
-      const s=document.createElement("script");
-      const sep=url.includes("?") ? "&" : "?";
-
-      const fullUrl = url + sep + "callback=" + cb + "&_=" + Date.now();
-      state.lastUrl = fullUrl;
-
-      let done=false;
-      const timer=setTimeout(()=>{
-        if(done) return;
-        done=true;
-        try{ delete window[cb]; }catch(_){}
-        try{ s.remove(); }catch(_){}
-        reject(new Error("JSONP_TIMEOUT (8s)\n" + fullUrl));
-      }, 8000);
-
-      window[cb]=(data)=>{
-        if(done) return;
-        done=true;
-        clearTimeout(timer);
-        try{ resolve(data); }
-        finally{
-          try{ delete window[cb]; }catch(_){}
-          try{ s.remove(); }catch(_){}
-        }
-      };
-
-      s.src = fullUrl;
-      s.async = true;
-      s.onerror=()=>{
-        if(done) return;
-        done=true;
-        clearTimeout(timer);
-        try{ delete window[cb]; }catch(_){}
-        try{ s.remove(); }catch(_){}
-        reject(new Error("JSONP_LOAD_FAILED\n" + fullUrl));
-      };
-
-      document.head.appendChild(s);
-    });
-  }
-
-  async function fetchReport({branch="전체", landing="ALL", from, to, group="day"}){
-    const url = `${GAS_URL}?page=report`
-      + `&branch=${encodeURIComponent(branch)}`
-      + `&landing=${encodeURIComponent(landing)}`
-      + `&group=${encodeURIComponent(group)}`
-      + `&from=${encodeURIComponent(from)}`
-      + `&to=${encodeURIComponent(to)}`;
-    return await loadJsonp(url);
-  }
-
-  const ValueLabelPlugin = {
-    id: "hb_value_labels",
-    afterDatasetsDraw(chart, args, pluginOptions){
-      const { ctx } = chart;
-      if(chart.config.type !== "bar") return;
-
-      const opts = pluginOptions || {};
-      const minH = opts.minBarHeightPx ?? 16;
-      const fontSize = opts.fontSize ?? 11;
-
-      ctx.save();
-      ctx.font = `900 ${fontSize}px Paperlogy, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      chart.data.datasets.forEach((ds, di)=>{
-        const meta = chart.getDatasetMeta(di);
-        if(meta.hidden) return;
-
-        meta.data.forEach((elem, i)=>{
-          const v = Number(ds.data?.[i] || 0);
-          if(!v) return;
-
-          const props = elem.getProps(["x","y","base"], true);
-          const h = Math.abs(props.base - props.y);
-          if(h < minH) return;
-
-          ctx.fillStyle = "#ffffff";
-          ctx.fillText(String(v), props.x, (props.y + props.base) / 2);
-        });
-      });
-
-      ctx.restore();
-    }
-  };
-
-  let chart=null;
-  function destroyChart(){ if(chart){ chart.destroy(); chart=null; } }
-
-  function baseOptions(){
-    return {
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{ display:true, labels:{ usePointStyle:true, boxWidth:10, boxHeight:10 } },
-        tooltip:{
-          callbacks:{
-            label:(c)=>{
-              const lbl = c.dataset.label ? (c.dataset.label + ": ") : "";
-              return " " + lbl + fmt(c.raw);
-            }
-          }
-        },
-        hb_value_labels:{ minBarHeightPx: 16, fontSize: 11 }
-      },
-      scales:{
-        x:{ type:"category", position:"bottom", ticks:{ color:"#8c8c8c", maxRotation:0, minRotation:0, autoSkip:true }, grid:{ color:"rgba(122,30,44,0.10)" } },
-        y:{ position:"left", beginAtZero:true, ticks:{ color:"#7A1E2C" }, grid:{ color:"rgba(122,30,44,0.10)" } }
-      }
-    };
-  }
-
-  function renderStackedBar(rawLabels, series){
-    const labels = (rawLabels || []).map(shortBranchName);
-    const ctx=$("lineChart").getContext("2d");
-    destroyChart();
-
-    const opt = baseOptions();
-    opt.scales.x.ticks.autoSkip = false;
-    opt.scales.x.ticks.maxRotation = 90;
-    opt.scales.x.ticks.minRotation = 90;
-    opt.scales.x.stacked = true;
-    opt.scales.y.stacked = true;
-
-    chart = new Chart(ctx, {
-      type:"bar",
-      data:{
-        labels,
-        datasets:[
-          { label:"네이버예약", data: series?.reserve || [], borderColor: COLORS.reserve.border, backgroundColor: COLORS.reserve.fill, borderWidth: 1.2, borderRadius: 8, stack: "total" },
-          { label:"전화문의",   data: series?.call || [],    borderColor: COLORS.call.border,    backgroundColor: COLORS.call.fill,    borderWidth: 1.2, borderRadius: 8, stack: "total" },
-          { label:"카톡문의",   data: series?.kakao || [],   borderColor: COLORS.kakao.border,   backgroundColor: COLORS.kakao.fill,   borderWidth: 1.2, borderRadius: 8, stack: "total" }
-        ]
-      },
-      options: opt,
-      plugins: [ValueLabelPlugin]
-    });
-  }
-
-  function renderMultiLine(labels, series){
-    const ctx=$("lineChart").getContext("2d");
-    destroyChart();
-
-    const opt = baseOptions();
-
-    chart = new Chart(ctx, {
-      type:"line",
-      data:{
-        labels: labels || [],
-        datasets:[
-          { label:"네이버예약", data: series?.reserve || [], borderColor: COLORS.reserve.border, backgroundColor: COLORS.reserve.fill, tension: 0.35, pointRadius: (state.group==="month") ? 0 : 2, pointHoverRadius: (state.group==="month") ? 0 : 4 },
-          { label:"전화문의",   data: series?.call || [],    borderColor: COLORS.call.border,    backgroundColor: COLORS.call.fill,    tension: 0.35, pointRadius: (state.group==="month") ? 0 : 2, pointHoverRadius: (state.group==="month") ? 0 : 4 },
-          { label:"카톡문의",   data: series?.kakao || [],   borderColor: COLORS.kakao.border,   backgroundColor: COLORS.kakao.fill,   tension: 0.35, pointRadius: (state.group==="month") ? 0 : 2, pointHoverRadius: (state.group==="month") ? 0 : 4 }
-        ]
-      },
-      options: opt
-    });
-  }
-
-  let exportChart=null;
-  function destroyExportChart(){ if(exportChart){ exportChart.destroy(); exportChart=null; } }
-
-  function renderExport(labels, series, isAll){
-    const ctx=$("exportChart").getContext("2d");
-    destroyExportChart();
-
-    const common = {
-      responsive:true,
-      maintainAspectRatio:false,
-      animation:false,
-      plugins:{ legend:{ display:true } },
-      scales:{
-        x:{ type:"category", position:"bottom", grid:{ color:"rgba(122,30,44,0.08)" } },
-        y:{ position:"left", beginAtZero:true, grid:{ color:"rgba(122,30,44,0.08)" } }
-      }
+  // ✅ 새 로거: action 기반
+  function sendClickEvent({ action, branch, source } = {}){
+    const payloadObj = {
+      type: "click",
+      action: String(action || "").trim(),
+      branch: String(branch || "").trim(),
+      source: String(source || "").trim(),
+      sessionId: getHBSessionId(),
+      page: location.pathname || "/",
+      referrer: document.referrer || "",
+      ua: navigator.userAgent || "",
+      ts: Date.now()
     };
 
-    if(isAll){
-      common.scales.x.ticks = { autoSkip:false, maxRotation:90, minRotation:90 };
-      common.scales.x.stacked = true;
-      common.scales.y.stacked = true;
-
-      exportChart = new Chart(ctx,{
-        type:"bar",
-        data:{
-          labels: (labels||[]).map(shortBranchName),
-          datasets:[
-            { label:"네이버예약", data: series?.reserve||[], borderColor:COLORS.reserve.border, backgroundColor:COLORS.reserve.fill, stack:"total", borderWidth:1.2, borderRadius:10 },
-            { label:"전화문의",   data: series?.call||[],    borderColor:COLORS.call.border,    backgroundColor:COLORS.call.fill,    stack:"total", borderWidth:1.2, borderRadius:10 },
-            { label:"카톡문의",   data: series?.kakao||[],   borderColor:COLORS.kakao.border,   backgroundColor:COLORS.kakao.fill,   stack:"total", borderWidth:1.2, borderRadius:10 }
-          ]
-        },
-        options: common,
-        plugins:[ValueLabelPlugin]
-      });
-    }else{
-      common.scales.x.ticks = { autoSkip:true, maxRotation:0, minRotation:0 };
-
-      exportChart = new Chart(ctx,{
-        type:"line",
-        data:{
-          labels: labels||[],
-          datasets:[
-            { label:"네이버예약", data: series?.reserve||[], borderColor:COLORS.reserve.border, backgroundColor:COLORS.reserve.fill, tension:0.35, pointRadius:0 },
-            { label:"전화문의",   data: series?.call||[],    borderColor:COLORS.call.border,    backgroundColor:COLORS.call.fill,    tension:0.35, pointRadius:0 },
-            { label:"카톡문의",   data: series?.kakao||[],   borderColor:COLORS.kakao.border,   backgroundColor:COLORS.kakao.fill,   tension:0.35, pointRadius:0 }
-          ]
-        },
-        options: common
-      });
-    }
-  }
-
-  function safeFileName(branch, landing, from, to, group){
-    const b=String(branch||"전체").replace(/\s+/g,"");
-    const l=String(landing||"ALL").replace(/\s+/g,"");
-    const g=(group==="month")?"month":"day";
-    return `hanbeam_report_${l}_${b}_${g}_${from}_${to}.png`;
-  }
-
-  async function exportAsImage(){
-    if(!state.lastData){
-      await refresh();
-      if(!state.lastData){ alert("리포트를 먼저 조회해 주세요."); return; }
-    }
-
-    const branch=$("branchSelect").value||"전체";
-    const landing=$("landingSelect").value||"ALL";
-    const {from,to}=getRangeSafe();
-    const group=state.group;
-    const gLabel=(group==="month")?"월별":"일별";
-
-    const now=new Date();
-    const generatedAt =
-      `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ` +
-      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-    const isAll = (state.lastData.mode==="all_compare");
-
-    $("exportSub").textContent = isAll ? `지점별 비교 요약 (${gLabel})` : `지점별 클릭 요약 (${gLabel})`;
-    $("exportChartLabel").textContent = isAll ? `지점별 비교 (${gLabel})` : `기간 내 추이 (${gLabel})`;
-
-    $("exportMeta").textContent =
-      `랜딩: ${landingLabel(landing)}\n지점: ${branch}\n기준: ${gLabel}\n기간: ${from} ~ ${to}\n생성: ${generatedAt}`;
-
-    const cards=state.lastData.cards||{};
-    $("exportTotal").textContent=fmt(cards.total||0);
-    $("exportReserve").textContent=fmt(cards.reserve||0);
-    $("exportCall").textContent=fmt(cards.call||0);
-    $("exportKakao").textContent=fmt(cards.kakao||0);
-    $("exportMore").textContent=fmt(cards.more||0);
-
-    renderExport(state.lastData.labels||[], state.lastData.series||{}, isAll);
-    await new Promise(r=>setTimeout(r,140));
-
-    const canvas = await html2canvas($("exportDoc"), { backgroundColor:"#fff", scale:2, useCORS:true });
-    const a=document.createElement("a");
-    a.href=canvas.toDataURL("image/png");
-    a.download=safeFileName(branch, landing, from, to, group);
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-
-  async function refresh(){
-    hideError();
-    const branch=$("branchSelect").value||"전체";
-    const landing=$("landingSelect").value||"ALL";
-    const {from,to}=getRangeSafe();
+    const payload = JSON.stringify(payloadObj);
 
     try{
-      const dataRaw = await fetchReport({ branch, landing, from, to, group: state.group });
-      if(!dataRaw || typeof dataRaw !== "object"){
-        throw new Error("INVALID_REPORT_RESPONSE\n" + String(dataRaw));
+      if(navigator.sendBeacon){
+        navigator.sendBeacon(GAS_WEBAPP_URL, payload);
+        return;
       }
+    }catch(e){}
 
-      const data = dataRaw;
+    fetch(GAS_WEBAPP_URL, { method:"POST", body: payload, keepalive:true }).catch(()=>{});
+  }
 
-      if(data.mode === "all_compare"){
-        const fixed = fillAllCompareToFixedBranches_(data);
-        data.labels = fixed.labels;
-        data.series = fixed.series;
-      }else{
-        const filled = fillTrendToFullRange_(data, from, to, state.group);
-        data.labels = filled.labels;
-        data.series = filled.series;
-      }
+  // ✅ 기존 코드 호환용(혹시 다른 곳에서 sendClick(branchName) 호출해도 깨지지 않게)
+  function sendClick(branchName){
+    sendClickEvent({ action:"reserve", branch: branchName, source:"overlay" });
+  }
 
-      state.lastData=data;
+  // ✅ 오버레이(지점별 네이버예약) 클릭 → action="reserve" 로 통일 기록
+  document.addEventListener('click', (e)=>{
+    const a = e.target.closest('a[data-branch]');
+    if(!a) return;
+    const branchName = (a.dataset.branch || "").trim();
+    if(!branchName) return;
 
-      const gLabel=(state.group==="month")?"월별":"일별";
-      $("metaRange").textContent = `${from} ~ ${to}`;
-      setCards(data.cards);
+    // 오버레이 예약 클릭은 무조건 reserve로 기록
+    sendClickEvent({ action:"reserve", branch: branchName, source:"overlay" });
+  }, true);
 
-      const landingTxt = landingLabel(landing);
 
-      if(data.mode==="all_compare"){
-        $("metaTitle").textContent = `${landingTxt} · 지점별 비교 · ${gLabel}`;
-        renderStackedBar(data.labels||[], data.series||{});
-      }else{
-        $("metaTitle").textContent = `${landingTxt} · ${shortBranchName(branch)} · ${gLabel}`;
-        renderMultiLine(data.labels||[], data.series||{});
-      }
+  // -------------------------------
+  // 아래는 기존 코드 (유지)
+  // -------------------------------
 
-    }catch(err){
-      state.lastData=null;
-      const msg = [
-        "리포트 로드 실패",
-        (err?.message || String(err)),
-        state.lastUrl ? ("\nlastUrl:\n" + state.lastUrl) : ""
-      ].join("\n");
-      showError(msg);
-      setCards({total:0,reserve:0,call:0,kakao:0,more:0});
-      destroyChart();
+  // 토스트
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'),2200);
+  }
+
+  // ✅ KB FIX: fixed CTA 높이를 CSS 변수로 반영(스크롤/포커스 보정에 사용)
+  function setCtaHeightVar(){
+    const cta = document.querySelector('.fixed-cta');
+    const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--ctaH', h + 'px');
+  }
+  window.addEventListener('resize', setCtaHeightVar);
+  window.addEventListener('orientationchange', ()=> setTimeout(setCtaHeightVar, 250));
+  window.addEventListener('load', ()=> setTimeout(setCtaHeightVar, 50));
+
+  // CTA 이미지 로드 후에도 한번 더 (모바일에서 높이 변화 대응)
+  const ctaImg = document.querySelector('.cta-picture img');
+  if (ctaImg && !ctaImg.complete) ctaImg.addEventListener('load', setCtaHeightVar, { once:true });
+  setCtaHeightVar();
+
+  // ✅ KB FIX: 포커스 요소가 키보드/CTA에 가리면 자동으로 올려주는 유틸
+  (function KeyboardSafeFocus(){
+    const FORM_SECTION_SEL = '#formSection';
+
+    function isEditable(el){
+      if(!el) return false;
+      const t = (el.tagName || '').toLowerCase();
+      return t === 'input' || t === 'textarea' || t === 'select' || el.isContentEditable;
     }
-  }
 
-  function init(){
-    // landing select 채우기
-    const landingSel=$("landingSelect");
-    LANDINGS.forEach(x=>{
-      const opt=document.createElement("option");
-      opt.value=x.key;
-      opt.textContent=x.label;
-      landingSel.appendChild(opt);
+    function getBottomOverlay(){
+      const cta = document.querySelector('.fixed-cta');
+      const ctaH = cta ? cta.getBoundingClientRect().height : 0;
+      return Math.max(16, Math.round(ctaH) + 16);
+    }
+
+    function ensureVisible(el){
+      if(!isEditable(el)) return;
+      if(!el.closest(FORM_SECTION_SEL)) return;
+
+      const vv = window.visualViewport;
+      const vh = vv ? vv.height : window.innerHeight;
+
+      const r = el.getBoundingClientRect();
+      const bottomSafe = vh - getBottomOverlay();
+      const topSafe = 12;
+
+      if (r.bottom > bottomSafe) {
+        const dy = (r.bottom - bottomSafe) + 12;
+        window.scrollBy({ top: dy, left: 0, behavior: 'smooth' });
+        return;
+      }
+      if (r.top < topSafe) {
+        const dy = (topSafe - r.top) + 12;
+        window.scrollBy({ top: -dy, left: 0, behavior: 'smooth' });
+        return;
+      }
+    }
+
+    function ensureVisibleTwice(el){
+      requestAnimationFrame(()=>ensureVisible(el));
+      setTimeout(()=>ensureVisible(el), 80);
+      setTimeout(()=>ensureVisible(el), 250);
+    }
+
+    document.addEventListener('focusin', (e) => {
+      ensureVisibleTwice(e.target);
     });
 
-    // branch select 채우기
-    const sel=$("branchSelect");
+    if (window.visualViewport) {
+      let t = null;
+      window.visualViewport.addEventListener('resize', () => {
+        clearTimeout(t);
+        t = setTimeout(() => ensureVisibleTwice(document.activeElement), 50);
+      });
+    }
+
+    window.__ensureFormFieldVisible = ensureVisibleTwice;
+  })();
+
+  // 폼 섹션으로 이동
+  function goToForm(){
+    const sec = document.getElementById('formSection');
+    sec?.scrollIntoView({behavior:'smooth', block:'start'});
+
+    setTimeout(()=>{
+      const first = document.querySelector('.ov-name');
+      first?.focus();
+      if (first && window.__ensureFormFieldVisible) window.__ensureFormFieldVisible(first);
+    }, 450);
+  }
+
+  // ✅ 하단 CTA 클릭 → 폼 이동
+  document.querySelector('.fixed-cta-click')?.addEventListener('click', goToForm);
+
+  // 차별성 CTA → 폼 이동
+  document.querySelector('.ov-store-cta')?.addEventListener('click', goToForm);
+
+  // 연락처 자동 하이픈
+  const phone = document.querySelector('.ov-phone');
+  phone?.addEventListener('input', ()=>{
+    let n = phone.value.replace(/[^0-9]/g,'').slice(0,11);
+    phone.value =
+      n.length < 4 ? n :
+      n.length < 8 ? n.slice(0,3)+'-'+n.slice(3) :
+      n.slice(0,3)+'-'+n.slice(3,7)+'-'+n.slice(7);
+  });
+
+  // 지점 12개
+  const BRANCHES = [
+    { key:"busan",   name:"부산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/661812" },
+    { key:"centum",  name:"센텀점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1577219" },
+    { key:"ulsan",   name:"울산점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1534767" },
+    { key:"gimhae",  name:"김해점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1402679" },
+    { key:"yangsan", name:"양산점",  status:"open",   url:"https://booking.naver.com/booking/13/bizes/868629" },
+    { key:"changwon",name:"창원점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/843111" },
+    { key:"masan",   name:"마산점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1526541" },
+    { key:"jinju",   name:"진주점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1485854" },
+    { key:"incheon", name:"인천점",  status:"open",   url:"https://m.booking.naver.com/booking/13/bizes/1039475" },
+    { key:"ansan",   name:"안산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1500008" },
+    { key:"daegu",   name:"대구점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1600152" },
+    { key:"pohang",  name:"포항점",  status:"coming", url:"" },
+  ];
+
+  const NAVER_BASE_W = 1080;
+  const NAVER_BASE_H = 937.2;
+  const NAVER_RECTS = {
+    busan:   { x: 69, y:225, w:292, h:146 },
+    centum:  { x:394, y:225, w:292, h:146 },
+    ulsan:   { x:719, y:225, w:292, h:146 },
+    gimhae:  { x: 69, y:395, w:292, h:146 },
+    yangsan: { x:394, y:395, w:292, h:146 },
+    changwon:{ x:719, y:395, w:292, h:146 },
+    masan:   { x: 69, y:565, w:292, h:146 },
+    jinju:   { x:394, y:565, w:292, h:146 },
+    incheon: { x:719, y:565, w:292, h:146 },
+    ansan:   { x: 69, y:734, w:292, h:146 },
+    daegu:   { x:394, y:734, w:292, h:146 },
+    pohang:  { x:719, y:734, w:292, h:146 },
+  };
+
+  function makeLink(branch, rect){
+    const a = document.createElement('a');
+    a.className = "ov";
+    a.href = branch.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.setAttribute("data-branch", branch.name);
+    a.setAttribute("aria-label", `${branch.name} 네이버 예약`);
+    a.dataset.x = rect.x; a.dataset.y = rect.y; a.dataset.w = rect.w; a.dataset.h = rect.h;
+    return a;
+  }
+
+  function makeComing(branch, rect){
+    const btn = document.createElement('button');
+    btn.type = "button";
+    btn.className = "ov";
+    btn.setAttribute("aria-label", `${branch.name} 오픈 준비중`);
+    btn.dataset.x = rect.x; btn.dataset.y = rect.y; btn.dataset.w = rect.w; btn.dataset.h = rect.h;
+
+    // 오픈 준비중은 클릭 집계(원하면 유지)
+    btn.addEventListener('click', ()=>{
+      showToast('오픈 준비중입니다.');
+      sendClickEvent({ action:"coming", branch: branch.name, source:"overlay" });
+    });
+
+    return btn;
+  }
+
+  function applyRectsForSection(sectionSelector, baseW, baseH){
+    const sec = document.querySelector(sectionSelector);
+    if(!sec) return;
+
+    const img = sec.querySelector('img');
+    const overlay = sec.querySelector('.overlay-layer');
+    if(!img || !overlay) return;
+
+    const run = ()=>{
+      const cw = img.clientWidth || 0;
+      const ch = img.clientHeight || 0;
+      if(!cw || !ch) return;
+
+      const hBase = (baseH != null) ? baseH : (img.naturalHeight || ch);
+      const sx = cw / baseW;
+      const sy = ch / hBase;
+
+      overlay.querySelectorAll('.ov').forEach(el=>{
+        const x = Number(el.dataset.x || 0);
+        const y = Number(el.dataset.y || 0);
+        const w = Number(el.dataset.w || 0);
+        const h = Number(el.dataset.h || 0);
+        el.style.left   = (x * sx) + "px";
+        el.style.top    = (y * sy) + "px";
+        el.style.width  = (w * sx) + "px";
+        el.style.height = (h * sy) + "px";
+        el.style.background = "transparent";
+        el.style.border = "none";
+        el.style.cursor = "pointer";
+      });
+    };
+
+    if (img.complete) run();
+    else img.addEventListener('load', run, { once:true });
+  }
+
+  function buildOverlays(){
+    const naverWrap  = document.getElementById('naverOverlay');
+    if(naverWrap) naverWrap.innerHTML  = "";
+
     BRANCHES.forEach(b=>{
-      const opt=document.createElement("option");
-      opt.value=b; opt.textContent=b;
-      sel.appendChild(opt);
+      if(!naverWrap) return;
+      const r = NAVER_RECTS[b.key];
+      if(!r) return;
+      naverWrap.appendChild(b.status === "open" ? makeLink(b, r) : makeComing(b, r));
     });
 
-    applyPreset("7d");
-    setGroup("day");
-
-    landingSel.addEventListener("change", refresh);
-    sel.addEventListener("change", refresh);
-
-    document.querySelectorAll(".toggleRow button").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        setGroup(btn.dataset.group);
-        refresh();
-      });
-    });
-
-    document.querySelectorAll(".presetRow button").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        applyPreset(btn.dataset.preset);
-        refresh();
-      });
-    });
-
-    $("fromDate").addEventListener("change", clearPresetActive);
-    $("toDate").addEventListener("change", clearPresetActive);
-
-    $("applyBtn").addEventListener("click", refresh);
-    $("exportBtn").addEventListener("click", exportAsImage);
-
-    refresh();
+    applyRectsForSection('.naver-grid',  NAVER_BASE_W, NAVER_BASE_H);
   }
 
-  init();
+  window.addEventListener('resize', ()=>{
+    applyRectsForSection('.naver-grid',  NAVER_BASE_W, NAVER_BASE_H);
+  });
+
+  // start
+  buildOverlays();
+
+  /* ==================================================
+     ✅ Hanbeam Fixed CTA Logic (ADD ONLY)
+     - 리포트는 action/branch로 통일 기록
+     ================================================== */
+  (function(){
+    const HB_CTA_BRANCHES = [
+      { name:"부산점",     phone:"051.634.2325", reserve:"https://m.booking.naver.com/booking/6/bizes/661812",  kakao:"https://open.kakao.com/o/soq7Ns4d" },
+      { name:"부산센텀점", phone:"010-3052-2325", reserve:"https://booking.naver.com/booking/13/bizes/868629", kakao:null },
+      { name:"김해점",     phone:"010.8065.2325", reserve:"https://booking.naver.com/booking/6/bizes/1402679", kakao:"https://open.kakao.com/o/sHM2wwsh" },
+      { name:"창원점",     phone:"055.263.2325", reserve:"https://booking.naver.com/booking/6/bizes/843111",  kakao:"https://open.kakao.com/o/sdcvbh5e" },
+      { name:"양산점",     phone:"055.912.0425", reserve:"https://booking.naver.com/booking/13/bizes/868629", kakao:"https://open.kakao.com/o/sp44Hxaf" },
+      { name:"진주점",     phone:"010.5654.2407", reserve:"https://m.booking.naver.com/booking/6/bizes/1485854", kakao:"https://open.kakao.com/o/sbxBToNh" },
+      { name:"인천점",     phone:"032.283.2325", reserve:"https://m.booking.naver.com/booking/13/bizes/1039475", kakao:"https://open.kakao.com/o/sIrXajUf" },
+      { name:"안산점",     phone:"010.6591.2322", reserve:"https://m.booking.naver.com/booking/6/bizes/1500008", kakao:"https://open.kakao.com/o/sqRSjaRh" },
+      { name:"마산점",     phone:"010.8832.2325", reserve:"https://booking.naver.com/booking/6/bizes/1526541", kakao:"https://open.kakao.com/o/ssWvuvYh" },
+      { name:"울산점",     phone:"010.9807.2325", reserve:"https://booking.naver.com/booking/6/bizes/1534767", kakao:"https://open.kakao.com/o/sKjCbA0h" },
+      { name:"대구점",     phone:"010-8492-2328", reserve:"https://m.place.naver.com/place/2043617700/ticket?entry=pll&bk_query=%ED%95%9C%EB%B9%94%ED%95%9C%EB%B3%B5", kakao:null }
+    ];
+
+    const toastFallback = (msg)=> alert(msg);
+    const safeToast = (typeof window.showToast === "function") ? window.showToast : toastFallback;
+
+    const state = { branch: null };
+
+    function toTelHref(phone){
+      const digits = String(phone || "").replace(/[^\d]/g,"");
+      return digits ? ("tel:" + digits) : "";
+    }
+
+    const openBtn = document.getElementById("hbOpenBranch");
+    const branchText = document.getElementById("hbBranchText");
+
+    const bd = document.getElementById("hbBranchBackdrop");
+    const closeBtn = document.getElementById("hbCloseBranch");
+    const list = document.getElementById("hbBranchList");
+
+    const btnCall = document.getElementById("hbBtnCall");
+    const btnKakao = document.getElementById("hbBtnKakao");
+    const btnReserve = document.getElementById("hbBtnReserve");
+    const btnMore = document.getElementById("hbBtnMore");
+
+    if(!openBtn || !bd || !list || !btnCall || !btnKakao || !btnReserve || !btnMore) return;
+
+    function openModal(){
+      bd.classList.add("open");
+      bd.setAttribute("aria-hidden", "false");
+    }
+    function closeModal(){
+      bd.classList.remove("open");
+      bd.setAttribute("aria-hidden", "true");
+    }
+
+    function selectBranch(b){
+      state.branch = b;
+      branchText.textContent = `${b.name} 선택됨 (변경하려면 클릭)`;
+
+      // ✅ 지점 선택도 찍고 싶으면 유지 / 원치 않으면 아래 1줄 주석 처리
+      sendClickEvent({ action:"branch_select", branch:b.name, source:"cta" });
+
+      closeModal();
+    }
+
+    function renderList(){
+      list.innerHTML = "";
+      HB_CTA_BRANCHES.forEach(b=>{
+        const row = document.createElement("div");
+        row.className = "hb-item";
+        row.innerHTML = `<div>${b.name}</div><div class="hb-badge">선택</div>`;
+        row.addEventListener("click", ()=> selectBranch(b));
+        list.appendChild(row);
+      });
+    }
+
+    function requireBranchOrOpen(e){
+      if(!state.branch){
+        e.preventDefault();
+        openModal();
+        return true;
+      }
+      return false;
+    }
+
+    renderList();
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    bd.addEventListener("click", (e)=>{ if(e.target === bd) closeModal(); });
+
+    // ✅ CTA: 전화
+    btnCall.addEventListener("click", (e)=>{
+      e.preventDefault();
+      if(requireBranchOrOpen(e)) return;
+
+      const telHref = toTelHref(state.branch.phone);
+      if(!telHref) return;
+
+      sendClickEvent({ action:"call", branch:state.branch.name, source:"cta" });
+      window.location.href = telHref;
+    });
+
+    // ✅ CTA: 카톡
+    btnKakao.addEventListener("click", (e)=>{
+      e.preventDefault();
+      if(requireBranchOrOpen(e)) return;
+
+      const href = state.branch.kakao;
+      if(!href){
+        safeToast("준비중입니다.");
+        sendClickEvent({ action:"kakao_pending", branch:state.branch.name, source:"cta" });
+        return;
+      }
+      sendClickEvent({ action:"kakao", branch:state.branch.name, source:"cta" });
+      window.open(href, "_blank", "noopener,noreferrer");
+    });
+
+    // ✅ CTA: 네이버예약 (오버레이 예약과 "동일 action=reserve"로 기록 → 리포트 합산)
+    btnReserve.addEventListener("click", (e)=>{
+      e.preventDefault();
+      if(requireBranchOrOpen(e)) return;
+
+      const href = state.branch.reserve || "";
+      if(!href) return;
+
+      sendClickEvent({ action:"reserve", branch:state.branch.name, source:"cta" });
+      window.open(href, "_blank", "noopener,noreferrer");
+    });
+
+    // ✅ CTA: 더 알아보기
+    btnMore.addEventListener("click", ()=>{
+      sendClickEvent({ action:"more", branch:(state.branch?.name || ""), source:"cta" });
+    });
+
+    // ✅ 기존 로직이 --ctaH를 쓰고 있어서, 우리 CTA 높이도 반영
+    function setHbCtaHeightVar(){
+      const cta = document.getElementById("hbFixedCta");
+      const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
+      document.documentElement.style.setProperty('--ctaH', h + 'px');
+    }
+    window.addEventListener('resize', setHbCtaHeightVar);
+    window.addEventListener('orientationchange', ()=> setTimeout(setHbCtaHeightVar, 250));
+    window.addEventListener('load', ()=> setTimeout(setHbCtaHeightVar, 50));
+    setHbCtaHeightVar();
+  })();
 </script>
+
 </body>
 </html>
