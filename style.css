@@ -31,8 +31,6 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 .landing{
   max-width:1080px;
   margin:0 auto;
-
-  /* ✅ 하단 CTA 공간 확보 + 섹션 간격을 고려한 여백 */
   padding-bottom: calc(var(--ctaH) + 24px + env(safe-area-inset-bottom));
 }
 
@@ -54,10 +52,8 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 .gap-md   + .block, .block + .gap-md  { margin-top: var(--sectionGapMd) !important; }
 .gap-lg   + .block, .block + .gap-lg  { margin-top: var(--sectionGapLg) !important; }
 
-/* ✅ 이미지 공통 */
 .block img{ width:100%; display:block; }
 
-/* ✅ short 섹션(데스크톱에서 고정 높이 크롭) */
 .block.short{
   height:985.1337px;
   overflow:hidden;
@@ -69,7 +65,6 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   display:block;
 }
 
-/* ✅ 모바일에서는 크롭 방지(원본 비율 유지) */
 @media (max-width: 600px){
   .block.short{ height:auto; }
   .block.short img{ height:auto; object-fit:contain; }
@@ -79,13 +74,10 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
    ✅ 오버레이 섹션
    ================================================== */
 .block-overlay{ position:relative; }
-
-/* overlay-layer는 클릭 비활성, 내부 ov만 클릭 활성 */
 .overlay-layer{ position:absolute; inset:0; pointer-events:none; }
 .overlay-layer .ov,
 .overlay-layer a{ pointer-events:auto; }
 
-/* 오버레이 요소 */
 .ov{
   position:absolute;
   background:transparent;
@@ -122,44 +114,51 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   .hb-footerCanvas > *{ position:absolute; }
 }
 
-/* ✅ 가운데 정렬 기본값(필요하면 top/width만 조절) */
+/* ✅ 로고 크기 규격: 1080 기준 높이 200px (비율 유지) */
 .hb-footerLogo{
   position:absolute;
   left: 50%;
   top: 120px;
   transform: translateX(-50%);
-  width: 240px;
-  height: auto;
+  height: 200px;          /* ✅ 요청값 */
+  width: auto;            /* 비율 유지 */
+  max-width: 70%;         /* 모바일에서 과대 확대 방지 */
+  object-fit: contain;
   opacity: .95;
 }
 
+/* ✅ 텍스트: 프리젠테이션 계열 폰트 적용 */
 .hb-footerText{
   position:absolute;
   left: 50%;
-  top: 420px;
+  top: 390px; /* 로고가 커졌으니 텍스트 시작을 위로/아래로 여기서 조정 */
   transform: translateX(-50%);
   width: min(940px, calc(100% - 120px));
   text-align: center;
+
   color:#fff;
   font-weight: 800;
   letter-spacing: -0.02em;
+
+  /* ✅ 프리젠테이션 폰트 우선 적용 */
+  font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .hb-footerBranch{
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 900;
   margin-bottom: 10px;
 }
 
 .hb-footerLine{
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.55;
   opacity: 0.9;
 }
 
 .hb-footerSmall{
   margin-top: 14px;
-  font-size: 14px;
+  font-size: 13px;
   opacity: 0.65;
 }
 
