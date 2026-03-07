@@ -1,16 +1,63 @@
 html, body { margin:0; padding:0; overflow-x:hidden; }
 
-/* ✅ CTA가 콘텐츠를 덮지 않도록 여유 확보 */
-:root{ --ctaH: 0px; }
+/* ==================================================
+   ✅ 섹션 간격(여백) 조절 가이드
+   ==================================================
+   1) 섹션 사이 "기본 간격"은 --sectionGap 으로 조절
+      - 0px  : 이미지들이 딱 붙음(가장 깔끔)
+      - 8~16 : 살짝 숨 쉴 공간
+   2) 특정 섹션만 간격을 바꾸고 싶으면 HTML에서 클래스 추가
+      예) <section class="block short gap-lg"> ... </section>
+          <section class="block gap-none"> ... </section>
+
+   사용 가능한 옵션 클래스:
+   - gap-none : 간격 0
+   - gap-sm   : 작은 간격
+   - gap-md   : 기본 간격
+   - gap-lg   : 큰 간격
+   ================================================== */
+
+/* ✅ CTA가 콘텐츠를 덮지 않도록 여유 확보 + 섹션 기본 간격 변수 */
+:root{
+  --ctaH: 0px;
+
+  /* ✅ 섹션 기본 간격(여기만 바꾸면 전체 섹션 간격이 맞춰짐) */
+  --sectionGap: 0px;      /* ← 기본 추천: 0px (이미지 섹션은 붙는 게 정석) */
+  --sectionGapSm: 8px;
+  --sectionGapMd: 14px;
+  --sectionGapLg: 22px;
+}
 
 .landing{
   max-width:1080px;
   margin:0 auto;
+
+  /* ✅ 하단 CTA 공간 확보 + 섹션 간격을 고려한 여백 */
   padding-bottom: calc(var(--ctaH) + 24px + env(safe-area-inset-bottom));
 }
 
+/* ✅ 모든 섹션 블록의 "사이 간격"을 통일 */
+.block{
+  display:block;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ✅ 섹션 사이 간격: 기본은 --sectionGap */
+.block + .block{
+  margin-top: var(--sectionGap);
+}
+
+/* ✅ 옵션 클래스: 특정 섹션만 간격 변경 */
+.gap-none + .block, .block + .gap-none{ margin-top: 0px !important; }
+.gap-sm   + .block, .block + .gap-sm  { margin-top: var(--sectionGapSm) !important; }
+.gap-md   + .block, .block + .gap-md  { margin-top: var(--sectionGapMd) !important; }
+.gap-lg   + .block, .block + .gap-lg  { margin-top: var(--sectionGapLg) !important; }
+
+/* ✅ 이미지 공통 */
 .block img{ width:100%; display:block; }
 
+/* ✅ short 섹션(데스크톱에서 고정 높이 크롭) */
 .block.short{
   height:985.1337px;
   overflow:hidden;
@@ -22,12 +69,15 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   display:block;
 }
 
+/* ✅ 모바일에서는 크롭 방지(원본 비율 유지) */
 @media (max-width: 600px){
   .block.short{ height:auto; }
   .block.short img{ height:auto; object-fit:contain; }
 }
 
-/* 오버레이 섹션 */
+/* ==================================================
+   ✅ 오버레이 섹션
+   ================================================== */
 .block-overlay{ position:relative; }
 
 /* overlay-layer는 클릭 비활성, 내부 ov만 클릭 활성 */
@@ -46,7 +96,76 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   z-index: 20;
 }
 
-/* Toast */
+/* ==================================================
+   ✅ Footer (전용 랜딩에서만 사용)
+   - 기존(통합) 랜딩은 hb-footerStage를 안 쓰면 영향 0
+   ================================================== */
+.hb-footerStage{
+  background:#000 !important;
+  color:#fff;
+}
+
+/* 1080x985 비율 유지 */
+.hb-footerCanvas{
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  aspect-ratio: 1080 / 985;
+  background:#000 !important;
+  overflow:hidden;
+}
+
+/* 구형 브라우저 fallback */
+@supports not (aspect-ratio: 1 / 1){
+  .hb-footerCanvas{ height:0; padding-top: calc(985 / 1080 * 100%); }
+  .hb-footerCanvas > *{ position:absolute; }
+}
+
+/* ✅ 가운데 정렬 기본값(필요하면 top/width만 조절) */
+.hb-footerLogo{
+  position:absolute;
+  left: 50%;
+  top: 120px;
+  transform: translateX(-50%);
+  width: 240px;
+  height: auto;
+  opacity: .95;
+}
+
+.hb-footerText{
+  position:absolute;
+  left: 50%;
+  top: 420px;
+  transform: translateX(-50%);
+  width: min(940px, calc(100% - 120px));
+  text-align: center;
+  color:#fff;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.hb-footerBranch{
+  font-size: 34px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.hb-footerLine{
+  font-size: 18px;
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+.hb-footerSmall{
+  margin-top: 14px;
+  font-size: 14px;
+  opacity: 0.65;
+}
+
+/* ==================================================
+   ✅ Toast
+   ================================================== */
 #toast{
   position:fixed;
   left:50%;
