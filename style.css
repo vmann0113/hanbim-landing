@@ -1,28 +1,19 @@
 html, body { margin:0; padding:0; overflow-x:hidden; }
 
 /* ==================================================
-   ✅ 섹션 간격(여백) 조절 가이드
-   ==================================================
-   1) 섹션 사이 "기본 간격"은 --sectionGap 으로 조절
-      - 0px  : 이미지들이 딱 붙음(가장 깔끔)
-      - 8~16 : 살짝 숨 쉴 공간
-   2) 특정 섹션만 간격을 바꾸고 싶으면 HTML에서 클래스 추가
-      예) <section class="block short gap-lg"> ... </section>
-          <section class="block gap-none"> ... </section>
+   ✅ 섹션별 간격 조절(핵심)
+   --------------------------------------------------
+   전체 간격을 바꾸려면 아래 한 줄만 바꾸면 됨:
+   --sectionGap: 0px;  →  8px / 12px / 16px
 
-   사용 가능한 옵션 클래스:
-   - gap-none : 간격 0
-   - gap-sm   : 작은 간격
-   - gap-md   : 기본 간격
-   - gap-lg   : 큰 간격
+   특정 섹션만 다르게 하고 싶으면 HTML section에 클래스 추가:
+   <section class="block short gap-lg">...</section>
+   옵션: gap-none / gap-sm / gap-md / gap-lg
    ================================================== */
-
-/* ✅ CTA가 콘텐츠를 덮지 않도록 여유 확보 + 섹션 기본 간격 변수 */
 :root{
   --ctaH: 0px;
 
-  /* ✅ 섹션 기본 간격(여기만 바꾸면 전체 섹션 간격이 맞춰짐) */
-  --sectionGap: 0px;      /* ← 기본 추천: 0px (이미지 섹션은 붙는 게 정석) */
+  --sectionGap: 0px;
   --sectionGapSm: 8px;
   --sectionGapMd: 14px;
   --sectionGapLg: 22px;
@@ -34,19 +25,14 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   padding-bottom: calc(var(--ctaH) + 24px + env(safe-area-inset-bottom));
 }
 
-/* ✅ 모든 섹션 블록의 "사이 간격"을 통일 */
 .block{
   display:block;
   margin: 0 auto;
   padding: 0;
 }
-
-/* ✅ 섹션 사이 간격: 기본은 --sectionGap */
 .block + .block{
   margin-top: var(--sectionGap);
 }
-
-/* ✅ 옵션 클래스: 특정 섹션만 간격 변경 */
 .gap-none + .block, .block + .gap-none{ margin-top: 0px !important; }
 .gap-sm   + .block, .block + .gap-sm  { margin-top: var(--sectionGapSm) !important; }
 .gap-md   + .block, .block + .gap-md  { margin-top: var(--sectionGapMd) !important; }
@@ -64,15 +50,12 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   object-fit:cover;
   display:block;
 }
-
 @media (max-width: 600px){
   .block.short{ height:auto; }
   .block.short img{ height:auto; object-fit:contain; }
 }
 
-/* ==================================================
-   ✅ 오버레이 섹션
-   ================================================== */
+/* 오버레이 섹션 */
 .block-overlay{ position:relative; }
 .overlay-layer{ position:absolute; inset:0; pointer-events:none; }
 .overlay-layer .ov,
@@ -88,99 +71,7 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   z-index: 20;
 }
 
-/* ==================================================
-   ✅ Footer (전용 랜딩에서만 사용) — FINAL
-   - 로고: 모바일에서도 너무 작아지지 않게 clamp
-   - 텍스트: 굵기 낮춤(사업자정보 톤)
-   - ⓒ: 지점정보보다 확실히 작게
-   ================================================== */
-.hb-footerStage{
-  background:#000 !important;
-  color:#fff;
-}
-
-.hb-footerCanvas{
-  width: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  aspect-ratio: 1080 / 985;
-  background:#000 !important;
-  overflow:hidden;
-  position: relative;
-}
-
-/* 로고+텍스트: 한 덩어리로 세로 정렬 → 겹침 방지 */
-.hb-footerStack{
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 64px 56px;
-  text-align: center;
-}
-
-/* ✅ 로고: 1080 기준 높이 200, 모바일에서도 너무 작아지지 않게 */
-.hb-footerLogo{
-  height: clamp(160px, 18.5vw, 200px);
-  width: auto;
-  max-width: 82%;
-  object-fit: contain;
-  opacity: .95;
-}
-
-/* ✅ 텍스트: 프리젠테이션 계열 + 굵기 다운 */
-.hb-footerText{
-  font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color:#fff;
-  width: min(980px, 100%);
-}
-
-/* 1줄(대표/등록번호) */
-.hb-footerLineStrong{
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  font-size: clamp(12px, 1.7vw, 16px);
-  line-height: 1.6;
-  opacity: 0.88;
-}
-
-/* 2줄(주소/전화) */
-.hb-footerLine{
-  margin-top: 8px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  font-size: clamp(12px, 1.6vw, 15px);
-  line-height: 1.65;
-  opacity: 0.78;
-}
-
-/* ⓒ 라인(지점정보보다 확실히 작게) */
-.hb-footerCopy{
-  margin-top: 12px;
-  font-weight: 400;
-  letter-spacing: 0;
-  font-size: clamp(10px, 1.2vw, 11px);
-  line-height: 1.3;
-  opacity: 0.45;
-}
-
-@media (max-width: 420px){
-  .hb-footerStack{
-    padding: 54px 18px;
-    gap: 14px;
-  }
-  .hb-footerLogo{
-    max-width: 88%;
-    height: clamp(150px, 28vw, 190px);
-  }
-}
-
-/* ==================================================
-   ✅ Toast
-   ================================================== */
+/* Toast */
 #toast{
   position:fixed;
   left:50%;
@@ -201,7 +92,7 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 #toast.show{ opacity:1; }
 
 /* ==================================================
-   ✅ Hanbeam Fixed CTA (Branch + Actions)
+   ✅ CTA (Branch Tabs + Actions)
    ================================================== */
 :root{
   --hbCtaPadX: 14px;
@@ -239,41 +130,27 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
   box-shadow: 0 18px 60px rgba(0,0,0,0.35);
 }
 
-.hb-branchBtn{
-  height: var(--hbBranchH);
-  width: 100%;
-  border: none;
+/* ✅ 부산/센텀 탭 */
+.hb-branchTabs{
+  display:flex;
+  gap:8px;
+}
+.hb-tab{
+  flex:1 1 0;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.22);
+  color: rgba(255,255,255,0.92);
   border-radius: 999px;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  color: #fff;
+  padding: 10px 0;
   font-weight: 900;
-  letter-spacing: -0.02em;
-
-  background: linear-gradient(180deg, var(--hbWineHi), var(--hbWine));
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.28),
-    inset 0 1px 0 rgba(255,255,255,0.22);
-
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.hb-branchBtn:active{ transform: translateY(1px); }
-
-.hb-branchTxt{
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 78%;
+.hb-tab:active{ transform: translateY(1px); }
+.hb-tab.active{
+  background: rgba(255,255,255,0.92);
+  color: rgba(20,20,20,0.95);
 }
-
-.hb-chevron{ width:16px; height:16px; opacity:.95; }
-.hb-chevron path{ stroke: rgba(255,255,255,0.95); }
 
 .hb-actionPanel{
   width: 100%;
@@ -317,79 +194,86 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
 }
 
 /* ==================================================
-   ✅ Branch Modal
+   ✅ Footer — FINAL (로고/텍스트/ⓒ)
    ================================================== */
-.hb-branchBackdrop{
-  position: fixed;
+.hb-footerStage{
+  background:#000 !important;
+  color:#fff;
+}
+
+.hb-footerCanvas{
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  aspect-ratio: 1080 / 985;
+  background:#000 !important;
+  overflow:hidden;
+  position: relative;
+}
+
+.hb-footerStack{
+  position: absolute;
   inset: 0;
-  z-index: 10000;
-  display: none;
-  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 16px;
-  background: rgba(0,0,0,0.55);
-}
-.hb-branchBackdrop.open{ display:flex; }
-
-.hb-modal{
-  width: min(520px, calc(100vw - 18px));
-  border-radius: 22px;
-  overflow: hidden;
-  background: rgba(255,255,255,0.96);
-  border: 1px solid rgba(255,255,255,0.24);
-  box-shadow: 0 20px 80px rgba(0,0,0,0.35);
+  gap: 18px;
+  padding: 64px 56px;
+  text-align: center;
 }
 
-.hb-modalHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding: 12px 14px;
-  color: rgba(15,23,42,0.92);
-  font-weight: 900;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-  font-size: 14px;
-}
-.hb-modalHead button{
-  border:none;
-  background:transparent;
-  cursor:pointer;
-  font-weight:900;
-  font-size: 13px;
-  color: rgba(15,23,42,0.65);
+.hb-footerLogo{
+  height: clamp(160px, 18.5vw, 200px);
+  width: auto;
+  max-width: 82%;
+  object-fit: contain;
+  opacity: .95;
 }
 
-.hb-modalBody{
-  max-height: 62vh;
-  overflow:auto;
+.hb-footerText{
+  font-family: "Presentation", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color:#fff;
+  width: min(980px, 100%);
 }
 
-.hb-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  cursor:pointer;
-  color: rgba(15,23,42,0.92);
-  font-weight:900;
-  font-size: 14px;
-  background: rgba(255,255,255,0.25);
-}
-.hb-item:last-child{ border-bottom:none; }
-.hb-item:active{ background: rgba(90,31,43,0.10); }
-
-.hb-badge{
-  font-size: 11px;
-  font-weight:900;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(90,31,43,0.10);
-  border: 1px solid rgba(90,31,43,0.18);
-  white-space:nowrap;
-  color: rgba(90,31,43,0.92);
-  line-height: 1;
+.hb-footerBlock + .hb-footerBlock{
+  margin-top: 14px;
 }
 
+.hb-footerLineStrong{
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: clamp(12px, 1.7vw, 16px);
+  line-height: 1.6;
+  opacity: 0.88;
+}
 
+.hb-footerLine{
+  margin-top: 8px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  font-size: clamp(12px, 1.6vw, 15px);
+  line-height: 1.65;
+  opacity: 0.78;
+}
 
+.hb-footerCopy{
+  margin-top: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size: clamp(10px, 1.2vw, 11px);
+  line-height: 1.3;
+  opacity: 0.45;
+}
+
+@media (max-width: 420px){
+  .hb-footerStack{
+    padding: 54px 18px;
+    gap: 14px;
+  }
+  .hb-footerLogo{
+    max-width: 88%;
+    height: clamp(150px, 28vw, 190px);
+  }
+}
