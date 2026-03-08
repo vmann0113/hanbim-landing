@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>한빔한복 진주점 무료상담</title>
+  <link rel="stylesheet" href="/style.css?v=20260308-jinju-1" />
+</head>
+<body>
+
+<main class="landing">
+
+  <section class="block">
+    <img src="/assets/01_hero.webp" alt="히어로">
+  </section>
+
+  <section class="block short">
+    <img src="/assets/03_store_intro.webp" alt="매장소개">
+  </section>
+
+  <section class="block short">
+    <img src="/assets/01_design.webp" alt="강점소개">
+  </section>
+
+  <section class="block short">
+    <img src="/assets/01_accesary.webp" alt="예약고객혜택">
+  </section>
+
+  <section class="block short">
+    <img src="/assets/01_cs.webp" alt="고객만족서비스">
+  </section>
+
+  <!-- 08 지점별 네이버링크 (오버레이 유지) -->
+  <section class="block block-overlay naver-grid">
+    <img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
+    <div class="overlay-layer" id="naverOverlay" aria-label="지점별 네이버 예약 오버레이"></div>
+  </section>
+
+  <!-- ✅ 푸터(진주점 사업자 정보 + ⓒ) -->
+  <section class="hb-footerStage" aria-label="푸터">
+    <div class="hb-footerCanvas">
+      <div class="hb-footerStack">
+        <img class="hb-footerLogo" src="/assets/footer_logo.png" alt="한빔한복 로고">
+
+        <div class="hb-footerText">
+          <div class="hb-footerLineStrong">
+            한빔한복 진주점 | 대표자: 김태현 | 등록번호: 509-08-03228
+          </div>
+          <div class="hb-footerLine">
+            경상남도 진주시 에나로 103-7, 1층 102호 (충무공동) | TEL.010-5654-2407
+          </div>
+          <div class="hb-footerCopy">ⓒ Hanbim Hanbok</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ✅ Toast -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ✅ 진주점 전용: CTA는 진주점 고정 -->
+<div class="hb-fixed-cta" id="hbFixedCta" aria-label="하단 고정 CTA">
+  <div class="hb-actionPanel" aria-label="바로가기 버튼">
+    <a class="hb-action" id="hbBtnCall" href="#" aria-label="전화문의">
+      <span class="hb-ico" style="background-image:url('/assets/btn-call.png');"></span>
+      <span class="hb-lbl">전화(진주점)</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnKakao" href="#" aria-label="카톡문의">
+      <span class="hb-ico" style="background-image:url('/assets/btn-kakao.png');"></span>
+      <span class="hb-lbl">카톡(진주점)</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnReserve" href="#" aria-label="네이버예약">
+      <span class="hb-ico" style="background-image:url('/assets/btn-reserve.png');"></span>
+      <span class="hb-lbl">예약(진주점)</span>
+    </a>
+
+    <a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9" aria-label="더 알아보기">
+      <span class="hb-ico" style="background-image:url('/assets/btn-more.png');"></span>
+      <span class="hb-lbl">더 알아보기</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  // =========================
+  // ✅ CONFIG
+  // =========================
+  const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec".trim();
+
+  // ✅ 이 전용 랜딩의 ID (리포트 landing 필터용)
+  const LANDING_ID = "jinju";
+
+  // ✅ CTA는 진주점 고정
+  const FIXED_BRANCH = {
+    name: "진주점",
+    reserve: "https://m.booking.naver.com/booking/6/bizes/1485854",
+    phone: "010-5654-2407",
+    kakao: "https://open.kakao.com/o/sbxBToNh"
+  };
+
+  // ✅ UTM campaign (없으면 빈값)
+  function getUtmCampaign(){
+    try{
+      const p = new URLSearchParams(location.search || "");
+      return p.get("utm_campaign") || "";
+    }catch(e){ return ""; }
+  }
+
+  // =========================
+  // ✅ Toast
+  // =========================
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(msg){
+    if(!toastEl){ alert(msg); return; }
+    toastEl.textContent = String(msg || "");
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>toastEl.classList.remove('show'), 2200);
+  }
+
+  // =========================
+  // ✅ Session + Logger
+  // =========================
+  function getHBSessionId(){
+    const k="HB_LANDING_SID";
+    let v = localStorage.getItem(k);
+    if(!v){
+      const c = (typeof window !== "undefined") ? window.crypto : null;
+      v = (c && typeof c.randomUUID === "function")
+        ? c.randomUUID()
+        : (Date.now()+"_"+Math.random().toString(16).slice(2));
+      localStorage.setItem(k,v);
+    }
+    return v;
+  }
+
+  function sendClickEvent({ action, branch, source } = {}){
+    const payloadObj = {
+      type: "click",
+      action: String(action || "").trim(),
+      branch: String(branch || "").trim(),
+      source: String(source || "").trim(),
+      sessionId: getHBSessionId(),
+      page: location.pathname || "/",
+      referrer: document.referrer || "",
+      ua: navigator.userAgent || "",
+      ts: Date.now(),
+      landing: LANDING_ID,
+      campaign: getUtmCampaign()
+    };
+
+    const payload = JSON.stringify(payloadObj);
+
+    try{
+      if(navigator.sendBeacon){
+        navigator.sendBeacon(GAS_WEBAPP_URL, payload);
+        return;
+      }
+    }catch(e){}
+
+    try{
+      fetch(GAS_WEBAPP_URL, {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: payload,
+        keepalive:true
+      }).catch(()=>{});
+    }catch(e){}
+  }
+
+  // =========================================================
+  // ✅ 오버레이 SSOT (전체 지점 유지)
+  // =========================================================
+  const MASTER_BRANCHES = [
+    { key:"busan",   name:"부산점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/661812",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/661812" },
+
+    { key:"centum",  name:"센텀점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1577219",
+      overlay:"https://booking.naver.com/booking/6/bizes/1577219" },
+
+    { key:"ulsan",   name:"울산점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1534767",
+      overlay:"https://booking.naver.com/booking/6/bizes/1534767" },
+
+    { key:"gimhae",  name:"김해점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1402679",
+      overlay:"https://booking.naver.com/booking/6/bizes/1402679" },
+
+    { key:"yangsan", name:"양산점",  status:"open",
+      reserve:"https://booking.naver.com/booking/13/bizes/868629",
+      overlay:"https://booking.naver.com/booking/13/bizes/868629" },
+
+    { key:"changwon",name:"창원점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/843111",
+      overlay:"https://booking.naver.com/booking/6/bizes/843111" },
+
+    { key:"masan",   name:"마산점",  status:"open",
+      reserve:"https://booking.naver.com/booking/6/bizes/1526541",
+      overlay:"https://booking.naver.com/booking/6/bizes/1526541" },
+
+    { key:"jinju",   name:"진주점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/1485854",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1485854" },
+
+    { key:"incheon", name:"인천점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/13/bizes/1039475",
+      overlay:"https://m.booking.naver.com/booking/13/bizes/1039475" },
+
+    { key:"ansan",   name:"안산점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/1500008",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1500008" },
+
+    { key:"daegu",   name:"대구점",  status:"open",
+      reserve:"https://m.booking.naver.com/booking/6/bizes/1600152",
+      overlay:"https://m.booking.naver.com/booking/6/bizes/1600152" },
+
+    { key:"pohang",  name:"포항점",  status:"coming",
+      reserve:"", overlay:"" }
+  ];
+
+  const NAVER_BASE_W = 1080;
+  const NAVER_BASE_H = 937.2;
+
+  const NAVER_RECTS = {
+    busan:   { x: 69, y:225, w:292, h:146 },
+    centum:  { x:394, y:225, w:292, h:146 },
+    ulsan:   { x:719, y:225, w:292, h:146 },
+    gimhae:  { x: 69, y:395, w:292, h:146 },
+    yangsan: { x:394, y:395, w:292, h:146 },
+    changwon:{ x:719, y:395, w:292, h:146 },
+    masan:   { x: 69, y:565, w:292, h:146 },
+    jinju:   { x:394, y:565, w:292, h:146 },
+    incheon: { x:719, y:565, w:292, h:146 },
+    ansan:   { x: 69, y:734, w:292, h:146 },
+    daegu:   { x:394, y:734, w:292, h:146 },
+    pohang:  { x:719, y:734, w:292, h:146 },
+  };
+
+  function makeOverlayLink(b, rect){
+    const a = document.createElement('a');
+    a.className = "ov";
+    a.href = b.overlay || b.reserve || "#";
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.setAttribute("aria-label", `${b.name} 네이버 예약`);
+    a.dataset.x = rect.x; a.dataset.y = rect.y; a.dataset.w = rect.w; a.dataset.h = rect.h;
+
+    a.addEventListener('click', ()=>{
+      sendClickEvent({ action:"reserve", branch: b.name, source:"overlay" });
+    }, { capture:true });
+
+    return a;
+  }
+
+  function makeOverlayComing(b, rect){
+    const btn = document.createElement('button');
+    btn.type = "button";
+    btn.className = "ov";
+    btn.setAttribute("aria-label", `${b.name} 오픈 준비중`);
+    btn.dataset.x = rect.x; btn.dataset.y = rect.y; btn.dataset.w = rect.w; btn.dataset.h = rect.h;
+
+    btn.addEventListener('click', ()=>{
+      showToast('오픈 준비중입니다.');
+      sendClickEvent({ action:"coming", branch: b.name, source:"overlay" });
+    });
+
+    return btn;
+  }
+
+  function applyRectsForSection(sectionSelector, baseW, baseH){
+    const sec = document.querySelector(sectionSelector);
+    if(!sec) return;
+
+    const img = sec.querySelector('img');
+    const overlay = sec.querySelector('.overlay-layer');
+    if(!img || !overlay) return;
+
+    const run = ()=>{
+      const cw = img.clientWidth || 0;
+      const ch = img.clientHeight || 0;
+      if(!cw || !ch) return;
+
+      const hBase = (baseH != null) ? baseH : (img.naturalHeight || ch);
+      const sx = cw / baseW;
+      const sy = ch / hBase;
+
+      overlay.querySelectorAll('.ov').forEach(el=>{
+        const x = Number(el.dataset.x || 0);
+        const y = Number(el.dataset.y || 0);
+        const w = Number(el.dataset.w || 0);
+        const h = Number(el.dataset.h || 0);
+        el.style.left   = (x * sx) + "px";
+        el.style.top    = (y * sy) + "px";
+        el.style.width  = (w * sx) + "px";
+        el.style.height = (h * sy) + "px";
+      });
+    };
+
+    if (img.complete) run();
+    else img.addEventListener('load', run, { once:true });
+  }
+
+  function buildOverlays(){
+    const wrap = document.getElementById('naverOverlay');
+    if(!wrap) return;
+    wrap.innerHTML = "";
+
+    MASTER_BRANCHES.forEach(b=>{
+      const r = NAVER_RECTS[b.key];
+      if(!r) return;
+      wrap.appendChild(b.status === "open" ? makeOverlayLink(b, r) : makeOverlayComing(b, r));
+    });
+
+    applyRectsForSection('.naver-grid', NAVER_BASE_W, NAVER_BASE_H);
+  }
+
+  window.addEventListener('resize', ()=> applyRectsForSection('.naver-grid', NAVER_BASE_W, NAVER_BASE_H));
+  buildOverlays();
+
+  // =========================================================
+  // ✅ CTA 동작 (진주점 고정)
+  // =========================================================
+  function toTelHref(phone){
+    const digits = String(phone || "").replace(/[^\d]/g,"");
+    return digits ? ("tel:" + digits) : "";
+  }
+
+  document.getElementById("hbBtnCall")?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    const tel = toTelHref(FIXED_BRANCH.phone);
+    if(!tel) return;
+    sendClickEvent({ action:"call", branch: FIXED_BRANCH.name, source:"cta" });
+    location.href = tel;
+  });
+
+  document.getElementById("hbBtnKakao")?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(!FIXED_BRANCH.kakao){
+      showToast("준비중입니다.");
+      sendClickEvent({ action:"kakao_pending", branch: FIXED_BRANCH.name, source:"cta" });
+      return;
+    }
+    sendClickEvent({ action:"kakao", branch: FIXED_BRANCH.name, source:"cta" });
+    window.open(FIXED_BRANCH.kakao, "_blank", "noopener,noreferrer");
+  });
+
+  document.getElementById("hbBtnReserve")?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if(!FIXED_BRANCH.reserve) return;
+    sendClickEvent({ action:"reserve", branch: FIXED_BRANCH.name, source:"cta" });
+    window.open(FIXED_BRANCH.reserve, "_blank", "noopener,noreferrer");
+  });
+
+  document.getElementById("hbBtnMore")?.addEventListener("click", ()=>{
+    sendClickEvent({ action:"more", branch: FIXED_BRANCH.name, source:"cta" });
+  });
+
+  // CTA 높이 반영
+  function setHbCtaHeightVar(){
+    const cta = document.getElementById("hbFixedCta");
+    const h = cta ? Math.round(cta.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--ctaH', h + 'px');
+  }
+  window.addEventListener('resize', setHbCtaHeightVar);
+  window.addEventListener('orientationchange', ()=> setTimeout(setHbCtaHeightVar, 250));
+  window.addEventListener('load', ()=> setTimeout(setHbCtaHeightVar, 50));
+  setHbCtaHeightVar();
+</script>
+
+</body>
+</html>
