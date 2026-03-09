@@ -277,3 +277,129 @@ html, body { margin:0; padding:0; overflow-x:hidden; }
     height: clamp(150px, 28vw, 190px);
   }
 }
+
+/* ==================================================
+   ✅ 기존 랜딩용: 지점 선택 버튼 + 모달 복구
+   ================================================== */
+.hb-branchBtn{
+  height: 44px;
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+
+  background: linear-gradient(180deg, var(--hbWineHi), var(--hbWine));
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+
+  -webkit-tap-highlight-color: transparent;
+}
+.hb-branchBtn:active{ transform: translateY(1px); }
+
+.hb-branchTxt{
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 78%;
+}
+
+.hb-chevron{
+  width:16px;
+  height:16px;
+  opacity:.95;
+}
+.hb-chevron path{
+  stroke: rgba(255,255,255,0.95);
+}
+
+/* ==================================================
+   ✅ 기존 랜딩용: 지점 선택 모달 복구
+   ================================================== */
+.hb-branchBackdrop{
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0,0,0,0.55);
+}
+.hb-branchBackdrop.open{
+  display:flex;
+}
+
+.hb-modal{
+  width: min(520px, calc(100vw - 18px));
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid rgba(255,255,255,0.24);
+  box-shadow: 0 20px 80px rgba(0,0,0,0.35);
+}
+
+.hb-modalHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 14px;
+  color: rgba(15,23,42,0.92);
+  font-weight: 900;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  font-size: 14px;
+}
+.hb-modalHead button{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-weight:900;
+  font-size: 13px;
+  color: rgba(15,23,42,0.65);
+}
+
+.hb-modalBody{
+  max-height: 62vh;
+  overflow:auto;
+}
+
+.hb-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  cursor:pointer;
+  color: rgba(15,23,42,0.92);
+  font-weight:900;
+  font-size: 14px;
+  background: rgba(255,255,255,0.25);
+}
+.hb-item:last-child{
+  border-bottom:none;
+}
+.hb-item:active{
+  background: rgba(90,31,43,0.10);
+}
+
+.hb-badge{
+  font-size: 11px;
+  font-weight:900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(90,31,43,0.10);
+  border: 1px solid rgba(90,31,43,0.18);
+  white-space:nowrap;
+  color: rgba(90,31,43,0.92);
+  line-height: 1;
+}
