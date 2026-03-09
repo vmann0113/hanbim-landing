@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>한빔한복 부산점 무료상담</title>
-<link rel="stylesheet" href="/style.css?v=20260309-busan-1" />
+<link rel="stylesheet" href="/style.css?v=20260309-busan-2" />
 </head>
 
 <body>
@@ -103,7 +103,6 @@ TEL.051-634-2325
 <script>
 
 const GAS_WEBAPP_URL="https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec"
-
 const LANDING_ID="busan"
 
 const BRANCH={
@@ -138,6 +137,8 @@ ts:Date.now()
 })
 }
 
+/* CTA */
+
 document.getElementById("hbBtnCall").onclick=e=>{
 e.preventDefault()
 log("call")
@@ -159,6 +160,100 @@ window.open(BRANCH.reserve)
 document.getElementById("hbBtnMore").onclick=e=>{
 log("more")
 }
+
+/* ===== 12지점 네이버 오버레이 ===== */
+
+const BRANCHES=[
+{key:"busan",name:"부산점",url:"https://m.booking.naver.com/booking/6/bizes/661812"},
+{key:"centum",name:"센텀점",url:"https://booking.naver.com/booking/6/bizes/1577219"},
+{key:"ulsan",name:"울산점",url:"https://booking.naver.com/booking/6/bizes/1534767"},
+{key:"gimhae",name:"김해점",url:"https://booking.naver.com/booking/6/bizes/1402679"},
+{key:"yangsan",name:"양산점",url:"https://booking.naver.com/booking/13/bizes/868629"},
+{key:"changwon",name:"창원점",url:"https://booking.naver.com/booking/6/bizes/843111"},
+{key:"masan",name:"마산점",url:"https://booking.naver.com/booking/6/bizes/1526541"},
+{key:"jinju",name:"진주점",url:"https://m.booking.naver.com/booking/6/bizes/1485854"},
+{key:"incheon",name:"인천점",url:"https://m.booking.naver.com/booking/13/bizes/1039475"},
+{key:"ansan",name:"안산점",url:"https://m.booking.naver.com/booking/6/bizes/1500008"},
+{key:"daegu",name:"대구점",url:"https://m.booking.naver.com/booking/6/bizes/1600152"}
+]
+
+const NAVER_BASE_W=1080
+const NAVER_BASE_H=937.2
+
+const NAVER_RECTS={
+busan:{x:69,y:225,w:292,h:146},
+centum:{x:394,y:225,w:292,h:146},
+ulsan:{x:719,y:225,w:292,h:146},
+gimhae:{x:69,y:395,w:292,h:146},
+yangsan:{x:394,y:395,w:292,h:146},
+changwon:{x:719,y:395,w:292,h:146},
+masan:{x:69,y:565,w:292,h:146},
+jinju:{x:394,y:565,w:292,h:146},
+incheon:{x:719,y:565,w:292,h:146},
+ansan:{x:69,y:734,w:292,h:146},
+daegu:{x:394,y:734,w:292,h:146}
+}
+
+function buildOverlays(){
+
+const overlay=document.getElementById("naverOverlay")
+overlay.innerHTML=""
+
+BRANCHES.forEach(b=>{
+
+const r=NAVER_RECTS[b.key]
+if(!r) return
+
+const a=document.createElement("a")
+
+a.className="ov"
+a.href=b.url
+a.target="_blank"
+a.rel="noopener"
+
+a.dataset.x=r.x
+a.dataset.y=r.y
+a.dataset.w=r.w
+a.dataset.h=r.h
+
+a.onclick=()=>log("reserve")
+
+overlay.appendChild(a)
+
+})
+
+applyRects()
+}
+
+function applyRects(){
+
+const sec=document.querySelector(".naver-grid")
+const img=sec.querySelector("img")
+const overlay=document.getElementById("naverOverlay")
+
+const cw=img.clientWidth
+const ch=img.clientHeight
+
+const sx=cw/NAVER_BASE_W
+const sy=ch/NAVER_BASE_H
+
+overlay.querySelectorAll(".ov").forEach(el=>{
+
+const x=Number(el.dataset.x)
+const y=Number(el.dataset.y)
+const w=Number(el.dataset.w)
+const h=Number(el.dataset.h)
+
+el.style.left=(x*sx)+"px"
+el.style.top=(y*sy)+"px"
+el.style.width=(w*sx)+"px"
+el.style.height=(h*sy)+"px"
+
+})
+}
+
+window.addEventListener("load",buildOverlays)
+window.addEventListener("resize",applyRects)
 
 </script>
 
