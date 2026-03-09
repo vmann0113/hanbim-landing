@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>한빔한복 부산점 무료상담</title>
-<link rel="stylesheet" href="/style.css?v=20260309-busan-2" />
+<link rel="stylesheet" href="/style.css?v=busan-landing-1">
 </head>
 
 <body>
@@ -12,33 +12,34 @@
 <main class="landing">
 
 <section class="block">
-<img src="/assets/01_hero.webp" alt="히어로">
+<img src="/assets/01_hero.webp">
 </section>
 
 <section class="block short">
-<img src="/assets/03_store_intro.webp" alt="매장소개">
+<img src="/assets/03_store_intro.webp">
 </section>
 
 <section class="block short">
-<img src="/assets/01_design.webp" alt="강점소개">
+<img src="/assets/01_design.webp">
 </section>
 
 <section class="block short">
-<img src="/assets/01_accesary.webp" alt="예약고객혜택">
+<img src="/assets/01_accesary.webp">
 </section>
 
 <section class="block short">
-<img src="/assets/01_cs.webp" alt="고객만족서비스">
+<img src="/assets/01_cs.webp">
 </section>
 
-<!-- 네이버예약 지점 오버레이 -->
 <section class="block block-overlay naver-grid">
-<img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
+<img src="/assets/08_naver_links.webp">
 <div class="overlay-layer" id="naverOverlay"></div>
 </section>
 
 <!-- 푸터 -->
+
 <section class="hb-footerStage">
+
 <div class="hb-footerCanvas">
 
 <div class="hb-footerStack">
@@ -72,27 +73,28 @@ TEL.051-634-2325
 
 <div id="toast"></div>
 
-<!-- 하단 CTA -->
-<div class="hb-fixed-cta" id="hbFixedCta">
+<!-- CTA -->
+
+<div class="hb-fixed-cta">
 
 <div class="hb-actionPanel">
 
-<a class="hb-action" id="hbBtnCall">
+<a class="hb-action" id="btnCall">
 <span class="hb-ico" style="background-image:url('/assets/btn-call.png')"></span>
 <span class="hb-lbl">전화(부산점)</span>
 </a>
 
-<a class="hb-action" id="hbBtnKakao">
+<a class="hb-action" id="btnKakao">
 <span class="hb-ico" style="background-image:url('/assets/btn-kakao.png')"></span>
 <span class="hb-lbl">카톡(부산점)</span>
 </a>
 
-<a class="hb-action" id="hbBtnReserve">
+<a class="hb-action" id="btnReserve">
 <span class="hb-ico" style="background-image:url('/assets/btn-reserve.png')"></span>
 <span class="hb-lbl">예약(부산점)</span>
 </a>
 
-<a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9">
+<a class="hb-action" href="https://hanbeam.co.kr/9">
 <span class="hb-ico" style="background-image:url('/assets/btn-more.png')"></span>
 <span class="hb-lbl">더 알아보기</span>
 </a>
@@ -102,83 +104,48 @@ TEL.051-634-2325
 
 <script>
 
-const GAS_WEBAPP_URL="https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec"
-const LANDING_ID="busan"
+/* ===== 부산점 정보 ===== */
 
 const BRANCH={
 name:"부산점",
 phone:"0516342325",
+tel:"051-634-2325",
 reserve:"https://m.booking.naver.com/booking/6/bizes/661812",
 kakao:"https://open.kakao.com/o/sG7YbVYh"
 }
 
-function sid(){
-let v=localStorage.getItem("HB_LSID")
-if(!v){
-v=Date.now()+Math.random()
-localStorage.setItem("HB_LSID",v)
-}
-return v
-}
+/* ===== CTA ===== */
 
-function log(action){
-fetch(GAS_WEBAPP_URL,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-type:"click",
-action:action,
-branch:BRANCH.name,
-landing:LANDING_ID,
-sessionId:sid(),
-page:location.pathname,
-ts:Date.now()
-})
-})
-}
-
-/* CTA */
-
-document.getElementById("hbBtnCall").onclick=e=>{
-e.preventDefault()
-log("call")
+document.getElementById("btnCall").onclick=()=>{
 location.href="tel:"+BRANCH.phone
 }
 
-document.getElementById("hbBtnKakao").onclick=e=>{
-e.preventDefault()
-log("kakao")
+document.getElementById("btnKakao").onclick=()=>{
 window.open(BRANCH.kakao)
 }
 
-document.getElementById("hbBtnReserve").onclick=e=>{
-e.preventDefault()
-log("reserve")
+document.getElementById("btnReserve").onclick=()=>{
 window.open(BRANCH.reserve)
 }
 
-document.getElementById("hbBtnMore").onclick=e=>{
-log("more")
-}
-
-/* ===== 12지점 네이버 오버레이 ===== */
-
-const BRANCHES=[
-{key:"busan",name:"부산점",url:"https://m.booking.naver.com/booking/6/bizes/661812"},
-{key:"centum",name:"센텀점",url:"https://booking.naver.com/booking/6/bizes/1577219"},
-{key:"ulsan",name:"울산점",url:"https://booking.naver.com/booking/6/bizes/1534767"},
-{key:"gimhae",name:"김해점",url:"https://booking.naver.com/booking/6/bizes/1402679"},
-{key:"yangsan",name:"양산점",url:"https://booking.naver.com/booking/13/bizes/868629"},
-{key:"changwon",name:"창원점",url:"https://booking.naver.com/booking/6/bizes/843111"},
-{key:"masan",name:"마산점",url:"https://booking.naver.com/booking/6/bizes/1526541"},
-{key:"jinju",name:"진주점",url:"https://m.booking.naver.com/booking/6/bizes/1485854"},
-{key:"incheon",name:"인천점",url:"https://m.booking.naver.com/booking/13/bizes/1039475"},
-{key:"ansan",name:"안산점",url:"https://m.booking.naver.com/booking/6/bizes/1500008"},
-{key:"daegu",name:"대구점",url:"https://m.booking.naver.com/booking/6/bizes/1600152"}
-]
+/* ===== 12지점 오버레이 ===== */
 
 const NAVER_BASE_W=1080
 const NAVER_BASE_H=937.2
+
+const BRANCHES=[
+{key:"busan",url:"https://m.booking.naver.com/booking/6/bizes/661812"},
+{key:"centum",url:"https://booking.naver.com/booking/6/bizes/1577219"},
+{key:"ulsan",url:"https://booking.naver.com/booking/6/bizes/1534767"},
+{key:"gimhae",url:"https://booking.naver.com/booking/6/bizes/1402679"},
+{key:"yangsan",url:"https://booking.naver.com/booking/13/bizes/868629"},
+{key:"changwon",url:"https://booking.naver.com/booking/6/bizes/843111"},
+{key:"masan",url:"https://booking.naver.com/booking/6/bizes/1526541"},
+{key:"jinju",url:"https://m.booking.naver.com/booking/6/bizes/1485854"},
+{key:"incheon",url:"https://m.booking.naver.com/booking/13/bizes/1039475"},
+{key:"ansan",url:"https://m.booking.naver.com/booking/6/bizes/1500008"},
+{key:"daegu",url:"https://m.booking.naver.com/booking/6/bizes/1600152"}
+]
 
 const NAVER_RECTS={
 busan:{x:69,y:225,w:292,h:146},
@@ -202,21 +169,18 @@ overlay.innerHTML=""
 BRANCHES.forEach(b=>{
 
 const r=NAVER_RECTS[b.key]
-if(!r) return
+if(!r)return
 
 const a=document.createElement("a")
 
 a.className="ov"
 a.href=b.url
 a.target="_blank"
-a.rel="noopener"
 
 a.dataset.x=r.x
 a.dataset.y=r.y
 a.dataset.w=r.w
 a.dataset.h=r.h
-
-a.onclick=()=>log("reserve")
 
 overlay.appendChild(a)
 
@@ -227,27 +191,18 @@ applyRects()
 
 function applyRects(){
 
-const sec=document.querySelector(".naver-grid")
-const img=sec.querySelector("img")
+const img=document.querySelector(".naver-grid img")
 const overlay=document.getElementById("naverOverlay")
 
-const cw=img.clientWidth
-const ch=img.clientHeight
-
-const sx=cw/NAVER_BASE_W
-const sy=ch/NAVER_BASE_H
+const sx=img.clientWidth/NAVER_BASE_W
+const sy=img.clientHeight/NAVER_BASE_H
 
 overlay.querySelectorAll(".ov").forEach(el=>{
 
-const x=Number(el.dataset.x)
-const y=Number(el.dataset.y)
-const w=Number(el.dataset.w)
-const h=Number(el.dataset.h)
-
-el.style.left=(x*sx)+"px"
-el.style.top=(y*sy)+"px"
-el.style.width=(w*sx)+"px"
-el.style.height=(h*sy)+"px"
+el.style.left=(el.dataset.x*sx)+"px"
+el.style.top=(el.dataset.y*sy)+"px"
+el.style.width=(el.dataset.w*sx)+"px"
+el.style.height=(el.dataset.h*sy)+"px"
 
 })
 }
