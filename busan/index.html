@@ -12,36 +12,34 @@
 <main class="landing">
 
 <section class="block">
-<img src="/assets/01_hero.webp">
+<img src="/assets/01_hero.webp" alt="히어로">
 </section>
 
 <section class="block short">
-<img src="/assets/03_store_intro.webp">
+<img src="/assets/03_store_intro.webp" alt="매장소개">
 </section>
 
 <section class="block short">
-<img src="/assets/01_design.webp">
+<img src="/assets/01_design.webp" alt="강점소개">
 </section>
 
 <section class="block short">
-<img src="/assets/01_accesary.webp">
+<img src="/assets/01_accesary.webp" alt="예약고객혜택">
 </section>
 
 <section class="block short">
-<img src="/assets/01_cs.webp">
+<img src="/assets/01_cs.webp" alt="고객만족서비스">
 </section>
 
+<!-- 네이버예약 지점 오버레이 -->
 <section class="block block-overlay naver-grid">
-<img src="/assets/08_naver_links.webp">
+<img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
 <div class="overlay-layer" id="naverOverlay"></div>
 </section>
 
 <!-- 푸터 -->
-
 <section class="hb-footerStage">
-
 <div class="hb-footerCanvas">
-
 <div class="hb-footerStack">
 
 <img class="hb-footerLogo" src="/assets/footer_logo.png">
@@ -73,10 +71,8 @@ TEL.051-634-2325
 
 <div id="toast"></div>
 
-<!-- CTA -->
-
+<!-- 하단 CTA -->
 <div class="hb-fixed-cta">
-
 <div class="hb-actionPanel">
 
 <a class="hb-action" id="btnCall">
@@ -104,7 +100,7 @@ TEL.051-634-2325
 
 <script>
 
-/* ===== 부산점 정보 ===== */
+/* 부산점 정보 (사용자가 제공한 값 그대로 사용) */
 
 const BRANCH={
 name:"부산점",
@@ -114,7 +110,7 @@ reserve:"https://m.booking.naver.com/booking/6/bizes/661812",
 kakao:"https://open.kakao.com/o/sG7YbVYh"
 }
 
-/* ===== CTA ===== */
+/* CTA */
 
 document.getElementById("btnCall").onclick=()=>{
 location.href="tel:"+BRANCH.phone
@@ -128,7 +124,7 @@ document.getElementById("btnReserve").onclick=()=>{
 window.open(BRANCH.reserve)
 }
 
-/* ===== 12지점 오버레이 ===== */
+/* 12지점 네이버 오버레이 */
 
 const NAVER_BASE_W=1080
 const NAVER_BASE_H=937.2
@@ -162,17 +158,14 @@ daegu:{x:394,y:734,w:292,h:146}
 }
 
 function buildOverlays(){
-
 const overlay=document.getElementById("naverOverlay")
 overlay.innerHTML=""
 
 BRANCHES.forEach(b=>{
-
 const r=NAVER_RECTS[b.key]
 if(!r)return
 
 const a=document.createElement("a")
-
 a.className="ov"
 a.href=b.url
 a.target="_blank"
@@ -183,14 +176,12 @@ a.dataset.w=r.w
 a.dataset.h=r.h
 
 overlay.appendChild(a)
-
 })
 
 applyRects()
 }
 
 function applyRects(){
-
 const img=document.querySelector(".naver-grid img")
 const overlay=document.getElementById("naverOverlay")
 
@@ -198,12 +189,10 @@ const sx=img.clientWidth/NAVER_BASE_W
 const sy=img.clientHeight/NAVER_BASE_H
 
 overlay.querySelectorAll(".ov").forEach(el=>{
-
 el.style.left=(el.dataset.x*sx)+"px"
 el.style.top=(el.dataset.y*sy)+"px"
 el.style.width=(el.dataset.w*sx)+"px"
 el.style.height=(el.dataset.h*sy)+"px"
-
 })
 }
 
