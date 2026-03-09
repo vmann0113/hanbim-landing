@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>한빔한복 안산점 무료상담</title>
+<link rel="stylesheet" href="/style.css?v=20260309-ansan-1" />
+</head>
+
+<body>
+
+<main class="landing">
+
+<section class="block">
+<img src="/assets/01_hero.webp" alt="히어로">
+</section>
+
+<section class="block short">
+<img src="/assets/03_store_intro.webp" alt="매장소개">
+</section>
+
+<section class="block short">
+<img src="/assets/01_design.webp" alt="강점소개">
+</section>
+
+<section class="block short">
+<img src="/assets/01_accesary.webp" alt="예약고객혜택">
+</section>
+
+<section class="block short">
+<img src="/assets/01_cs.webp" alt="고객만족서비스">
+</section>
+
+<!-- 네이버 예약 지점 오버레이 -->
+<section class="block block-overlay naver-grid">
+<img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
+<div class="overlay-layer" id="naverOverlay"></div>
+</section>
+
+<!-- 푸터 -->
+<section class="hb-footerStage">
+<div class="hb-footerCanvas">
+
+<div class="hb-footerStack">
+
+<img class="hb-footerLogo" src="/assets/footer_logo.png" alt="한빔한복 로고">
+
+<div class="hb-footerText">
+
+<div class="hb-footerLineStrong">
+한빔한복 안산점 | 대표자: 진서효 | 등록번호: 685-25-02234
+</div>
+
+<div class="hb-footerLine">
+경기도 안산시 단원구 이삭5길 13, 2층 (고잔동)
+</div>
+
+<div class="hb-footerLine">
+TEL.031-487-2325
+</div>
+
+<div class="hb-footerCopy">
+ⓒ Hanbim Hanbok
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+</main>
+
+<div id="toast"></div>
+
+<!-- 하단 CTA -->
+<div class="hb-fixed-cta" id="hbFixedCta">
+
+<div class="hb-actionPanel">
+
+<a class="hb-action" id="hbBtnCall">
+<span class="hb-ico" style="background-image:url('/assets/btn-call.png')"></span>
+<span class="hb-lbl">전화(안산점)</span>
+</a>
+
+<a class="hb-action" id="hbBtnKakao">
+<span class="hb-ico" style="background-image:url('/assets/btn-kakao.png')"></span>
+<span class="hb-lbl">카톡(안산점)</span>
+</a>
+
+<a class="hb-action" id="hbBtnReserve">
+<span class="hb-ico" style="background-image:url('/assets/btn-reserve.png')"></span>
+<span class="hb-lbl">예약(안산점)</span>
+</a>
+
+<a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9">
+<span class="hb-ico" style="background-image:url('/assets/btn-more.png')"></span>
+<span class="hb-lbl">더 알아보기</span>
+</a>
+
+</div>
+</div>
+
+<script>
+
+const GAS_WEBAPP_URL="https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec"
+
+const LANDING_ID="ansan"
+
+const BRANCH={
+name:"안산점",
+phone:"0314872325",
+reserve:"https://booking.naver.com/booking/6/bizes/1449021",
+kakao:"https://open.kakao.com/o/sU0C3BQg"
+}
+
+function sid(){
+let v=localStorage.getItem("HB_LSID")
+if(!v){
+v=Date.now()+Math.random()
+localStorage.setItem("HB_LSID",v)
+}
+return v
+}
+
+function log(action){
+fetch(GAS_WEBAPP_URL,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+type:"click",
+action:action,
+branch:BRANCH.name,
+landing:LANDING_ID,
+sessionId:sid(),
+page:location.pathname,
+ts:Date.now()
+})
+})
+}
+
+document.getElementById("hbBtnCall").onclick=e=>{
+e.preventDefault()
+log("call")
+location.href="tel:"+BRANCH.phone
+}
+
+document.getElementById("hbBtnKakao").onclick=e=>{
+e.preventDefault()
+log("kakao")
+window.open(BRANCH.kakao)
+}
+
+document.getElementById("hbBtnReserve").onclick=e=>{
+e.preventDefault()
+log("reserve")
+window.open(BRANCH.reserve)
+}
+
+document.getElementById("hbBtnMore").onclick=e=>{
+log("more")
+}
+
+</script>
+
+</body>
+</html>
