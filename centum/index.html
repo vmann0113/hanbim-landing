@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>한빔한복 센텀점 무료상담</title>
-<link rel="stylesheet" href="/style.css?v=20260309-centum-1" />
+<link rel="stylesheet" href="/style.css?v=20260310-centum-final">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
 <img src="/assets/01_cs.webp" alt="고객만족서비스">
 </section>
 
-<!-- 네이버예약 지점 오버레이 -->
+<!-- 12지점 네이버예약 오버레이 -->
 <section class="block block-overlay naver-grid">
 <img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
 <div class="overlay-layer" id="naverOverlay"></div>
@@ -40,7 +40,6 @@
 <!-- 푸터 -->
 <section class="hb-footerStage">
 <div class="hb-footerCanvas">
-
 <div class="hb-footerStack">
 
 <img class="hb-footerLogo" src="/assets/footer_logo.png">
@@ -73,26 +72,25 @@ TEL.010-3052-2325
 <div id="toast"></div>
 
 <!-- 하단 CTA -->
-<div class="hb-fixed-cta" id="hbFixedCta">
-
+<div class="hb-fixed-cta">
 <div class="hb-actionPanel">
 
-<a class="hb-action" id="hbBtnCall">
+<a class="hb-action" id="btnCall">
 <span class="hb-ico" style="background-image:url('/assets/btn-call.png')"></span>
 <span class="hb-lbl">전화(센텀점)</span>
 </a>
 
-<a class="hb-action" id="hbBtnKakao">
+<a class="hb-action" id="btnKakao">
 <span class="hb-ico" style="background-image:url('/assets/btn-kakao.png')"></span>
 <span class="hb-lbl">카톡(센텀점)</span>
 </a>
 
-<a class="hb-action" id="hbBtnReserve">
+<a class="hb-action" id="btnReserve">
 <span class="hb-ico" style="background-image:url('/assets/btn-reserve.png')"></span>
 <span class="hb-lbl">예약(센텀점)</span>
 </a>
 
-<a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9">
+<a class="hb-action" href="https://hanbeam.co.kr/9">
 <span class="hb-ico" style="background-image:url('/assets/btn-more.png')"></span>
 <span class="hb-lbl">더 알아보기</span>
 </a>
@@ -102,63 +100,107 @@ TEL.010-3052-2325
 
 <script>
 
-const GAS_WEBAPP_URL="https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec"
-
-const LANDING_ID="centum"
-
 const BRANCH={
 name:"센텀점",
 phone:"01030522325",
+tel:"010-3052-2325",
 reserve:"https://booking.naver.com/booking/6/bizes/1577219",
 kakao:null
 }
 
-function sid(){
-let v=localStorage.getItem("HB_LSID")
-if(!v){
-v=Date.now()+Math.random()
-localStorage.setItem("HB_LSID",v)
-}
-return v
-}
-
-function log(action){
-fetch(GAS_WEBAPP_URL,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-type:"click",
-action:action,
-branch:BRANCH.name,
-landing:LANDING_ID,
-sessionId:sid(),
-page:location.pathname,
-ts:Date.now()
-})
-})
-}
-
-document.getElementById("hbBtnCall").onclick=e=>{
-e.preventDefault()
-log("call")
+document.getElementById("btnCall").onclick=()=>{
 location.href="tel:"+BRANCH.phone
 }
 
-document.getElementById("hbBtnKakao").onclick=e=>{
-e.preventDefault()
-log("kakao_pending")
-alert("카톡 문의 준비중입니다.")
+document.getElementById("btnKakao").onclick=()=>{
+if(!BRANCH.kakao){
+alert("카카오 상담 준비중입니다.")
+return
+}
+window.open(BRANCH.kakao)
 }
 
-document.getElementById("hbBtnReserve").onclick=e=>{
-e.preventDefault()
-log("reserve")
+document.getElementById("btnReserve").onclick=()=>{
 window.open(BRANCH.reserve)
 }
 
-document.getElementById("hbBtnMore").onclick=e=>{
-log("more")
+/* 12지점 네이버예약 */
+
+const NAVER_BASE_W=1080
+const NAVER_BASE_H=937.2
+
+const BRANCH_LINKS={
+busan:"https://m.booking.naver.com/booking/6/bizes/661812",
+centum:"https://booking.naver.com/booking/6/bizes/1577219",
+ulsan:"https://booking.naver.com/booking/6/bizes/1534767",
+gimhae:"https://booking.naver.com/booking/6/bizes/1402679",
+yangsan:"https://booking.naver.com/booking/13/bizes/868629",
+changwon:"https://booking.naver.com/booking/6/bizes/843111",
+masan:"https://booking.naver.com/booking/6/bizes/1526541",
+jinju:"https://m.booking.naver.com/booking/6/bizes/1485854",
+incheon:"https://m.booking.naver.com/booking/13/bizes/1039475",
+ansan:"https://m.booking.naver.com/booking/6/bizes/1500008",
+daegu:"https://m.booking.naver.com/booking/6/bizes/1600152"
 }
+
+const NAVER_RECTS={
+busan:{x:69,y:225,w:292,h:146},
+centum:{x:394,y:225,w:292,h:146},
+ulsan:{x:719,y:225,w:292,h:146},
+gimhae:{x:69,y:395,w:292,h:146},
+yangsan:{x:394,y:395,w:292,h:146},
+changwon:{x:719,y:395,w:292,h:146},
+masan:{x:69,y:565,w:292,h:146},
+jinju:{x:394,y:565,w:292,h:146},
+incheon:{x:719,y:565,w:292,h:146},
+ansan:{x:69,y:734,w:292,h:146},
+daegu:{x:394,y:734,w:292,h:146}
+}
+
+function buildOverlay(){
+
+const wrap=document.getElementById("naverOverlay")
+wrap.innerHTML=""
+
+for(const key in NAVER_RECTS){
+
+const r=NAVER_RECTS[key]
+const link=BRANCH_LINKS[key]
+
+if(!link) continue
+
+const a=document.createElement("a")
+a.className="ov"
+a.href=link
+a.target="_blank"
+
+a.dataset.x=r.x
+a.dataset.y=r.y
+a.dataset.w=r.w
+a.dataset.h=r.h
+
+wrap.appendChild(a)
+}
+
+applyRects()
+}
+
+function applyRects(){
+
+const img=document.querySelector(".naver-grid img")
+const sx=img.clientWidth/NAVER_BASE_W
+const sy=img.clientHeight/NAVER_BASE_H
+
+document.querySelectorAll(".ov").forEach(el=>{
+el.style.left=(el.dataset.x*sx)+"px"
+el.style.top=(el.dataset.y*sy)+"px"
+el.style.width=(el.dataset.w*sx)+"px"
+el.style.height=(el.dataset.h*sy)+"px"
+})
+}
+
+window.addEventListener("load",buildOverlay)
+window.addEventListener("resize",applyRects)
 
 </script>
 
