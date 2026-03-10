@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>한빔한복 부산점 무료상담</title>
-<link rel="stylesheet" href="/style.css?v=busan-landing-1">
+<link rel="stylesheet" href="/style.css?v=busan-final">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
 <img src="/assets/01_cs.webp" alt="고객만족서비스">
 </section>
 
-<!-- 네이버예약 지점 오버레이 -->
+<!-- 네이버예약 오버레이 -->
 <section class="block block-overlay naver-grid">
 <img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
 <div class="overlay-layer" id="naverOverlay"></div>
@@ -71,7 +71,7 @@ TEL.051-634-2325
 
 <div id="toast"></div>
 
-<!-- 하단 CTA -->
+<!-- CTA -->
 <div class="hb-fixed-cta">
 <div class="hb-actionPanel">
 
@@ -100,7 +100,7 @@ TEL.051-634-2325
 
 <script>
 
-/* 부산점 정보 (사용자가 제공한 값 그대로 사용) */
+/* 부산점 정보 (사용자가 제공한 값 그대로) */
 
 const BRANCH={
 name:"부산점",
@@ -124,24 +124,24 @@ document.getElementById("btnReserve").onclick=()=>{
 window.open(BRANCH.reserve)
 }
 
-/* 12지점 네이버 오버레이 */
+/* 12지점 네이버 예약 링크 */
+
+const BRANCH_LINKS={
+busan:"https://m.booking.naver.com/booking/6/bizes/661812",
+centum:"https://booking.naver.com/booking/6/bizes/1577219",
+ulsan:"https://booking.naver.com/booking/6/bizes/1534767",
+gimhae:"https://booking.naver.com/booking/6/bizes/1402679",
+yangsan:"https://booking.naver.com/booking/13/bizes/868629",
+changwon:"https://booking.naver.com/booking/6/bizes/843111",
+masan:"https://booking.naver.com/booking/6/bizes/1526541",
+jinju:"https://m.booking.naver.com/booking/6/bizes/1485854",
+incheon:"https://m.booking.naver.com/booking/13/bizes/1039475",
+ansan:"https://m.booking.naver.com/booking/6/bizes/1500008",
+daegu:"https://m.booking.naver.com/booking/6/bizes/1600152"
+}
 
 const NAVER_BASE_W=1080
 const NAVER_BASE_H=937.2
-
-const BRANCHES=[
-{key:"busan",url:"https://m.booking.naver.com/booking/6/bizes/661812"},
-{key:"centum",url:"https://booking.naver.com/booking/6/bizes/1577219"},
-{key:"ulsan",url:"https://booking.naver.com/booking/6/bizes/1534767"},
-{key:"gimhae",url:"https://booking.naver.com/booking/6/bizes/1402679"},
-{key:"yangsan",url:"https://booking.naver.com/booking/13/bizes/868629"},
-{key:"changwon",url:"https://booking.naver.com/booking/6/bizes/843111"},
-{key:"masan",url:"https://booking.naver.com/booking/6/bizes/1526541"},
-{key:"jinju",url:"https://m.booking.naver.com/booking/6/bizes/1485854"},
-{key:"incheon",url:"https://m.booking.naver.com/booking/13/bizes/1039475"},
-{key:"ansan",url:"https://m.booking.naver.com/booking/6/bizes/1500008"},
-{key:"daegu",url:"https://m.booking.naver.com/booking/6/bizes/1600152"}
-]
 
 const NAVER_RECTS={
 busan:{x:69,y:225,w:292,h:146},
@@ -157,17 +157,21 @@ ansan:{x:69,y:734,w:292,h:146},
 daegu:{x:394,y:734,w:292,h:146}
 }
 
-function buildOverlays(){
-const overlay=document.getElementById("naverOverlay")
-overlay.innerHTML=""
+function buildOverlay(){
 
-BRANCHES.forEach(b=>{
-const r=NAVER_RECTS[b.key]
-if(!r)return
+const wrap=document.getElementById("naverOverlay")
+wrap.innerHTML=""
+
+for(const key in NAVER_RECTS){
+
+const r=NAVER_RECTS[key]
+const link=BRANCH_LINKS[key]
+
+if(!link) continue
 
 const a=document.createElement("a")
 a.className="ov"
-a.href=b.url
+a.href=link
 a.target="_blank"
 
 a.dataset.x=r.x
@@ -175,28 +179,29 @@ a.dataset.y=r.y
 a.dataset.w=r.w
 a.dataset.h=r.h
 
-overlay.appendChild(a)
-})
+wrap.appendChild(a)
+}
 
 applyRects()
 }
 
 function applyRects(){
-const img=document.querySelector(".naver-grid img")
-const overlay=document.getElementById("naverOverlay")
 
+const img=document.querySelector(".naver-grid img")
 const sx=img.clientWidth/NAVER_BASE_W
 const sy=img.clientHeight/NAVER_BASE_H
 
-overlay.querySelectorAll(".ov").forEach(el=>{
+document.querySelectorAll(".ov").forEach(el=>{
+
 el.style.left=(el.dataset.x*sx)+"px"
 el.style.top=(el.dataset.y*sy)+"px"
 el.style.width=(el.dataset.w*sx)+"px"
 el.style.height=(el.dataset.h*sy)+"px"
+
 })
 }
 
-window.addEventListener("load",buildOverlays)
+window.addEventListener("load",buildOverlay)
 window.addEventListener("resize",applyRects)
 
 </script>
