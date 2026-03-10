@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>한빔한복 대구점 무료상담</title>
-<link rel="stylesheet" href="/style.css?v=20260310-daegu-final">
+<link rel="stylesheet" href="/style.css?v=20260310-daegu-final-2">
 </head>
 
 <body>
@@ -31,13 +31,11 @@
 <img src="/assets/01_cs.webp" alt="고객만족서비스">
 </section>
 
-<!-- 네이버예약 오버레이 -->
 <section class="block block-overlay naver-grid">
 <img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
 <div class="overlay-layer" id="naverOverlay"></div>
 </section>
 
-<!-- 푸터 -->
 <section class="hb-footerStage">
 <div class="hb-footerCanvas">
 <div class="hb-footerStack">
@@ -71,7 +69,6 @@ TEL.010-8492-2328
 
 <div id="toast"></div>
 
-<!-- CTA -->
 <div class="hb-fixed-cta">
 <div class="hb-actionPanel">
 
@@ -113,14 +110,14 @@ location.href="tel:"+BRANCH.phone
 }
 
 document.getElementById("btnKakao").onclick=()=>{
-window.open(BRANCH.kakao)
+window.open(BRANCH.kakao,"_blank","noopener,noreferrer")
 }
 
 document.getElementById("btnReserve").onclick=()=>{
-window.open(BRANCH.reserve)
+window.open(BRANCH.reserve,"_blank","noopener,noreferrer")
 }
 
-/* 12지점 네이버예약 */
+/* 12지점 네이버예약 오버레이 */
 
 const NAVER_BASE_W=1080
 const NAVER_BASE_H=937.2
