@@ -1,209 +1,298 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>한빔한복 부산점 무료상담</title>
-<link rel="stylesheet" href="/style.css?v=busan-final">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>한빔한복 부산점 무료상담</title>
+  <link rel="stylesheet" href="/style.css?v=20260310-busan-final-1">
+
+  <style>
+    .overlay-layer input,
+    .overlay-layer select,
+    .overlay-layer textarea,
+    .overlay-layer button,
+    .overlay-layer a{
+      pointer-events:auto !important;
+    }
+
+    .ov{ z-index:20; }
+
+    html{ -webkit-text-size-adjust:100%; }
+  </style>
 </head>
 
 <body>
 
 <main class="landing">
 
-<section class="block">
-<img src="/assets/01_hero.webp" alt="히어로">
-</section>
+  <section class="block">
+    <img src="/assets/01_hero.webp" alt="히어로">
+  </section>
 
-<section class="block short">
-<img src="/assets/03_store_intro.webp" alt="매장소개">
-</section>
+  <section class="block short">
+    <img src="/assets/03_store_intro.webp" alt="매장소개">
+  </section>
 
-<section class="block short">
-<img src="/assets/01_design.webp" alt="강점소개">
-</section>
+  <section class="block short">
+    <img src="/assets/01_design.webp" alt="강점소개">
+  </section>
 
-<section class="block short">
-<img src="/assets/01_accesary.webp" alt="예약고객혜택">
-</section>
+  <section class="block short">
+    <img src="/assets/01_accesary.webp" alt="예약고객혜택">
+  </section>
 
-<section class="block short">
-<img src="/assets/01_cs.webp" alt="고객만족서비스">
-</section>
+  <section class="block short">
+    <img src="/assets/01_cs.webp" alt="고객만족서비스">
+  </section>
 
-<!-- 네이버예약 오버레이 -->
-<section class="block block-overlay naver-grid">
-<img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
-<div class="overlay-layer" id="naverOverlay"></div>
-</section>
+  <!-- 12지점 네이버예약 오버레이 -->
+  <section class="block block-overlay naver-grid">
+    <img src="/assets/08_naver_links.webp" alt="지점별 네이버 예약">
+    <div class="overlay-layer" id="naverOverlay"></div>
+  </section>
 
-<!-- 푸터 -->
-<section class="hb-footerStage">
-<div class="hb-footerCanvas">
-<div class="hb-footerStack">
+  <!-- 푸터 -->
+  <section class="hb-footerStage">
+    <div class="hb-footerCanvas">
+      <div class="hb-footerStack">
 
-<img class="hb-footerLogo" src="/assets/footer_logo.png">
+        <img class="hb-footerLogo" src="/assets/footer_logo.png" alt="한빔한복 로고">
 
-<div class="hb-footerText">
+        <div class="hb-footerText">
+          <div class="hb-footerLineStrong">
+            한빔한복 부산점 | 대표자: 김태현 | 등록번호: 637-48-00829
+          </div>
 
-<div class="hb-footerLineStrong">
-한빔한복 부산점 | 대표자: 김태현 | 등록번호: 637-48-00829
-</div>
+          <div class="hb-footerLine">
+            부산광역시 부산진구 자유평화로 17, 3층 (범천동)
+          </div>
 
-<div class="hb-footerLine">
-부산광역시 부산진구 자유평화로 17, 3층 (범천동)
-</div>
+          <div class="hb-footerLine">
+            TEL.051-634-2325
+          </div>
 
-<div class="hb-footerLine">
-TEL.051-634-2325
-</div>
+          <div class="hb-footerCopy">
+            ⓒ Hanbim Hanbok
+          </div>
+        </div>
 
-<div class="hb-footerCopy">
-ⓒ Hanbim Hanbok
-</div>
-
-</div>
-</div>
-</div>
-</section>
+      </div>
+    </div>
+  </section>
 
 </main>
 
 <div id="toast"></div>
 
-<!-- CTA -->
-<div class="hb-fixed-cta">
-<div class="hb-actionPanel">
+<!-- 하단 CTA -->
+<div class="hb-fixed-cta" id="hbFixedCta">
+  <div class="hb-actionPanel">
 
-<a class="hb-action" id="btnCall">
-<span class="hb-ico" style="background-image:url('/assets/btn-call.png')"></span>
-<span class="hb-lbl">전화(부산점)</span>
-</a>
+    <a class="hb-action" id="hbBtnCall" href="#">
+      <span class="hb-ico" style="background-image:url('/assets/btn-call.png')"></span>
+      <span class="hb-lbl">전화(부산점)</span>
+    </a>
 
-<a class="hb-action" id="btnKakao">
-<span class="hb-ico" style="background-image:url('/assets/btn-kakao.png')"></span>
-<span class="hb-lbl">카톡(부산점)</span>
-</a>
+    <a class="hb-action" id="hbBtnKakao" href="#">
+      <span class="hb-ico" style="background-image:url('/assets/btn-kakao.png')"></span>
+      <span class="hb-lbl">카톡(부산점)</span>
+    </a>
 
-<a class="hb-action" id="btnReserve">
-<span class="hb-ico" style="background-image:url('/assets/btn-reserve.png')"></span>
-<span class="hb-lbl">예약(부산점)</span>
-</a>
+    <a class="hb-action" id="hbBtnReserve" href="#">
+      <span class="hb-ico" style="background-image:url('/assets/btn-reserve.png')"></span>
+      <span class="hb-lbl">예약(부산점)</span>
+    </a>
 
-<a class="hb-action" href="https://hanbeam.co.kr/9">
-<span class="hb-ico" style="background-image:url('/assets/btn-more.png')"></span>
-<span class="hb-lbl">더 알아보기</span>
-</a>
+    <a class="hb-action" id="hbBtnMore" href="https://hanbeam.co.kr/9">
+      <span class="hb-ico" style="background-image:url('/assets/btn-more.png')"></span>
+      <span class="hb-lbl">더 알아보기</span>
+    </a>
 
-</div>
+  </div>
 </div>
 
 <script>
+  const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyiPaERPD1ZUBNO7T40wR5Tcy0jU0qtw5SRwBylCHAvRSjafqHOLGkAWGhxKyUgCerM/exec";
+  const LANDING_ID = "busan";
 
-/* 부산점 정보 (사용자가 제공한 값 그대로) */
+  const BRANCH = {
+    name: "부산점",
+    phone: "0516342325",
+    tel: "051-634-2325",
+    reserve: "https://m.booking.naver.com/booking/6/bizes/661812",
+    kakao: "https://open.kakao.com/o/soq7Ns4d"
+  };
 
-const BRANCH={
-name:"부산점",
-phone:"0516342325",
-tel:"051-634-2325",
-reserve:"https://m.booking.naver.com/booking/6/bizes/661812",
-kakao:"https://open.kakao.com/o/sG7YbVYh"
-}
+  function sid(){
+    let v = localStorage.getItem("HB_LSID");
+    if(!v){
+      v = Date.now() + "_" + Math.random().toString(16).slice(2);
+      localStorage.setItem("HB_LSID", v);
+    }
+    return v;
+  }
 
-/* CTA */
+  function log(action, branchName){
+    fetch(GAS_WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "click",
+        action: action,
+        branch: branchName || "",
+        landing: LANDING_ID,
+        sessionId: sid(),
+        page: location.pathname,
+        ts: Date.now()
+      })
+    }).catch(() => {});
+  }
 
-document.getElementById("btnCall").onclick=()=>{
-location.href="tel:"+BRANCH.phone
-}
+  /* CTA */
+  document.getElementById("hbBtnCall").addEventListener("click", (e) => {
+    e.preventDefault();
+    log("call", BRANCH.name);
+    location.href = "tel:" + BRANCH.phone;
+  });
 
-document.getElementById("btnKakao").onclick=()=>{
-window.open(BRANCH.kakao)
-}
+  document.getElementById("hbBtnKakao").addEventListener("click", (e) => {
+    e.preventDefault();
+    log("kakao", BRANCH.name);
+    window.open(BRANCH.kakao, "_blank", "noopener,noreferrer");
+  });
 
-document.getElementById("btnReserve").onclick=()=>{
-window.open(BRANCH.reserve)
-}
+  document.getElementById("hbBtnReserve").addEventListener("click", (e) => {
+    e.preventDefault();
+    log("reserve", BRANCH.name);
+    window.open(BRANCH.reserve, "_blank", "noopener,noreferrer");
+  });
 
-/* 12지점 네이버 예약 링크 */
+  document.getElementById("hbBtnMore").addEventListener("click", () => {
+    log("more", BRANCH.name);
+  });
 
-const BRANCH_LINKS={
-busan:"https://m.booking.naver.com/booking/6/bizes/661812",
-centum:"https://booking.naver.com/booking/6/bizes/1577219",
-ulsan:"https://booking.naver.com/booking/6/bizes/1534767",
-gimhae:"https://booking.naver.com/booking/6/bizes/1402679",
-yangsan:"https://booking.naver.com/booking/13/bizes/868629",
-changwon:"https://booking.naver.com/booking/6/bizes/843111",
-masan:"https://booking.naver.com/booking/6/bizes/1526541",
-jinju:"https://m.booking.naver.com/booking/6/bizes/1485854",
-incheon:"https://m.booking.naver.com/booking/13/bizes/1039475",
-ansan:"https://m.booking.naver.com/booking/6/bizes/1500008",
-daegu:"https://m.booking.naver.com/booking/6/bizes/1600152"
-}
+  /* 12지점 오버레이 */
+  const BRANCHES = [
+    { key:"busan",   name:"부산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/661812" },
+    { key:"centum",  name:"센텀점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1577219" },
+    { key:"ulsan",   name:"울산점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1534767" },
+    { key:"gimhae",  name:"김해점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1402679" },
+    { key:"yangsan", name:"양산점",  status:"open",   url:"https://booking.naver.com/booking/13/bizes/868629" },
+    { key:"changwon",name:"창원점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/843111" },
+    { key:"masan",   name:"마산점",  status:"open",   url:"https://booking.naver.com/booking/6/bizes/1526541" },
+    { key:"jinju",   name:"진주점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1485854" },
+    { key:"incheon", name:"인천점",  status:"open",   url:"https://m.booking.naver.com/booking/13/bizes/1039475" },
+    { key:"ansan",   name:"안산점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1500008" },
+    { key:"daegu",   name:"대구점",  status:"open",   url:"https://m.booking.naver.com/booking/6/bizes/1600152" },
+    { key:"pohang",  name:"포항점",  status:"coming", url:"" }
+  ];
 
-const NAVER_BASE_W=1080
-const NAVER_BASE_H=937.2
+  const NAVER_BASE_W = 1080;
+  const NAVER_BASE_H = 937.2;
 
-const NAVER_RECTS={
-busan:{x:69,y:225,w:292,h:146},
-centum:{x:394,y:225,w:292,h:146},
-ulsan:{x:719,y:225,w:292,h:146},
-gimhae:{x:69,y:395,w:292,h:146},
-yangsan:{x:394,y:395,w:292,h:146},
-changwon:{x:719,y:395,w:292,h:146},
-masan:{x:69,y:565,w:292,h:146},
-jinju:{x:394,y:565,w:292,h:146},
-incheon:{x:719,y:565,w:292,h:146},
-ansan:{x:69,y:734,w:292,h:146},
-daegu:{x:394,y:734,w:292,h:146}
-}
+  const NAVER_RECTS = {
+    busan:   { x:  69, y:225, w:292, h:146 },
+    centum:  { x: 394, y:225, w:292, h:146 },
+    ulsan:   { x: 719, y:225, w:292, h:146 },
+    gimhae:  { x:  69, y:395, w:292, h:146 },
+    yangsan: { x: 394, y:395, w:292, h:146 },
+    changwon:{ x: 719, y:395, w:292, h:146 },
+    masan:   { x:  69, y:565, w:292, h:146 },
+    jinju:   { x: 394, y:565, w:292, h:146 },
+    incheon: { x: 719, y:565, w:292, h:146 },
+    ansan:   { x:  69, y:734, w:292, h:146 },
+    daegu:   { x: 394, y:734, w:292, h:146 },
+    pohang:  { x: 719, y:734, w:292, h:146 }
+  };
 
-function buildOverlay(){
+  function makeLink(branch, rect){
+    const a = document.createElement("a");
+    a.className = "ov";
+    a.href = branch.url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.setAttribute("aria-label", `${branch.name} 네이버 예약`);
+    a.dataset.x = rect.x;
+    a.dataset.y = rect.y;
+    a.dataset.w = rect.w;
+    a.dataset.h = rect.h;
 
-const wrap=document.getElementById("naverOverlay")
-wrap.innerHTML=""
+    a.addEventListener("click", () => {
+      log("reserve", branch.name);
+    });
 
-for(const key in NAVER_RECTS){
+    return a;
+  }
 
-const r=NAVER_RECTS[key]
-const link=BRANCH_LINKS[key]
+  function makeComing(branch, rect){
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "ov";
+    btn.setAttribute("aria-label", `${branch.name} 오픈 준비중`);
+    btn.dataset.x = rect.x;
+    btn.dataset.y = rect.y;
+    btn.dataset.w = rect.w;
+    btn.dataset.h = rect.h;
 
-if(!link) continue
+    btn.addEventListener("click", () => {
+      log("coming", branch.name);
+    });
 
-const a=document.createElement("a")
-a.className="ov"
-a.href=link
-a.target="_blank"
+    return btn;
+  }
 
-a.dataset.x=r.x
-a.dataset.y=r.y
-a.dataset.w=r.w
-a.dataset.h=r.h
+  function applyRects(){
+    const sec = document.querySelector(".naver-grid");
+    if(!sec) return;
 
-wrap.appendChild(a)
-}
+    const img = sec.querySelector("img");
+    const overlay = document.getElementById("naverOverlay");
+    if(!img || !overlay) return;
 
-applyRects()
-}
+    const cw = img.clientWidth || 0;
+    const ch = img.clientHeight || 0;
+    if(!cw || !ch) return;
 
-function applyRects(){
+    const sx = cw / NAVER_BASE_W;
+    const sy = ch / NAVER_BASE_H;
 
-const img=document.querySelector(".naver-grid img")
-const sx=img.clientWidth/NAVER_BASE_W
-const sy=img.clientHeight/NAVER_BASE_H
+    overlay.querySelectorAll(".ov").forEach((el) => {
+      const x = Number(el.dataset.x || 0);
+      const y = Number(el.dataset.y || 0);
+      const w = Number(el.dataset.w || 0);
+      const h = Number(el.dataset.h || 0);
 
-document.querySelectorAll(".ov").forEach(el=>{
+      el.style.left = (x * sx) + "px";
+      el.style.top = (y * sy) + "px";
+      el.style.width = (w * sx) + "px";
+      el.style.height = (h * sy) + "px";
+      el.style.background = "transparent";
+      el.style.border = "none";
+      el.style.cursor = "pointer";
+      el.style.position = "absolute";
+    });
+  }
 
-el.style.left=(el.dataset.x*sx)+"px"
-el.style.top=(el.dataset.y*sy)+"px"
-el.style.width=(el.dataset.w*sx)+"px"
-el.style.height=(el.dataset.h*sy)+"px"
+  function buildOverlays(){
+    const overlay = document.getElementById("naverOverlay");
+    if(!overlay) return;
 
-})
-}
+    overlay.innerHTML = "";
 
-window.addEventListener("load",buildOverlay)
-window.addEventListener("resize",applyRects)
+    BRANCHES.forEach((branch) => {
+      const rect = NAVER_RECTS[branch.key];
+      if(!rect) return;
 
+      overlay.appendChild(
+        branch.status === "open" ? makeLink(branch, rect) : makeComing(branch, rect)
+      );
+    });
+
+    applyRects();
+  }
+
+  window.addEventListener("load", buildOverlays);
+  window.addEventListener("resize", applyRects);
 </script>
 
 </body>
